@@ -1,6 +1,6 @@
 import axios from "axios";
-const link = "https://dev.mscorpres.net/";
-const socketLink = "http://localhost:3005";
+const link = "https://ims.mscapi.live/";
+const socketLink = "https://socket.mscapi.live:3005";
 
 // comment the above two links and decomment below two links for production
 
