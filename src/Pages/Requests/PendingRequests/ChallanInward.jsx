@@ -212,7 +212,7 @@ function ChallanInward({ challanInward, setChallanInward }) {
         remark: rows.map((row) => row.remark),
         hsncode: rows.map((row) => row.hsn),
       };
-      console.log("finalObj", finalObj);
+      // console.log("finalObj", finalObj);
       // return;
       setSubmitLoading(true);
       const { data } = await axios.post("/jwvendor/minVendorRM", finalObj);
