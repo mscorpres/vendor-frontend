@@ -50,7 +50,7 @@ function RMStockReport() {
       ];
       setSummaryData(summaryArr);
     } else {
-      showToast("Error", data.message.msg, "error");
+      showToast("Error", data.message, "error");
       setRows([]);
     }
   };
