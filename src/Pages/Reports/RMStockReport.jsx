@@ -11,7 +11,6 @@ import showToast from "../../Components/MyToast";
 import SearchHeader from "../../Components/SearchHeader";
 import SummaryCard from "../../Components/SummaryCard";
 import { CommonIcons } from "../../Components/TableActions.jsx/TableActions";
-
 function RMStockReport() {
   const [searchLoading, setSearchLoading] = useState(false);
   const [asyncOptions, setAsyncOptions] = useState([]);
@@ -23,14 +22,18 @@ function RMStockReport() {
     { title: "ClosingQty" },
   ]);
   const [pageLoading, setPageLoading] = useState(false);
+
+  const { locations: locationOptions } = useSelector((state) => state.login);
+  // console.log("locationOptions", locationOptions);
   const [searchObj, setSearchObj] = useState({
     part_code: "",
-    location: "",
+    location: locationOptions[0]?.value,
   });
-  const { locations: locationOptions } = useSelector((state) => state.login);
   const getRows = async () => {
     setFetchLoading(true);
+    // console.log("searchObj", searchObj);
     const { data } = await axios.post("/jwreport/rmLocStock", searchObj);
+    // return;
     setFetchLoading(false);
     if (data.responseCode === "200") {
       let arr = data.response.data2.map((row, index) => ({
@@ -47,7 +50,7 @@ function RMStockReport() {
       ];
       setSummaryData(summaryArr);
     } else {
-      showToast("", data.message.msg, "error");
+      showToast("Error", data.message.msg, "error");
       setRows([]);
     }
   };
@@ -122,8 +125,9 @@ function RMStockReport() {
       <div style={{ width: 300 }}>
         <MySelect
           placeholder="Select Location"
-          value={searchObj.location}
-          options={locationOptions}
+          labelInValue
+          value={locationOptions[0]?.text}
+          // options={locationOptions}
           onChange={(value) => {
             setSearchObj((obj) => ({
               ...obj,

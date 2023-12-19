@@ -75,8 +75,9 @@ function ChallanInward({ challanInward, setChallanInward }) {
       width: 100,
       renderCell: ({ row }) => (
         <MySelect
-          options={locationOptions}
-          value={row.location}
+          labelInValue
+          // options={locationOptions}
+          value={locationOptions[0].text}
           onChange={(value) => inputHandler("location", value, row.id)}
         />
       ),
@@ -129,7 +130,7 @@ function ChallanInward({ challanInward, setChallanInward }) {
           partName: row.part_name,
           partNo: row.part_no,
           uom: row.uom,
-          location: "",
+          location: locationOptions[0].value,
           hsn: "",
           remark: "",
         }));
@@ -211,6 +212,8 @@ function ChallanInward({ challanInward, setChallanInward }) {
         remark: rows.map((row) => row.remark),
         hsncode: rows.map((row) => row.hsn),
       };
+      console.log("finalObj", finalObj);
+      // return;
       setSubmitLoading(true);
       const { data } = await axios.post("/jwvendor/minVendorRM", finalObj);
       setSubmitLoading(false);

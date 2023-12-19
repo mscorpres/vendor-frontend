@@ -8,21 +8,21 @@ const showToast = (title, message, type) => {
     notification.open({
       message: title ?? "",
       description: message ?? "",
-      placement: "bottomRight",
+      placement: "topRight",
       duration: 3,
     });
   } else if (type === "error") {
     notification.error({
       message: title ?? "",
       description: message ?? "",
-      placement: "bottomRight",
+      placement: "topRight",
       duration: 3,
     });
   } else if (type === "success") {
     notification.success({
       message: title ?? "",
       description: message ?? "",
-      placement: "bottomRight",
+      placement: "topRight",
       duration: 3,
     });
   }
