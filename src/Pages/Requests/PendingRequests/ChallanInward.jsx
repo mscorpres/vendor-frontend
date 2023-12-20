@@ -28,9 +28,20 @@ function ChallanInward({ challanInward, setChallanInward }) {
   const columns = [
     {
       headerName: "",
-      width: 200,
+      width: 50,
       renderCell: ({ row }) => (
         <CommonIcons action="removeRow" onClick={() => removeRows(row.id)} />
+      ),
+    },
+    {
+      headerName: "Part Code",
+      width: 80,
+      renderCell: ({ row }) => (
+        <Typography.Text
+          style={{ fontSize: window.innerWidth > 1600 ? "0.9rem" : "0.7rem" }}
+        >
+          {row.partKey}
+        </Typography.Text>
       ),
     },
     {
@@ -46,7 +57,7 @@ function ChallanInward({ challanInward, setChallanInward }) {
     },
     {
       headerName: "Qty",
-      width: 100,
+      width: 150,
       renderCell: ({ row }) => (
         <Input
           value={row.jwQty}

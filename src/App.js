@@ -197,6 +197,7 @@ const App = () => {
     } else if (user) {
       if (user.token) {
         socket(user.token).emit("fetch_notifications", { source: "react" });
+        getLocations();
       }
       // getting new notification
       socket(user?.token).on("socket_receive_notification", (data) => {
