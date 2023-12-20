@@ -34,7 +34,7 @@ function ChallanInward({ challanInward, setChallanInward }) {
       ),
     },
     {
-      headerName: "Component",
+      headerName: "Part Name",
       width: 200,
       renderCell: ({ row }) => (
         <Typography.Text
@@ -131,7 +131,7 @@ function ChallanInward({ challanInward, setChallanInward }) {
           partNo: row.part_no,
           uom: row.uom,
           location: locationOptions[0].value,
-          hsn: "",
+          hsn: row.hsn,
           remark: "",
         }));
         setRows(arr);
