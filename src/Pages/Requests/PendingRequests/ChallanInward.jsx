@@ -28,13 +28,13 @@ function ChallanInward({ challanInward, setChallanInward }) {
   const columns = [
     {
       headerName: "",
-      width: 50,
+      width: 200,
       renderCell: ({ row }) => (
         <CommonIcons action="removeRow" onClick={() => removeRows(row.id)} />
       ),
     },
     {
-      headerName: "Part Name",
+      headerName: "Component",
       width: 200,
       renderCell: ({ row }) => (
         <Typography.Text
@@ -46,7 +46,7 @@ function ChallanInward({ challanInward, setChallanInward }) {
     },
     {
       headerName: "Qty",
-      width: 150,
+      width: 100,
       renderCell: ({ row }) => (
         <Input
           value={row.jwQty}
@@ -131,7 +131,7 @@ function ChallanInward({ challanInward, setChallanInward }) {
           partNo: row.part_no,
           uom: row.uom,
           location: locationOptions[0].value,
-          hsn: row.hsn,
+          hsn: "",
           remark: "",
         }));
         setRows(arr);
