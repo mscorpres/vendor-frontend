@@ -200,6 +200,7 @@ const App = () => {
         getLocations();
       }
       // getting new notification
+      getLocations();
       socket(user?.token).on("socket_receive_notification", (data) => {
         console.log("new notifications file recieved");
         if (data.type === "message") {

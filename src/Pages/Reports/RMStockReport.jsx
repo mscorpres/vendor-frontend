@@ -2,7 +2,7 @@ import { Card, Col, Form, Row, Space, Typography } from "antd";
 import axios from "axios";
 import React, { useState } from "react";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { downloadCSV } from "../../Components/exportToCSV";
 import MyAsyncSelect from "../../Components/MyAsyncSelect";
 import MyDataTable from "../../Components/MyDataTable";
@@ -11,6 +11,7 @@ import showToast from "../../Components/MyToast";
 import SearchHeader from "../../Components/SearchHeader";
 import SummaryCard from "../../Components/SummaryCard";
 import { CommonIcons } from "../../Components/TableActions.jsx/TableActions";
+import { setLocations } from "../../Features/loginSlice.js/loginSlice";
 function RMStockReport() {
   const [searchLoading, setSearchLoading] = useState(false);
   const [asyncOptions, setAsyncOptions] = useState([]);
@@ -21,6 +22,10 @@ function RMStockReport() {
     { title: "Component" },
     { title: "ClosingQty" },
   ]);
+  useEffect(() => {
+    getLocations();
+  }, []);
+
   const [pageLoading, setPageLoading] = useState(false);
 
   const { locations: locationOptions } = useSelector((state) => state.login);
@@ -29,18 +34,37 @@ function RMStockReport() {
     part_code: "",
     location: locationOptions[0]?.value,
   });
+  const dispatch = useDispatch();
+  const getLocations = async () => {
+    // setPageLoading(true);
+    const { data } = await axios.get("/jwvendor/fetchMINLocation");
+    // setPageLoading(false);
+    if (data.code == 200) {
+      let arr = data.data.map((row) => ({
+        text: row.text,
+        value: row.id,
+      }));
+      dispatch(setLocations(arr));
+    }
+  };
   const getRows = async () => {
     setFetchLoading(true);
     // console.log("searchObj", searchObj);
-    const { data } = await axios.post("/jwreport/rmLocStock", searchObj);
-    // return;
-    setFetchLoading(false);
-    if (data.responseCode === "200") {
-      let arr = data.response.data2.map((row, index) => ({
+    const response = await axios.post("/jwreport/rmLocStock", searchObj);
+
+    const { data } = response;
+    if (data.code === 200) {
+      const { data2 } = data.response;
+      const { data1 } = data.response;
+      // console.log("data1", data1);
+      // console.log("data2", data2);
+
+      let arr = data2.map((row, index) => ({
         ...row,
         id: index,
       }));
       setRows(arr);
+
       let summaryArr = [
         { title: "Component", description: data.response.data1.component },
         {
@@ -49,10 +73,20 @@ function RMStockReport() {
         },
       ];
       setSummaryData(summaryArr);
-    } else {
-      showToast("Error", data.message, "error");
+      setFetchLoading(false);
+    }
+
+    // const { data2 } = response;
+    // if (data.responseCode === "200") {
+    //   console.log("arrr", arr);
+
+    //   setSummaryData(summaryArr);
+    // }
+    else {
+      // showToast("Error", data.message, "error");
       setRows([]);
     }
+    setFetchLoading(false);
   };
   const getPartCodes = async (search) => {
     setSelectLoading(true);
