@@ -50,6 +50,7 @@ function RMStockReport() {
   const getRows = async () => {
     setFetchLoading(true);
     // console.log("searchObj", searchObj);
+    searchObj.location = locationOptions[0]?.value;
     const response = await axios.post("/jwreport/rmLocStock", searchObj);
 
     const { data } = response;
