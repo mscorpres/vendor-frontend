@@ -13,6 +13,7 @@ import showToast from "../../Components/MyToast";
 import { useEffect } from "react";
 
 function RMConsumption() {
+  const { locations: locationOptions } = useSelector((state) => state.login);
   const [asyncOptions, setAsyncOptions] = useState([]);
   const [selectLoading, setSelectLoading] = useState(false);
   const [challans, setChallans] = useState([]);
@@ -24,17 +25,17 @@ function RMConsumption() {
     {
       id: v4(),
       component: "",
-      location: "",
+      location: locationOptions[0]?.value,
       qty: 0,
       uom: "--",
       remark: "",
     },
   ]);
+  console.log("locationOptions", rows);
   const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
 
-  const { locations: locationOptions } = useSelector((state) => state.login);
   let [form] = Form.useForm();
 
   const getChallans = async () => {
@@ -73,7 +74,7 @@ function RMConsumption() {
     const newRow = {
       id: v4(),
       component: "",
-      location: "",
+      location: locationOptions[0]?.value,
       qty: "",
       uom: "--",
       remark: "",
@@ -132,6 +133,7 @@ function RMConsumption() {
     setRows(arr);
   };
   const validationHandler = (headerData) => {
+    // console.log("headerData", headerData);
     let validation = false;
     let message = "";
     let compData = {
@@ -141,10 +143,8 @@ function RMConsumption() {
       qty: rows.map((row) =>
         row.qty === "" || row.qty === 0 ? (validation = "qty") : row.qty
       ),
-      pick_location: rows.map((row) =>
-        !row.location || row.location === ""
-          ? (validation = "location")
-          : row.location
+      pick_location: rows.map(
+        (row) => (row.location = locationOptions[0]?.value)
       ),
       remark: rows.map((row) => row.remark),
     };
@@ -160,6 +160,7 @@ function RMConsumption() {
     }
     let finalObj = { ...headerData, ...compData };
     setShowSubmitConfirm(finalObj);
+    console.log("finalObj", finalObj);
   };
   const submitHandler = async () => {
     if (showSubmitConfirm) {
@@ -189,7 +190,7 @@ function RMConsumption() {
       {
         id: v4(),
         component: "",
-        location: "",
+        location: locationOptions[0]?.value,
         qty: 0,
         uom: "--",
         remark: "",
@@ -243,8 +244,10 @@ function RMConsumption() {
       headerName: "Pick Location",
       renderCell: ({ row }) => (
         <MySelect
-          value={row.location}
-          options={locationOptions}
+          // labelInValue
+          value={locationOptions[0]?.text}
+          // value={locationOptions[0]?.text}
+          // options={locationOptions}
           onChange={(value) => {
             inputHandler("location", value, row.id);
           }}
