@@ -33,6 +33,7 @@ function ChallanInward({ challanInward, setChallanInward }) {
         <CommonIcons action="removeRow" onClick={() => removeRows(row.id)} />
       ),
     },
+
     {
       headerName: "Part Code",
       width: 80,
