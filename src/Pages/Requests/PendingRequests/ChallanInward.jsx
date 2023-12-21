@@ -57,11 +57,11 @@ function ChallanInward({ challanInward, setChallanInward }) {
     },
     {
       headerName: "Qty",
-      width: 150,
+      width: 100,
       renderCell: ({ row }) => (
         <Input
           value={row.jwQty}
-          suffix={row.maxQty + " " + row.uom}
+          suffix={"" + row.uom}
           onChange={(e) => inputHandler("jwQty", e.target.value, row.id)}
         />
       ),
