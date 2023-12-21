@@ -40,7 +40,7 @@ function ChallanInward({ challanInward, setChallanInward }) {
         <Typography.Text
           style={{ fontSize: window.innerWidth > 1600 ? "0.9rem" : "0.7rem" }}
         >
-          {row.partKey}
+          {row.partNo}
         </Typography.Text>
       ),
     },
