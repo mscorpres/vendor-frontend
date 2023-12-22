@@ -57,13 +57,25 @@ function ChallanInward({ challanInward, setChallanInward }) {
       ),
     },
     {
-      headerName: "Qty",
+      headerName: "Total Qty",
       width: 100,
       renderCell: ({ row }) => (
         <Input
-          value={row.jwQty}
-          suffix={"" + row.uom}
+          // value={row.jwQty}
+          suffix={row.jwQty + "" + row.uom}
           onChange={(e) => inputHandler("jwQty", e.target.value, row.id)}
+        />
+      ),
+    },
+    {
+      headerName: "Left Qty",
+      width: 100,
+      renderCell: ({ row }) => (
+        <Input
+          disabled
+          value={row.maxQty}
+          suffix={"" + row.uom}
+          onChange={(e) => inputHandler("maxQty", e.target.value, row.id)}
         />
       ),
     },
@@ -135,7 +147,7 @@ function ChallanInward({ challanInward, setChallanInward }) {
         let arr = data.response.data.map((row, index) => ({
           id: index,
           jwQty: row.jw_qty,
-          maxQty: row.jw_qty,
+          maxQty: row.jw_leftqty,
           jwRate: row.jw_rate,
           partKey: row.part_key,
           jwValue: +Number(row.jw_qty) * +Number(row.jw_rate),
