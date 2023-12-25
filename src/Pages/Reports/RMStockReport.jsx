@@ -20,6 +20,7 @@ function RMStockReport() {
   const [rows, setRows] = useState([]);
   const [summaryData, setSummaryData] = useState([
     { title: "Component" },
+    { title: "Part Code" },
     { title: "ClosingQty" },
   ]);
   useEffect(() => {
@@ -68,6 +69,7 @@ function RMStockReport() {
 
       let summaryArr = [
         { title: "Component", description: data.response.data1.component },
+        { title: "part Code", description: data.response.data1.partno },
         {
           title: "Closing Quantity",
           description: `${data.response.data1.closingqty} ${data.response.data1.uom}`,
