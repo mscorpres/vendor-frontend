@@ -101,6 +101,14 @@ const App = () => {
         "/reports/rm_stock"
         // <MinusOutlined />
       ),
+      getItem(
+        <Link to="/vr01">Vr01</Link>,
+        // <MinusOutlined />
+      ),
+      getItem(
+        <Link to="/vr02">Vr02</Link>,
+        // <MinusOutlined />
+      ),
     ]),
   ];
   const items1 = [
