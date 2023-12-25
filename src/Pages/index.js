@@ -3,4 +3,6 @@ export { default as PendingRequests } from "./Requests/PendingRequests/PendingRe
 export { default as RMStockReport } from "./Reports/RMStockReport";
 export { default as RMConsumption } from "./RMConsumption/RMConsumption";
 export { default as ManufacturingSFG } from "./SFG/ManufacturingSFG/ManufacturingSFG";
+export {default as Vr01} from "./Reports/Vr01";
+export {default as Vr02} from "./Reports/Vr02";
 export { default as Page404 } from "./Page404";

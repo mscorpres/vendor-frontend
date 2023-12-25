@@ -376,5 +376,20 @@ const links = [
       routePath: "/vendor/jobwork/completed-requests",
     },
   ],
+  [
+    {
+      routeName: "RM Stocks",
+      routePath: "/reports/rm_stock",
+    },
+    {
+      routeName: "VR01",
+      routePath: "/vr01",
+    },
+    {
+      routeName: "VR02",
+      routePath: "/vr02",
+    },
+  ],
+  
 ];
 export default links;

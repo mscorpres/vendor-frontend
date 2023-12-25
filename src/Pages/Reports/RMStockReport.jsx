@@ -78,7 +78,6 @@ function RMStockReport() {
       setSummaryData(summaryArr);
       setFetchLoading(false);
     }
-
     // const { data2 } = response;
     // if (data.responseCode === "200") {
     //   console.log("arrr", arr);

@@ -166,7 +166,7 @@ const getProductDetails = async () => {
   };
   const columns = [
     {
-      headerName: "SKU",
+      headerName: "SKU Name",
       renderCell: ({ row }) => (
         <Input disabled value={row.sku} />
       ),
