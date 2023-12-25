@@ -6,6 +6,8 @@ import {
   PendingRequests,
   RMConsumption,
   RMStockReport,
+  Vr01,
+  Vr02
 } from "../Pages";
 
 const Routes = [
@@ -28,6 +30,14 @@ const Routes = [
   {
     path: "/sfg/create",
     main: () => <ManufacturingSFG />,
+  },
+  {
+    path: "/vr01",
+    main: () => <Vr01 />,
+  },
+  {
+    path: "/vr02",
+    main: () => <Vr02 />,
   },
   // should always be at the end
   {
