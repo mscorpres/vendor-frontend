@@ -23,10 +23,14 @@ function ManufacturingSFG() {
   const [rows, setRows] = useState([
     {
       id: v4(),
-      component: "",
+      sku: "",
+      skuid:'',
       location: "",
-      qty: 0,
-      uom: "--",
+      finishedqty: 0,
+      pendingqty: 0,
+      orderqty: 0,
+      skuCode: "",
+      rate:"",
       remark: "",
     },
   ]);
@@ -69,26 +73,25 @@ function ManufacturingSFG() {
       setAsyncOptions([]);
     }
   };
-  const addRows = () => {
-    const newRow = {
-      id: v4(),
-      component: "",
-      location: "",
-      qty: "",
-      uom: "--",
-      remark: "",
-    };
-    let arr = rows;
-    arr = [newRow, ...arr];
-    setRows(arr);
-  };
-  const removeRows = (id) => {
-    let arr = rows;
-    console.log(arr);
-    arr = arr.filter((row) => row.id !== id);
-    console.log(arr);
-    setRows(arr);
-  };
+
+const getProductDetails = async () => {
+  setSelectLoading(true);
+    const { data } = await axios.post("/jwvendor/getJwSkuDetails", {
+      jw_id: headerOptions.jobwork,
+    });
+    if (data.code === 200) {
+    rows[0].sku = data.data.skuname
+    rows[0].skuid = data.data.sku
+    rows[0].pendingqty = data.data.pending_qty
+    rows[0].orderqty = data.data.ord_qty
+    rows[0].rate = data.data.rate
+    rows[0].skuCode = data.data.skucode
+    }
+    setSelectLoading(false);
+    console.log(data)
+}
+
+
   const getComponentDetails = async (value, id) => {
     const { data } = await axios.post("/jwvendor/getComponentDetailsByCode", {
       component_code: value.value,
@@ -96,77 +99,38 @@ function ManufacturingSFG() {
     return data;
   };
   const inputHandler = async (name, value, id) => {
+    console.log(name,value,id)
     let arr = rows;
-    if (name === "component") {
-      const data = await getComponentDetails(value);
-      if (data.code === 200) {
-        arr = arr.map((row) => {
-          if (row.id === id) {
-            row = {
-              ...row,
-              [name]: value,
-              uom: data.data.unit,
-            };
-
-            return row;
-          } else {
-            return row;
-          }
-        });
-      } else {
-        showToast("", "Some error Occurred", "error");
-      }
+    if (name === "rate") {
+       rows[0].rate = value
+    }else if(name === 'qty'){
+      rows[0].finishedqty = value
     }
-    arr = arr.map((row) => {
-      if (row.id === id) {
-        row = {
-          ...row,
-          [name]: value,
-        };
-
-        return row;
-      } else {
-        return row;
-      }
-    });
-    setRows(arr);
   };
   const validationHandler = (headerData) => {
     let validation = false;
-    let message = "";
-    let compData = {
-      component: rows.map((row) =>
-        row.component === "" ? (validation = "component") : row.component.value
-      ),
-      qty: rows.map((row) =>
-        row.qty === "" || row.qty === 0 ? (validation = "qty") : row.qty
-      ),
-      put_location: rows.map((row) =>
-        !row.location || row.location === ""
-          ? (validation = "location")
-          : row.location
-      ),
-      remark: rows.map((row) => row.remark),
-    };
-    if (validation === "component") {
-      message = "Please select component for all rows";
-    } else if (validation === "qty") {
+    let message = ""; 
+    if (validation === "qty") {
       message = "Please enter a quanity more than 0";
-    } else if (validation === "location") {
-      message = "Please select a location for all the components";
     }
     if (validation) {
       return showToast("", message, "error");
     }
-    let finalObj = { ...headerData, ...compData };
+    let finalObj = { }
     setShowSubmitConfirm(finalObj);
   };
   const submitHandler = async () => {
     if (showSubmitConfirm) {
       setSubmitLoading(true);
       const { data } = await axios.post(
-        "/jwvendor/sfgCreate",
-        showSubmitConfirm
+        '/jwvendor/sfgInward',
+        {
+          "jw_id": headerOptions.jobwork,
+          "jw_challan": headerOptions.challan,
+          "sku": rows[0].skuCode,
+          "qty": rows[0].finishedqty,
+          "rate": rows[0].rate,
+        }
       );
       setSubmitLoading(false);
       setShowSubmitConfirm(false);
@@ -202,79 +166,56 @@ function ManufacturingSFG() {
   };
   const columns = [
     {
-      headerName: (
-        <div
-          style={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "center",
-            fontSize: "1.2rem",
-          }}
-        >
-          <CommonIcons onClick={addRows} action="addRow" />
-        </div>
-      ),
-      width: 80,
+      headerName: "SKU",
       renderCell: ({ row }) => (
-        <div
-          style={{ display: "flex", width: "100%", justifyContent: "center" }}
-        >
-          <CommonIcons onClick={() => removeRows(row.id)} action="removeRow" />
-        </div>
+        <Input disabled value={row.sku} />
       ),
     },
     {
-      headerName: "Component",
+      headerName: "SKU Code",
       renderCell: ({ row }) => (
-        <MyAsyncSelect
-          //   placeholder="Search Part Code"
-          selectLoading={selectLoading}
-          optionsState={asyncOptions}
-          labelInValue
-          onBlur={() => setAsyncOptions([])}
-          value={row.component}
-          loadOptions={(search) =>
-            getAsyncOptions(search, "/backend/getComponentByNameAndNo")
-          }
-          onChange={(value) => {
-            inputHandler("component", value, row.id);
-          }}
-        />
-      ),
-    },
-    {
-      headerName: "Put Location",
-      renderCell: ({ row }) => (
-        <MySelect
-          value={row.location}
-          options={locationOptions}
-          onChange={(value) => {
-            inputHandler("location", value, row.id);
-          }}
-        />
+        <Input disabled value={row.skuCode} />
       ),
     },
     {
       headerName: "Qty",
-      width: 150,
       renderCell: ({ row }) => (
         <Input
-          value={row.qty}
-          options={locationOptions}
-          suffix={row.uom}
+          defaultValue={row.finishedqty}
           onChange={(e) => {
-            inputHandler("qty", e.target.value, row.id);
+            inputHandler("qty", e.target.value)
           }}
         />
       ),
     },
     {
-      headerName: "Remark",
+      headerName: "Pending Qty",
+      width: 150,
       renderCell: ({ row }) => (
         <Input
-          value={row.remark}
+          value={row.pendingqty}
+          disabled
+        />
+      ),
+    },
+    {
+      headerName: "Order Qty",
+      width: 150,
+      renderCell: ({ row }) => (
+        <Input
+          value={row.orderqty}
+          disabled
+        />
+      ),
+    },
+    {
+      headerName: "Rate",
+      renderCell: ({ row }) => (
+        <Input
+          disabled
+          value={row.rate}
           onChange={(e) => {
-            inputHandler("remark", e.target.value, row.id);
+            inputHandler("rate", e.target.value)
           }}
         />
       ),
@@ -283,6 +224,7 @@ function ManufacturingSFG() {
 
   useEffect(() => {
     getChallans();
+    getProductDetails();
   }, [headerOptions.jobwork]);
 
   return (
