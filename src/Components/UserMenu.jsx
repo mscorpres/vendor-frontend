@@ -9,11 +9,6 @@ export default function UserMenu({ user, logoutHandler }) {
     <Menu
       items={[
         {
-          key: "1",
-          label: <Link to={"/myProfile"}>Profile</Link>,
-        },
-        { type: "divider" },
-        {
           key: "2",
           label: (
             <span
