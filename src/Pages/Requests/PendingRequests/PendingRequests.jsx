@@ -40,6 +40,8 @@ function PendingRequests() {
 
       setRows(arr);
     } else {
+      console.log("hello");
+      setRows([]);
       showToast("", data.message.msg, "error");
     }
     setSearchLoading(false);
