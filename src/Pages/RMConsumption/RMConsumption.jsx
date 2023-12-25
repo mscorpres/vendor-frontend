@@ -218,6 +218,7 @@ function RMConsumption() {
         );
       }
       else{
+      setFileList([])
       const { data } = await axios.post("/jwvendor/rmConsp", showSubmitConfirm.finalObj);
       setSubmitLoading(false);
       setShowSubmitConfirm(false);
