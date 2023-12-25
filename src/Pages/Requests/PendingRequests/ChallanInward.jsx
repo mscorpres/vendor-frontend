@@ -61,8 +61,8 @@ function ChallanInward({ challanInward, setChallanInward }) {
       width: 100,
       renderCell: ({ row }) => (
         <Input
-          // value={row.jwQty}
-          suffix={row.jwQty + "" + row.uom}
+          value={row.jwQty}
+          suffix={"" + row.uom}
           onChange={(e) => inputHandler("jwQty", e.target.value, row.id)}
         />
       ),
@@ -270,7 +270,7 @@ function ChallanInward({ challanInward, setChallanInward }) {
       onClose={() => setChallanInward(false)}
       extra={
         <Space>
-          <Button onClick={resetFunction}>Reset</Button>
+          {/* <Button onClick={resetFunction}>Reset</Button> */}
           <Button
             type="primary"
             loading={submitLoading}
