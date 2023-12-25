@@ -369,11 +369,11 @@ const links = [
   [
     {
       routeName: "Pending Requests",
-      routePath: "/vendor/jobwork/pending-requests",
+      routePath: "/requests/pending",
     },
     {
       routeName: "Completed Requests",
-      routePath: "/vendor/jobwork/completed-requests",
+      routePath: "/requests/completed",
     },
   ],
   [
