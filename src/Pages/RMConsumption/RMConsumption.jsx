@@ -94,9 +94,7 @@ function RMConsumption() {
   };
   const removeRows = (id) => {
     let arr = rows;
-    console.log(arr);
     arr = arr.filter((row) => row.id !== id);
-    console.log(arr);
     setRows(arr);
   };
   const getComponentDetails = async (value, id) => {
@@ -142,7 +140,6 @@ function RMConsumption() {
     setRows(arr);
   };
   const validationHandler = (headerData) => {
-    // console.log("headerData", headerData);
     let validation = false;
     let message = "";
     let compData = {
@@ -171,9 +168,15 @@ function RMConsumption() {
       challan_date: headerData.challan_date,
       challan_no: headerData.challan_no
     }
-    let finalObj = { ...newhederData, ...compData, jobwork_attach: headerData.file.fileList[0].originFileObj };
-    setShowSubmitConfirm(finalObj);
-    console.log("finalObj", finalObj);
+    const fromdata = new FormData();
+    for(let i=0; i < headerData.file.fileList.length; i++){
+      fromdata.append("files", headerData.file.fileList[i].originFileObj);
+    }  
+    let finalObj = { ...newhederData, ...compData, jobwork_attach: headerData.file.fileList[0].originFileObj.name };
+    setShowSubmitConfirm({
+      finalObj: finalObj,
+      fromdata: fromdata
+    });
   };
 
   const props = {
@@ -183,7 +186,6 @@ function RMConsumption() {
         );
     },
     beforeUpload: (file) => {
-        console.log(fileList)
         setFileList([...fileList, file]);
         return false;
     },
@@ -194,10 +196,29 @@ function RMConsumption() {
 
 
   const submitHandler = async () => {
+    console.log(showSubmitConfirm)
     if (showSubmitConfirm) {
-      console.log("showSubmitConfirm", showSubmitConfirm);  
+      let fileData;
       setSubmitLoading(true);
-      const { data } = await axios.post("/jwvendor/rmConsp", showSubmitConfirm);
+      const response = await axios.post(
+        "/jwvendor/upload-invoice",
+        showSubmitConfirm.fromdata
+      );
+      console.log(response)
+      if(response.status != 200){
+        setSubmitLoading(false);
+        return toast.error('something went worng while uploading the file');
+      }
+      
+      const uploadedFile = response.data;
+      fileData = uploadedFile;
+      if (fileData.code != 200) {
+        return toast.error(
+          "Some error occured while uploading invoices, Please try again"
+        );
+      }
+      else{
+      const { data } = await axios.post("/jwvendor/rmConsp", showSubmitConfirm.finalObj);
       setSubmitLoading(false);
       setShowSubmitConfirm(false);
       if (data.code === 200) {
@@ -207,6 +228,7 @@ function RMConsumption() {
         showToast("", data.message.msg, "error");
       }
     }
+  }
   };
   const resetHandler = () => {
     form.resetFields();
@@ -356,7 +378,7 @@ function RMConsumption() {
                   },
                 ]}
                 name="challan_no"
-                label="challan Number"
+                label="Challan Number"
               >
                 <Input placeholder="Please enter challan number" />
               </Form.Item>
@@ -375,7 +397,7 @@ function RMConsumption() {
               <Col span={8}>
                                 <Form.Item
                                     name="file"
-                                    label="Select File"
+                                    label="Challan Document(s)"
                                     rules={[
                                         {
                                             required: true,
