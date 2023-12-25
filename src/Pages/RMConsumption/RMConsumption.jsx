@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Card, Col, Form, Input, Modal, Row } from "antd";
+import { Button, Card, Col, Form, Input, Modal, Row,Upload } from "antd";
 import axios from "axios";
 import SearchHeader from "../../Components/SearchHeader";
 import MyAsyncSelect from "../../Components/MyAsyncSelect";
@@ -11,6 +11,14 @@ import { v4 } from "uuid";
 import { toast } from "react-toastify";
 import showToast from "../../Components/MyToast";
 import { useEffect } from "react";
+import { UploadProps } from 'antd';
+
+import { UploadOutlined } from "@ant-design/icons";
+import MyDatePicker from '../../Components/MyDatePicker'
+
+
+
+
 
 function RMConsumption() {
   const { locations: locationOptions } = useSelector((state) => state.login);
@@ -35,6 +43,7 @@ function RMConsumption() {
   const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [fileList, setFileList] = useState([]);
 
   let [form] = Form.useForm();
 
@@ -158,12 +167,35 @@ function RMConsumption() {
     if (validation) {
       return showToast("", message, "error");
     }
-    let finalObj = { ...headerData, ...compData };
+    const newhederData = {
+      challan_date: headerData.challan_date,
+      challan_no: headerData.challan_no
+    }
+    let finalObj = { ...newhederData, ...compData, jobwork_attach: headerData.file.fileList[0].originFileObj };
     setShowSubmitConfirm(finalObj);
     console.log("finalObj", finalObj);
   };
+
+  const props = {
+    onRemove: (file) => {
+        setFileList(
+            fileList.filter((item) => item.uid !== file.uid)
+        );
+    },
+    beforeUpload: (file) => {
+        console.log(fileList)
+        setFileList([...fileList, file]);
+        return false;
+    },
+    fileList,
+};
+
+
+
+
   const submitHandler = async () => {
     if (showSubmitConfirm) {
+      console.log("showSubmitConfirm", showSubmitConfirm);  
       setSubmitLoading(true);
       const { data } = await axios.post("/jwvendor/rmConsp", showSubmitConfirm);
       setSubmitLoading(false);
@@ -323,29 +355,14 @@ function RMConsumption() {
                     message: "Please select Jobwork!",
                   },
                 ]}
-                name="jobwork"
-                label="Jobwork"
+                name="challan_no"
+                label="challan Number"
               >
-                <MyAsyncSelect
-                  //   placeholder="Search Part Code"
-                  selectLoading={selectLoading}
-                  optionsState={asyncOptions}
-                  onBlur={() => setAsyncOptions([])}
-                  value={headerOptions.jobwork}
-                  loadOptions={(search) =>
-                    getAsyncOptions(search, "/jwvendor/getAllJW")
-                  }
-                  onChange={(value) => {
-                    setHeaderOptions((obj) => ({
-                      ...obj,
-                      jobwork: value,
-                    }));
-                  }}
-                />
+                <Input placeholder="Please enter challan number" />
               </Form.Item>
               <Form.Item
-                label="Challan"
-                name="challan"
+                label="Challan Date"
+                name="challan_date"
                 rules={[
                   {
                     required: true,
@@ -353,19 +370,23 @@ function RMConsumption() {
                   },
                 ]}
               >
-                <MySelect
-                  disabled={headerOptions.jobwork === ""}
-                  //   placeholder="Search Part Code"
-                  options={challans}
-                  value={headerOptions.challan}
-                  onChange={(value) => {
-                    setHeaderOptions((obj) => ({
-                      ...obj,
-                      challan: value,
-                    }));
-                  }}
-                />
+                <Input type="date" />
               </Form.Item>
+              <Col span={8}>
+                                <Form.Item
+                                    name="file"
+                                    label="Select File"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Please Select Document!",
+                                        },
+                                    ]}>
+                                    <Upload {...props}>
+                                        <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                                    </Upload>
+                                </Form.Item>
+                            </Col>
               <Row justify="end" gutter={8}>
                 <Col>
                   <Form.Item>
