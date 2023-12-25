@@ -7,7 +7,8 @@ import {
   RMConsumption,
   RMStockReport,
   Vr01,
-  Vr02
+  Vr02,
+  Completed
 } from "../Pages";
 
 const Routes = [
@@ -18,6 +19,10 @@ const Routes = [
   {
     path: "/requests/pending",
     main: () => <PendingRequests />,
+  },
+  {
+    path: "/requests/completed",
+    main: () => <Completed />,
   },
   {
     path: "/reports/rm_stock",
