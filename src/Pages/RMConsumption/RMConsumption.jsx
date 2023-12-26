@@ -122,7 +122,7 @@ function RMConsumption() {
           }
         });
       } else {
-        showToast("", "Some error Occurred", "error");
+        toast.error("Some error Occurred");
       }
     }
     arr = arr.map((row) => {
@@ -162,7 +162,7 @@ function RMConsumption() {
       message = "Please select a location for all the components";
     }
     if (validation) {
-      return showToast("", message, "error");
+      return toast.error(message);
     }
     const newhederData = {
       challan_date: headerData.challan_date,
@@ -218,15 +218,14 @@ function RMConsumption() {
         );
       }
       else{
-      setFileList([])
       const { data } = await axios.post("/jwvendor/rmConsp", showSubmitConfirm.finalObj);
       setSubmitLoading(false);
       setShowSubmitConfirm(false);
       if (data.code === 200) {
-        showToast("", data.message, "success");
+        toast.success(data.message);
         resetHandler();
       } else {
-        showToast("", data.message.msg, "error");
+        toast.error(data.message.msg);
       }
     }
   }
