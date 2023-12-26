@@ -100,6 +100,7 @@ const Completed = () => {
         date: searchInput,
       })
       const {data} = response
+      if(data.code === 200){
       const arr = data.data.map((row, index) => ({
         id: index + 1,
         date: row.date,
@@ -112,6 +113,10 @@ const Completed = () => {
         hsn: row.hsn,
       }));
       setRows(arr);
+    }else{
+        toast.error(data.message.msg)
+        setRows([]);
+    }
     } catch (error) {
       console.log("some error occured while fetching rows", error);
     } finally {
