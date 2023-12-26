@@ -114,7 +114,7 @@ const getProductDetails = async () => {
       message = "Please enter a quanity more than 0";
     }
     if (validation) {
-      return showToast("", message, "error");
+      return toast.error(message);
     }
     let finalObj = { }
     setShowSubmitConfirm(finalObj);
@@ -135,10 +135,10 @@ const getProductDetails = async () => {
       setSubmitLoading(false);
       setShowSubmitConfirm(false);
       if (data.code === 200) {
-        showToast("", data.message, "success");
+        toast.success(data.message);
         resetHandler();
       } else {
-        showToast("", data.message.msg, "error");
+        toast.error(data.message.msg);
       }
     }
   };
