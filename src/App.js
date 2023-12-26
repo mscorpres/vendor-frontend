@@ -43,6 +43,8 @@ import {
 } from "@ant-design/icons";
 import InternalNav from "./Components/InternalNav";
 import showToast from "./Components/MyToast";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   const { user, notifications, currentLinks } = useSelector(
@@ -112,7 +114,7 @@ const App = () => {
     ]),
   ];
   const items1 = [
-    getItem(<Link to="/myprofile">Profile</Link>, "B", <UserOutlined />),
+    // getItem(<Link to="/myprofile">Profile</Link>, "B", <UserOutlined />),
     // getItem(<Link to="/messenger">Messenger</Link>, "C", <MessageOutlined />),
   ];
 
@@ -137,7 +139,7 @@ const App = () => {
       if (data.code === 200) {
         favs = JSON.parse(data.data);
       } else {
-        showToast(null, data.message.msg, "error");
+        toast.error(data.message.msg);
       }
     } else {
       let page_id = favs.filter((f) => f.url === pathname)[0].page_id;
@@ -150,7 +152,7 @@ const App = () => {
         let fav = JSON.parse(data.data);
         favs = fav;
       } else {
-        showToast(null, data.message.msg, "error");
+        toast.error(data.message.msg);
       }
     }
     dispatch(setFavourites(favs));
@@ -388,12 +390,24 @@ const App = () => {
   const options = [{ label: "A-21 [BRMSC012]", value: "BRMSC012" }];
   return (
     <div style={{ height: "100vh" }}>
+      <ToastContainer
+        position="top-right"
+        autoClose={1500}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        limit={1}
+        rtl={false}
+        pauseOnFocusLoss
+        pauseOnHover
+      />
       <Layout
         style={{
           width: "100%",
           top: 0,
         }}
       >
+        
         {/* header start */}
         {user && (
           <Layout style={{ height: "100%" }}>
