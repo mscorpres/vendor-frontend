@@ -101,6 +101,7 @@ const Vr01 = () => {
       })
       const {data} = response
       console.log(data)
+      if(data.code === 200){
       const arr = data.response.data.map((row, index) => ({
         id: index + 1,
         date: row.date,
@@ -112,6 +113,10 @@ const Vr01 = () => {
         txn_id: row.txn_id,
       }));
       setRows(arr);
+    }else{
+      toast.error(data.message.msg)
+      setRows([]);
+    }
     } catch (error) {
       console.log("some error occured while fetching rows", error);
     } finally {

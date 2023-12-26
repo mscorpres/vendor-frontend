@@ -12,6 +12,7 @@ import SearchHeader from "../../Components/SearchHeader";
 import SummaryCard from "../../Components/SummaryCard";
 import { CommonIcons } from "../../Components/TableActions.jsx/TableActions";
 import { setLocations } from "../../Features/loginSlice.js/loginSlice";
+import { toast } from "react-toastify";
 function RMStockReport() {
   const [searchLoading, setSearchLoading] = useState(false);
   const [asyncOptions, setAsyncOptions] = useState([]);
@@ -87,6 +88,7 @@ function RMStockReport() {
     else {
       // showToast("Error", data.message, "error");
       setRows([]);
+      toast.error(data.message.msg)
     }
     setFetchLoading(false);
   };
