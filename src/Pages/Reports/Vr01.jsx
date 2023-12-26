@@ -173,17 +173,17 @@ const columns = [
   },
   {
     headerName: "Date",
-    Width: 130,
+    Width: 200,
     field: "date",
   },
   {
     headerName: "Part",
-    width: 400,
+    width: 130,
     field: "part",
   },
   {
     headerName: "Part Code",
-    width: 200,
+    width: 250,
     field: "part_code",
   },
   {
