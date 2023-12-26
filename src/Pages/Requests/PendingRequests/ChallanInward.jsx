@@ -17,6 +17,8 @@ import showToast from "../../../Components/MyToast";
 import MySelect from "../../../Components/MySelect";
 import { CommonIcons } from "../../../Components/TableActions.jsx/TableActions";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+
 
 function ChallanInward({ challanInward, setChallanInward }) {
   const [rows, setRows] = useState([]);
@@ -161,7 +163,7 @@ function ChallanInward({ challanInward, setChallanInward }) {
         setRows(arr);
         setResetData(arr);
       } else {
-        showToast("", data.message.msg, "error");
+        toast.error(data.message.msg);
       }
     }
   };
@@ -210,21 +212,21 @@ function ChallanInward({ challanInward, setChallanInward }) {
       }
     });
     if (validationError === "qty") {
-      return showToast(
+      return toast.error(
         "",
         "All Components should have Quantity more than 0",
         "error"
       );
     } else if (validationError === "rate") {
-      return showToast(
+      return toast.error(
         "",
         "All Components should have rate more than 0",
         "error"
       );
     } else if (validationError === "location") {
-      return showToast("", "All Components should have location", "error");
+      return toast.error("", "All Components should have location", "error");
     } else if (validationError === "hsn") {
-      return showToast("", "All Components should have HSN Code", "error");
+      return toast.error("", "All Components should have HSN Code", "error");
     }
     if (validationError === "") {
       let finalObj = {
@@ -242,10 +244,10 @@ function ChallanInward({ challanInward, setChallanInward }) {
       const { data } = await axios.post("/jwvendor/minVendorRM", finalObj);
       setSubmitLoading(false);
       if (data.code === 200) {
-        showToast("", data.message, "success");
+         toast.success(data.message);
         setChallanInward(false);
       } else {
-        showToast("", data.message.msg, "error");
+        toast.error(data.message.msg);
       }
     }
   };
