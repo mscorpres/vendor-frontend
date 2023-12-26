@@ -149,7 +149,7 @@ const loginSlice = createSlice({
       })
       .addCase(loginAuth.rejected, (state, action) => {
         // toast.error(action.payload);
-        showToast(null, action.payload, "error");
+        toast.error(action.payload);
         state.message = action.payload;
         state.loading = false;
       });
