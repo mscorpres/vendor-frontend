@@ -10,6 +10,7 @@ import axios from "axios";
 import showToast from "../../../Components/MyToast";
 import SearchHeader from "../../../Components/SearchHeader";
 import ChallanInward from "./ChallanInward";
+import { toast } from "react-toastify";
 
 function PendingRequests() {
   document.title = "Pending Requests";
@@ -42,7 +43,7 @@ function PendingRequests() {
     } else {
       console.log("hello");
       setRows([]);
-      showToast("", data.message.msg, "error");
+      toast.error(data.message.msg);
     }
     setSearchLoading(false);
   };
