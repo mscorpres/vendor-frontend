@@ -189,7 +189,7 @@ const columns = [
   {
     headerName: "Type",
     width: 200,
-    field: "txn_id",
+    field: "type",
   },
   {
     headerName: "Quantity",
