@@ -39,7 +39,6 @@ function RMConsumption() {
       remark: "",
     },
   ]);
-  console.log("locationOptions", rows);
   const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -196,7 +195,6 @@ function RMConsumption() {
 
 
   const submitHandler = async () => {
-    console.log(showSubmitConfirm)
     if (showSubmitConfirm) {
       let fileData;
       setSubmitLoading(true);
@@ -204,14 +202,13 @@ function RMConsumption() {
         "/jwvendor/upload-invoice",
         showSubmitConfirm.fromdata
       );
-      console.log(response)
       if(response.status != 200){
         setSubmitLoading(false);
         return toast.error('something went worng while uploading the file');
       }
-      
       const uploadedFile = response.data;
       fileData = uploadedFile;
+      showSubmitConfirm.finalObj.jobwork_attach = uploadedFile.data;
       if (fileData.code != 200) {
         return toast.error(
           "Some error occured while uploading invoices, Please try again"
