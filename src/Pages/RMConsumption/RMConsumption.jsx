@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Card, Col, Form, Input, Modal, Row,Upload } from "antd";
+import { Button, Card, Col, Form, Input, Modal, Row, Upload } from "antd";
 import axios from "axios";
 import SearchHeader from "../../Components/SearchHeader";
 import MyAsyncSelect from "../../Components/MyAsyncSelect";
@@ -11,14 +11,10 @@ import { v4 } from "uuid";
 import { toast } from "react-toastify";
 import showToast from "../../Components/MyToast";
 import { useEffect } from "react";
-import { UploadProps } from 'antd';
+import { UploadProps } from "antd";
 
 import { UploadOutlined } from "@ant-design/icons";
-import MyDatePicker from '../../Components/MyDatePicker'
-
-
-
-
+import MyDatePicker from "../../Components/MyDatePicker";
 
 function RMConsumption() {
   const { locations: locationOptions } = useSelector((state) => state.login);
@@ -165,34 +161,33 @@ function RMConsumption() {
     }
     const newhederData = {
       challan_date: headerData.challan_date,
-      challan_no: headerData.challan_no
-    }
+      challan_no: headerData.challan_no,
+    };
     const fromdata = new FormData();
-    for(let i=0; i < headerData.file.fileList.length; i++){
+    for (let i = 0; i < headerData.file.fileList.length; i++) {
       fromdata.append("files", headerData.file.fileList[i].originFileObj);
-    }  
-    let finalObj = { ...newhederData, ...compData, jobwork_attach: headerData.file.fileList[0].originFileObj.name };
+    }
+    let finalObj = {
+      ...newhederData,
+      ...compData,
+      jobwork_attach: headerData.file.fileList[0].originFileObj.name,
+    };
     setShowSubmitConfirm({
       finalObj: finalObj,
-      fromdata: fromdata
+      fromdata: fromdata,
     });
   };
 
   const props = {
     onRemove: (file) => {
-        setFileList(
-            fileList.filter((item) => item.uid !== file.uid)
-        );
+      setFileList(fileList.filter((item) => item.uid !== file.uid));
     },
     beforeUpload: (file) => {
-        setFileList([...fileList, file]);
-        return false;
+      setFileList([...fileList, file]);
+      return false;
     },
     fileList,
-};
-
-
-
+  };
 
   const submitHandler = async () => {
     if (showSubmitConfirm) {
@@ -202,9 +197,9 @@ function RMConsumption() {
         "/jwvendor/upload-invoice",
         showSubmitConfirm.fromdata
       );
-      if(response.status != 200){
+      if (response.status != 200) {
         setSubmitLoading(false);
-        return toast.error('something went worng while uploading the file');
+        return toast.error("something went worng while uploading the file");
       }
       const uploadedFile = response.data;
       fileData = uploadedFile;
@@ -213,19 +208,21 @@ function RMConsumption() {
         return toast.error(
           "Some error occured while uploading invoices, Please try again"
         );
-      }
-      else{
-      const { data } = await axios.post("/jwvendor/rmConsp", showSubmitConfirm.finalObj);
-      setSubmitLoading(false);
-      setShowSubmitConfirm(false);
-      if (data.code === 200) {
-        toast.success(data.message);
-        resetHandler();
       } else {
-        toast.error(data.message.msg);
+        const { data } = await axios.post(
+          "/jwvendor/rmConsp",
+          showSubmitConfirm.finalObj
+        );
+        setSubmitLoading(false);
+        setShowSubmitConfirm(false);
+        if (data.code === 200) {
+          toast.success(data.message);
+          resetHandler();
+        } else {
+          toast.error(data.message.msg);
+        }
       }
     }
-  }
   };
   const resetHandler = () => {
     form.resetFields();
@@ -371,7 +368,7 @@ function RMConsumption() {
                 rules={[
                   {
                     required: true,
-                    message: "Please select Jobwork!",
+                    message: "Please select Challan Number!",
                   },
                 ]}
                 name="challan_no"
@@ -385,27 +382,28 @@ function RMConsumption() {
                 rules={[
                   {
                     required: true,
-                    message: "Please select Jobwork!",
+                    message: "Please select Challan Date!",
                   },
                 ]}
               >
                 <Input type="date" />
               </Form.Item>
               <Col span={8}>
-                                <Form.Item
-                                    name="file"
-                                    label="Challan Document(s)"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: "Please Select Document!",
-                                        },
-                                    ]}>
-                                    <Upload {...props}>
-                                        <Button icon={<UploadOutlined />}>Click to Upload</Button>
-                                    </Upload>
-                                </Form.Item>
-                            </Col>
+                <Form.Item
+                  name="file"
+                  label="Challan Document(s)"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please Select Document!",
+                    },
+                  ]}
+                >
+                  <Upload {...props}>
+                    <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                  </Upload>
+                </Form.Item>
+              </Col>
               <Row justify="end" gutter={8}>
                 <Col>
                   <Form.Item>
