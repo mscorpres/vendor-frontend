@@ -403,12 +403,12 @@ function RMConsumption() {
                   },
                 ]}
                 name="challan_no"
-                label="Challan Number"
+                label="Document Number"
               >
                 <Input placeholder="Please enter challan number" />
               </Form.Item>
               <Form.Item
-                label="Challan Date"
+                label="Document Date"
                 name="challan_date"
                 rules={[
                   {
@@ -422,13 +422,13 @@ function RMConsumption() {
               <Col span={8}>
                 <Form.Item
                   name="file"
-                  label="Challan Document(s)"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please Select Document!",
-                    },
-                  ]}
+                  label="Any Attachment (optional)"
+                  // rules={[
+                  //   {
+                  //     required: true,
+                  //     message: "Please Select Document!",
+                  //   },
+                  // ]}
                 >
                   <Upload {...props}>
                     <Button icon={<UploadOutlined />}>Click to Upload</Button>

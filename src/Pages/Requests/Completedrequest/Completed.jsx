@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import printFunction, {
   downloadFunction,
 } from "../../../Components/printFunction";
+import { downloadCSV } from "../../../Components/exportToCSV";
 
 const Completed = () => {
   const actionColumn = {
@@ -111,6 +112,7 @@ const Completed = () => {
           total_qty: row.jw_qty + "  " + row.uom,
           pending_qty: row.jw_leftqty + "  " + row.uom,
           hsn: row.hsn,
+          entry_by: row.entry_by,
         }));
         setRows(arr);
       } else {
@@ -123,6 +125,9 @@ const Completed = () => {
       setLoading(false);
     }
   };
+  const downloadCol =() =>{
+     downloadCSV(rows, columns, "Completed Request Report");
+  }
 
   return (
     <>
@@ -147,7 +152,7 @@ const Completed = () => {
               </div>
             </Space>
           </Col>
-          <CommonIcons action="downloadButton" type="primary" />
+          <CommonIcons action="downloadButton" onClick={downloadCol} type="primary" />
         </Row>
         <div style={{ height: "95%", paddingRight: 5, paddingLeft: 5 }}>
           <MyDataTable
