@@ -200,7 +200,7 @@ function RMConsumption() {
 
         return false;
       } else {
-        // message.error("File should not exceed the limit of 10MB!");
+        message.error("File should not exceed the limit of 10MB!");
       }
     },
     fileList,

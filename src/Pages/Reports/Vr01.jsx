@@ -92,7 +92,9 @@ const Vr01 = () => {
       setLoading(false);
     }
   }
-
+const downloadCol =()=>{
+  downloadCSV(rows, columns, "VR01 Report");
+}
   const getRows = async () => {
     try {
       setLoading("fetch");
@@ -126,35 +128,43 @@ const Vr01 = () => {
 
 
   return (
-    <><div style={{ height: "90%" }}>
-      <Row style={{ padding: 5, paddingTop: 0 }} justify="space-between">
-        <Col>
-          <Space>
-            <div style={{ paddingBottom: '10px' }}>
-              <Space>
-                <div style={{ width: 250 }}>
-                <MyDatePicker setDateRange={setSearchInput} />
-                </div>
-                
-                <Button
-                  onClick={getRows}
-                  loading={loading === "fetch"}
-                  type="primary"
-                >
-                  Fetch
-                </Button>
-              </Space>
-            </div>
-          </Space>
-        </Col>
-        <CommonIcons
-          action="downloadButton"
-          type="primary" />
-      </Row>
-      <div style={{ height: "95%", paddingRight: 5, paddingLeft: 5 }}>
-        <MyDataTable loading={loading === "fetch"} data={rows} columns={columns} />
+    <>
+      <div style={{ height: "90%" }}>
+        <Row style={{ padding: 5, paddingTop: 0 }} justify="space-between">
+          <Col>
+            <Space>
+              <div style={{ paddingBottom: "10px" }}>
+                <Space>
+                  <div style={{ width: 250 }}>
+                    <MyDatePicker setDateRange={setSearchInput} />
+                  </div>
+
+                  <Button
+                    onClick={getRows}
+                    loading={loading === "fetch"}
+                    type="primary"
+                  >
+                    Fetch
+                  </Button>
+                </Space>
+              </div>
+            </Space>
+          </Col>
+          <CommonIcons
+            action="downloadButton"
+            onClick={downloadCol}
+            type="primary"
+          />
+        </Row>
+        <div style={{ height: "95%", paddingRight: 5, paddingLeft: 5 }}>
+          <MyDataTable
+            loading={loading === "fetch"}
+            data={rows}
+            columns={columns}
+          />
+        </div>
       </div>
-    </div></>
+    </>
   );
 };
 

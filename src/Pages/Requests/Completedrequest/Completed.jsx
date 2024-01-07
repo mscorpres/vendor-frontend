@@ -8,8 +8,9 @@ import { GridActionsCellItem } from "@mui/x-data-grid";
 import { CommonIcons } from "../../../Components/TableActions.jsx/TableActions";
 
 import { toast } from "react-toastify";
-import printFunction, { downloadFunction } from "../../../Components/printFunction";
-
+import printFunction, {
+  downloadFunction,
+} from "../../../Components/printFunction";
 
 const Completed = () => {
   const actionColumn = {
@@ -60,63 +61,15 @@ const Completed = () => {
   const [rows, setRows] = useState([]);
   const [showView, setShowView] = useState(false);
 
-
-  const printwocompleted = async(row)=>{
+  const printwocompleted = async (row) => {
     try {
       setLoading("fetch");
-      const response = await axios.post('/createwo/print_wo_completed_list',{
-        "transaction": row.transactionId
-      })
-      const {data} = response
-      printFunction(response.data.data.buffer.data)
-     toast.success(data.message)
-    } catch (error) {
-      console.log("some error occured while fetching rows", error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  const downloadwocompleted = async(row)=>{
-    try {
-      setLoading("fetch");
-      const response = await axios.post('/createwo/print_wo_completed_list',{
-          "transaction": row.transactionId
-      })
-      const {data} = response
-      downloadFunction(response.data.data.buffer.data)
-      toast.success(data.message)
-    } catch (error) {
-      console.log("some error occured while fetching rows", error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  const getRows = async () => {
-    try {
-      setLoading("fetch");
-      const response = await axios.post('/jwvendor/getCompleteData',{
-        date: searchInput,
-      })
-      const {data} = response
-      if(data.code === 200){
-      const arr = data.data.map((row, index) => ({
-        id: index + 1,
-        date: row.date,
-        jobwork: row.jobwork,
-        challan: row.challan,
-        part: row.part_name,
-        part_no: row.part_no ,
-        total_qty: row.jw_qty + "  " + row.uom,
-        pending_qty: row.jw_leftqty + "  " + row.uom,
-        hsn: row.hsn,
-      }));
-      setRows(arr);
-    }else{
-        toast.error(data.message.msg)
-        setRows([]);
-    }
+      const response = await axios.post("/createwo/print_wo_completed_list", {
+        transaction: row.transactionId,
+      });
+      const { data } = response;
+      printFunction(response.data.data.buffer.data);
+      toast.success(data.message);
     } catch (error) {
       console.log("some error occured while fetching rows", error);
     } finally {
@@ -124,40 +77,89 @@ const Completed = () => {
     }
   };
 
+  const downloadwocompleted = async (row) => {
+    try {
+      setLoading("fetch");
+      const response = await axios.post("/createwo/print_wo_completed_list", {
+        transaction: row.transactionId,
+      });
+      const { data } = response;
+      downloadFunction(response.data.data.buffer.data);
+      toast.success(data.message);
+    } catch (error) {
+      console.log("some error occured while fetching rows", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getRows = async () => {
+    try {
+      setLoading("fetch");
+      const response = await axios.post("/jwvendor/getCompleteData", {
+        date: searchInput,
+      });
+      const { data } = response;
+      if (data.code === 200) {
+        const arr = data.data.map((row, index) => ({
+          id: index + 1,
+          date: row.date,
+          jobwork: row.jobwork,
+          challan: row.challan,
+          part: row.part_name,
+          part_no: row.part_no,
+          total_qty: row.jw_qty + "  " + row.uom,
+          pending_qty: row.jw_leftqty + "  " + row.uom,
+          hsn: row.hsn,
+        }));
+        setRows(arr);
+      } else {
+        toast.error(data.message.msg);
+        setRows([]);
+      }
+    } catch (error) {
+      console.log("some error occured while fetching rows", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <><div style={{ height: "90%" }}>
-      <Row style={{ padding: 5, paddingTop: 0 }} justify="space-between">
-        <Col>
-          <Space>
-            <div style={{ paddingBottom: '10px' }}>
-              <Space>
-                <div style={{ width: 250 }}>
-                <MyDatePicker setDateRange={setSearchInput} />
-                </div>
-                
-                <Button
-                  onClick={getRows}
-                  loading={loading === "fetch"}
-                  type="primary"
-                >
-                  Fetch
-                </Button>
-              </Space>
-            </div>
-          </Space>
-        </Col>
-        <CommonIcons
-          action="downloadButton"
-          type="primary" />
-      </Row>
-      <div style={{ height: "95%", paddingRight: 5, paddingLeft: 5 }}>
-        <MyDataTable loading={loading === "fetch"} data={rows} columns={columns} />
+    <>
+      <div style={{ height: "90%" }}>
+        <Row style={{ padding: 5, paddingTop: 0 }} justify="space-between">
+          <Col>
+            <Space>
+              <div style={{ paddingBottom: "10px" }}>
+                <Space>
+                  <div style={{ width: 250 }}>
+                    <MyDatePicker setDateRange={setSearchInput} />
+                  </div>
+
+                  <Button
+                    onClick={getRows}
+                    loading={loading === "fetch"}
+                    type="primary"
+                  >
+                    Fetch
+                  </Button>
+                </Space>
+              </div>
+            </Space>
+          </Col>
+          <CommonIcons action="downloadButton" type="primary" />
+        </Row>
+        <div style={{ height: "95%", paddingRight: 5, paddingLeft: 5 }}>
+          <MyDataTable
+            loading={loading === "fetch"}
+            data={rows}
+            columns={columns}
+          />
+        </div>
       </div>
-    </div></>
+    </>
   );
 };
-
 
 // id: index + 1,
 //         date: row.date,
@@ -177,9 +179,9 @@ const columns = [
     field: "jobwork",
   },
   {
-   headerName: 'Challan Id',
-   width: 150,
-   field: 'challan',
+    headerName: "Challan Id",
+    width: 150,
+    field: "challan",
   },
   {
     headerName: "Part Name",
@@ -206,7 +208,11 @@ const columns = [
     width: 150,
     field: "pending_qty",
   },
+  {
+    headerName: "Entry by",
+    width: 150,
+    field: "entry_by",
+  },
 ];
-
 
 export default Completed;

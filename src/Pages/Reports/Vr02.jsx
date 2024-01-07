@@ -77,6 +77,10 @@ const Vr02 = () => {
     }
   }
 
+  const downloadCol = () => {
+    downloadCSV(rows, columns, "VR02 Report");
+  };
+
   const downloadwocompleted = async(row)=>{
     try {
       setLoading("fetch");
@@ -149,6 +153,7 @@ const Vr02 = () => {
         </Col>
         <CommonIcons
           action="downloadButton"
+          onClick={downloadCol}
           type="primary" />
       </Row>
       <div style={{ height: "95%", paddingRight: 5, paddingLeft: 5 }}>
