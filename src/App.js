@@ -104,11 +104,11 @@ const App = () => {
         // <MinusOutlined />
       ),
       getItem(
-        <Link to="/vr01">Vr01</Link>,
+        <Link to="/vr01">VR01</Link>
         // <MinusOutlined />
       ),
       getItem(
-        <Link to="/vr02">Vr02</Link>,
+        <Link to="/vr02">VR02</Link>
         // <MinusOutlined />
       ),
     ]),
@@ -407,7 +407,6 @@ const App = () => {
           top: 0,
         }}
       >
-        
         {/* header start */}
         {user && (
           <Layout style={{ height: "100%" }}>
@@ -520,6 +519,29 @@ const App = () => {
                       />
                     </Badge> */}
                   {/* </div> */}
+                  <Badge
+                    size="small"
+                    style={{
+                      background: notifications.filter(
+                        (not) => not?.loading || not?.status == "pending"
+                      )[0]
+                        ? "#EAAE0F"
+                        : "green",
+                    }}
+                    count={
+                      notifications.filter((not) => not?.type != "message")
+                        ?.length
+                    }
+                  >
+                    <BellFilled
+                      onClick={() => setShowNotifications((n) => !n)}
+                      style={{
+                        fontSize: 18,
+                        color: "white",
+                        // marginRight: 8,
+                      }}
+                    />
+                  </Badge>
                   <UserMenu user={user} logoutHandler={logoutHandler} />
                 </Space>
               </Row>

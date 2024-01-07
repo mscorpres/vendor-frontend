@@ -1,5 +1,15 @@
 import { useState } from "react";
-import { Button, Card, Col, Form, Input, Modal, Row, Upload } from "antd";
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  Input,
+  Modal,
+  Row,
+  Upload,
+  message,
+} from "antd";
 import axios from "axios";
 import SearchHeader from "../../Components/SearchHeader";
 import MyAsyncSelect from "../../Components/MyAsyncSelect";
@@ -183,8 +193,15 @@ function RMConsumption() {
       setFileList(fileList.filter((item) => item.uid !== file.uid));
     },
     beforeUpload: (file) => {
-      setFileList([...fileList, file]);
-      return false;
+      const isLt2M = file.size / 1024 / 1024 < 10;
+      console.log("file in before uplaod", isLt2M);
+      if (isLt2M) {
+        setFileList([...fileList, file]);
+
+        return false;
+      } else {
+        // message.error("File should not exceed the limit of 10MB!");
+      }
     },
     fileList,
   };
@@ -202,9 +219,11 @@ function RMConsumption() {
         return toast.error("something went worng while uploading the file");
       }
       const uploadedFile = response.data;
+      console.log("uploadedFile", uploadedFile);
       fileData = uploadedFile;
       showSubmitConfirm.finalObj.jobwork_attach = uploadedFile.data;
       if (fileData.code != 200) {
+        console.log("fileDatafileData", fileData);
         return toast.error(
           "Some error occured while uploading invoices, Please try again"
         );
@@ -213,6 +232,8 @@ function RMConsumption() {
           "/jwvendor/rmConsp",
           showSubmitConfirm.finalObj
         );
+        // console.log("data", data);
+
         setSubmitLoading(false);
         setShowSubmitConfirm(false);
         if (data.code === 200) {
@@ -221,7 +242,17 @@ function RMConsumption() {
         } else {
           toast.error(data.message.msg);
         }
+        setTimeout(() => {
+          toast.error("Time Out!");
+          resetHandler();
+          setSubmitLoading(false);
+        }, 30000);
+        submitLoading(false);
       }
+      setTimeout(() => {
+        toast.error("Time Out!");
+        setSubmitLoading(false);
+      }, 60000);
     }
   };
   const resetHandler = () => {
