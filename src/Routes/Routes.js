@@ -8,8 +8,10 @@ import {
   RMStockReport,
   Vr01,
   Vr02,
-  Completed
+  Completed,
 } from "../Pages";
+import Vr03 from "../Pages/Reports/Vr03";
+import ViewSFG from "../Pages/SFG/ViewSFG";
 
 const Routes = [
   {
@@ -37,12 +39,20 @@ const Routes = [
     main: () => <ManufacturingSFG />,
   },
   {
+    path: "/sfg/view",
+    main: () => <ViewSFG />,
+  },
+  {
     path: "/vr01",
     main: () => <Vr01 />,
   },
   {
     path: "/vr02",
     main: () => <Vr02 />,
+  },
+  {
+    path: "/vr03",
+    main: () => <Vr03 />,
   },
   // should always be at the end
   {

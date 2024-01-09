@@ -54,7 +54,7 @@ const App = () => {
   const dispatch = useDispatch();
   const [showSideBar, setShowSideBar] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  // const [showMessageDrawer, setShowMessageDrawer] = useState(false);
+  const [showMessageDrawer, setShowMessageDrawer] = useState(false);
   const [showMessageNotifications, setShowMessageNotifications] =
     useState(false);
   const [newNotification, setNewNotification] = useState(null);
@@ -96,6 +96,11 @@ const App = () => {
         "/sfg/create"
         // <MinusOutlined />
       ),
+      getItem(
+        <Link to="/sfg/view">View SFG</Link>,
+        "/sfg/create"
+        // <MinusOutlined />
+      ),
     ]),
     getItem("Reports", "C", <CalculatorOutlined />, [
       getItem(
@@ -109,6 +114,10 @@ const App = () => {
       ),
       getItem(
         <Link to="/vr02">VR02</Link>
+        // <MinusOutlined />
+      ),
+      getItem(
+        <Link to="/vr03">VR03</Link>
         // <MinusOutlined />
       ),
     ]),
@@ -519,29 +528,60 @@ const App = () => {
                       />
                     </Badge> */}
                   {/* </div> */}
-                  <Badge
-                    size="small"
-                    style={{
-                      background: notifications.filter(
-                        (not) => not?.loading || not?.status == "pending"
-                      )[0]
-                        ? "#EAAE0F"
-                        : "green",
-                    }}
-                    count={
-                      notifications.filter((not) => not?.type != "message")
-                        ?.length
-                    }
-                  >
-                    <BellFilled
-                      onClick={() => setShowNotifications((n) => !n)}
+                  <div>
+                    <Badge
+                      size="small"
                       style={{
-                        fontSize: 18,
-                        color: "white",
-                        // marginRight: 8,
+                        background: notifications.filter(
+                          (not) => not?.loading || not?.status === "pending"
+                        )[0]
+                          ? "#EAAE0F"
+                          : "green",
                       }}
-                    />
-                  </Badge>
+                      count={
+                        notifications.filter((not) => not?.type !== "message")
+                          ?.length
+                      }
+                    >
+                      <BellFilled
+                        onClick={() => setShowNotifications((n) => !n)}
+                        style={{
+                          fontSize: 18,
+                          color: "white",
+                          // marginRight: 30,
+                        }}
+                      />
+                    </Badge>
+                    {showNotifications && (
+                      <Notifications
+                        source={"notifications"}
+                        showNotifications={showNotifications}
+                        notifications={notifications.filter(
+                          (not) => not?.type !== "message"
+                        )}
+                        deleteNotification={deleteNotification}
+                      />
+                    )}
+                  </div>
+                  <div>
+                    <Badge
+                      size="small"
+                      count={
+                        notifications.filter((not) => not?.type == "message")
+                          .length
+                      }
+                    >
+                      <MessageOutlined
+                        onClick={() => setShowMessageDrawer(true)}
+                        style={{
+                          fontSize: 18,
+                          cursor: "pointer",
+                          color: "white",
+                          // marginRight: 90,
+                        }}
+                      />
+                    </Badge>
+                  </div>
                   <UserMenu user={user} logoutHandler={logoutHandler} />
                 </Space>
               </Row>

@@ -296,7 +296,12 @@ function RMConsumption() {
         <div
           style={{ display: "flex", width: "100%", justifyContent: "center" }}
         >
-          <CommonIcons onClick={() => removeRows(row.id)} action="removeRow" />
+          {rows.length > 1 && (
+            <CommonIcons
+              onClick={() => removeRows(row.id)}
+              action="removeRow"
+            />
+          )}
         </div>
       ),
     },

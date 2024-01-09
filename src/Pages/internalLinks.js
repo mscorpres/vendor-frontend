@@ -168,6 +168,10 @@ const links = [
     { routeName: "Manage FG BOM", routePath: "/view-bom" },
     { routeName: "Manage SFG BOM", routePath: "/manage-sfg-bom" },
   ],
+  [
+    { routeName: "Create SFG", routePath: "/sfg/create" },
+    { routeName: "View SFG", routePath: "/sfg/view" },
+  ],
   // vendor master links
   [
     { routeName: "Add Vendor", routePath: "/add-vendor" },
@@ -389,7 +393,10 @@ const links = [
       routeName: "VR02",
       routePath: "/vr02",
     },
+    {
+      routeName: "VR03",
+      routePath: "/vr03",
+    },
   ],
-  
 ];
 export default links;
