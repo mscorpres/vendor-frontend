@@ -180,7 +180,6 @@ function RMConsumption() {
     let finalObj = {
       ...newhederData,
       ...compData,
-      jobwork_attach: headerData.file.fileList[0].originFileObj.name,
     };
     setShowSubmitConfirm({
       finalObj: finalObj,
@@ -197,7 +196,6 @@ function RMConsumption() {
       console.log("file in before uplaod", isLt2M);
       if (isLt2M) {
         setFileList([...fileList, file]);
-
         return false;
       } else {
         message.error("File should not exceed the limit of 10MB!");
