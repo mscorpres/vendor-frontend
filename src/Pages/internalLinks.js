@@ -382,20 +382,24 @@ const links = [
   ],
   [
     {
-      routeName: "RM Stocks",
+      routeName: "VQ01",
       routePath: "/reports/rm_stock",
+      placeholder: "RM Location Query",
     },
     {
       routeName: "VR01",
       routePath: "/vr01",
+      placeholder: "All RM Transaction",
     },
     {
       routeName: "VR02",
       routePath: "/vr02",
+      placeholder: "RM Stock",
     },
     {
       routeName: "VR03",
       routePath: "/vr03",
+      placeholder: "RM Consumption",
     },
   ],
 ];

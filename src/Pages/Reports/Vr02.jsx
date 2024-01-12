@@ -187,6 +187,11 @@ const columns = [
     field: "part_code",
   },
   {
+    headerName: "Opening",
+    width: 150,
+    field: "opening",
+  },
+  {
     headerName: "Inward",
     width: 200,
     field: "inward",
@@ -196,11 +201,7 @@ const columns = [
     width: 150,
     field: "outward",
   },
-  {
-    headerName: "Opening",
-    width: 150,
-    field: "opening",
-  },
+
   {
     headerName: "Closing",
     width: 150,
