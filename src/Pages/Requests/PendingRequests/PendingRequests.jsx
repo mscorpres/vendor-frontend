@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Space } from "antd";
 import MySelect from "../../../Components/MySelect";
 import MyDatePicker from "../../../Components/MyDatePicker";
@@ -27,6 +27,7 @@ function PendingRequests() {
     //   "this is a new notification nigga",
     //   "success"
     // );
+    console.log("searchInput", searchInput);
     setSearchLoading(true);
     const { data } = await axios.post("/jwvendor/fetchPendingJWChallan", {
       searchBy: wise,
@@ -93,6 +94,7 @@ function PendingRequests() {
       <ChallanInward
         challanInward={challanInward}
         setChallanInward={setChallanInward}
+        getRows={getRows}
       />
       <div style={{ height: "100%", padding: "0px 5px" }}>
         <MyDataTable loading={searchLoading} columns={columns} rows={rows} />
