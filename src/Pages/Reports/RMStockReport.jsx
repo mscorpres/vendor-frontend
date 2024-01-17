@@ -14,6 +14,7 @@ import { CommonIcons } from "../../Components/TableActions.jsx/TableActions";
 import { setLocations } from "../../Features/loginSlice.js/loginSlice";
 import { toast } from "react-toastify";
 function RMStockReport() {
+  document.title = "RM Location Query";
   const [searchLoading, setSearchLoading] = useState(false);
   const [asyncOptions, setAsyncOptions] = useState([]);
   const [selectLoading, setSelectLoading] = useState(false);

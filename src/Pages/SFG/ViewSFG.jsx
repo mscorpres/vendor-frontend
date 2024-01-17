@@ -16,6 +16,7 @@ import printFunction, {
 } from "../../Components/printFunction";
 
 const ViewSFG = () => {
+  document.title = "View SFG";
   const [wise, setWise] = useState("DATE");
 
   const [searchInput, setSearchInput] = useState("");

@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import printFunction, { downloadFunction } from "../../Components/printFunction";
 
 const Vr02 = () => {
+  document.title = "RM Stock";
   const actionColumn = {
     headerName: "",
     field: "actions",

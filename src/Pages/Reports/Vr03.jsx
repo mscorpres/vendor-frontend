@@ -14,6 +14,7 @@ import printFunction, {
 } from "../../Components/printFunction";
 
 const Vr03 = () => {
+  document.title = "RM Consumption";
   const [wise, setWise] = useState("create_date");
   const actionColumn = {
     headerName: "",

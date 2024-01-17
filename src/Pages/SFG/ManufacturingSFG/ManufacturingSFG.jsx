@@ -13,6 +13,7 @@ import showToast from "../../../Components/MyToast";
 import { useEffect } from "react";
 
 function ManufacturingSFG() {
+  document.title = "Create SFG";
   const [asyncOptions, setAsyncOptions] = useState([]);
   const [selectLoading, setSelectLoading] = useState(false);
   const [challans, setChallans] = useState([]);

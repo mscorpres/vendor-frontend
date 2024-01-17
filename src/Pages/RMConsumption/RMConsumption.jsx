@@ -27,6 +27,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import MyDatePicker from "../../Components/MyDatePicker";
 
 function RMConsumption() {
+  document.title = "RM Consumption";
   const { locations: locationOptions } = useSelector((state) => state.login);
   const [asyncOptions, setAsyncOptions] = useState([]);
   const [selectLoading, setSelectLoading] = useState(false);
@@ -371,6 +372,7 @@ function RMConsumption() {
 
   return (
     <div style={{ height: "90%" }}>
+      
       <SearchHeader title="Create RM Consumption" />
       {/* submit confirm modal */}
       <Modal

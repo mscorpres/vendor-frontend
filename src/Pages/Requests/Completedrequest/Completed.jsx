@@ -14,6 +14,7 @@ import printFunction, {
 import { downloadCSV } from "../../../Components/exportToCSV";
 
 const Completed = () => {
+  document.title = "Completed Requests";
   const actionColumn = {
     headerName: "",
     field: "actions",
@@ -125,9 +126,9 @@ const Completed = () => {
       setLoading(false);
     }
   };
-  const downloadCol =() =>{
-     downloadCSV(rows, columns, "Completed Request Report");
-  }
+  const downloadCol = () => {
+    downloadCSV(rows, columns, "Completed Request Report");
+  };
 
   return (
     <>
@@ -152,7 +153,11 @@ const Completed = () => {
               </div>
             </Space>
           </Col>
-          <CommonIcons action="downloadButton" onClick={downloadCol} type="primary" />
+          <CommonIcons
+            action="downloadButton"
+            onClick={downloadCol}
+            type="primary"
+          />
         </Row>
         <div style={{ height: "95%", paddingRight: 5, paddingLeft: 5 }}>
           <MyDataTable
