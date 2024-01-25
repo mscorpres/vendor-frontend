@@ -19,15 +19,14 @@ import { CommonIcons } from "../../../Components/TableActions.jsx/TableActions";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
-function ChallanInward({ challanInward, setChallanInward, getRows }) {
+
+function ChallanInward({ challanInward, setChallanInward,getRows }) {
   const [rows, setRows] = useState([]);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
 
   const [resetData, setResetData] = useState([]);
   const { locations: locationOptions } = useSelector((state) => state.login);
-  // console.log("challanInward", challanInward);
-  // console.log("getRows", getRows);
   const columns = [
     {
       headerName: "",
@@ -71,7 +70,7 @@ function ChallanInward({ challanInward, setChallanInward, getRows }) {
       ),
     },
     {
-      headerName: "Available Qty",
+      headerName: "Left Qty",
       width: 100,
       renderCell: ({ row }) => (
         <Input
@@ -95,12 +94,10 @@ function ChallanInward({ challanInward, setChallanInward, getRows }) {
     {
       headerName: "Value",
       width: 100,
-      renderCell: ({ row }) => (
-        <Input value={Number(row.jwValue).toFixed(2)} disabled={true} />
-      ),
+      renderCell: ({ row }) => <Input value={row.jwValue} disabled={true} />,
     },
     {
-      headerName: "Drop Location",
+      headerName: "Location",
       width: 100,
       renderCell: ({ row }) => (
         <MySelect
@@ -155,8 +152,7 @@ function ChallanInward({ challanInward, setChallanInward, getRows }) {
           maxQty: row.jw_leftqty,
           jwRate: row.jw_rate,
           partKey: row.part_key,
-          jwValue:
-            +Number(row.jw_qty).toFixed(2) * +Number(row.jw_rate).toFixed(2),
+          jwValue: +Number(row.jw_qty) * +Number(row.jw_rate),
           partName: row.part_name,
           partNo: row.part_no,
           uom: row.uom,
@@ -248,8 +244,8 @@ function ChallanInward({ challanInward, setChallanInward, getRows }) {
       const { data } = await axios.post("/jwvendor/minVendorRM", finalObj);
       setSubmitLoading(false);
       if (data.code === 200) {
-        toast.success(data.message);
-        getRows();
+         toast.success(data.message);
+         getRows()
         setChallanInward(false);
       } else {
         toast.error(data.message.msg);
@@ -275,7 +271,6 @@ function ChallanInward({ challanInward, setChallanInward, getRows }) {
       width="100vw"
       open={challanInward}
       onClose={() => setChallanInward(false)}
-      title={`${challanInward.challan}`}
       extra={
         <Space>
           {/* <Button onClick={resetFunction}>Reset</Button> */}
