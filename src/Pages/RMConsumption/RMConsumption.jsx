@@ -32,6 +32,8 @@ function RMConsumption() {
   const [asyncOptions, setAsyncOptions] = useState([]);
   const [selectLoading, setSelectLoading] = useState(false);
   const [challans, setChallans] = useState([]);
+
+  const [availQty, setAvailQty] = useState("");
   const [headerOptions, setHeaderOptions] = useState({
     jobwork: "",
     challan: "",
@@ -40,10 +42,11 @@ function RMConsumption() {
     {
       id: v4(),
       component: "",
-      location: locationOptions[0]?.value,
+      location: "",
       qty: 0,
       uom: "--",
       remark: "",
+      availableQty: "",
     },
   ]);
   const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
@@ -204,9 +207,72 @@ function RMConsumption() {
     },
     fileList,
   };
+  const getDetails = async (c, l) => {
+    // console.log("c", c.value);
+    // console.log("l", l);
+    // setPageLoading(true);
+    const { data } = await axios.post("/jwvendor/getStock", {
+      component: c.value,
+      pick_location: l,
+    });
+    rows[0].availableQty = "";
+    if (data.code === 200) {
+      // console.log("data", data);
+      rows[0].availableQty = data.data.calculated_qty;
+      // availQty = data.data.location_qty;
+      setAvailQty(data.data.calculated_qty);
+      // console.log("data.data.location_qty- >>", data.data.location_qty);
+    }
+  };
+  useEffect(() => {
+    // console.log("availQty", availQty);
+    if (availQty) {
+      // console.log("availQty inside avail Qty", availQty);
+      setAvailQty(availQty);
+      // rows[0].availableQty = availQty;
+    }
+  }, [availQty]);
 
+  useEffect(() => {
+    // console.log("rows?.pick_location", rows);
+    if (rows[0]?.component && rows[0]?.location) {
+      console.log("rows[0]?.pick_location", rows[0]?.pick_location);
+      console.log("rows[0]?.component", rows[0]?.component);
+      getDetails(rows[0].component, rows[0].location);
+    }
+  }, [rows[0]?.component, rows[0]?.location]);
+
+  const validateFields = async () => {
+    const values = await form.validateFields();
+    console.log("valuesss", values);
+    submitData(values);
+  };
+  const submitData = async (values) => {
+    console.log("rows", rows);
+
+    let payload = {
+      challan_no: values.challan_no,
+      challan_date: values.challan_date,
+      jobwork_attach: values.file,
+      component: rows.map((r) => r.component.value),
+      qty: rows.map((r) => r.qty),
+      pick_location: rows.map((r) => r.location),
+      remark: rows.map((r) => r.remark),
+    };
+    console.log("payload", payload);
+    const response = await axios.post("/jwvendor/rmConsp", payload);
+    const { data } = response;
+    console.log("data", data);
+    if (data.code === 200) {
+      toast.success(data.message);
+    } else {
+      toast.error(data.message.msg);
+    }
+  };
   const submitHandler = async () => {
-    if (showSubmitConfirm) {
+    if (showSubmitConfirm && showSubmitConfirm.fromdata) {
+    }
+    {
       let fileData;
       setSubmitLoading(true);
       const response = await axios.post(
@@ -223,9 +289,9 @@ function RMConsumption() {
       showSubmitConfirm.finalObj.jobwork_attach = uploadedFile.data;
       if (fileData.code != 200) {
         console.log("fileDatafileData", fileData);
-        return toast.error(
-          "Some error occured while uploading invoices, Please try again"
-        );
+        // return toast.error(
+        //   "Some error occured while uploading invoices, Please try again"
+        // );
       } else {
         const { data } = await axios.post(
           "/jwvendor/rmConsp",
@@ -268,7 +334,7 @@ function RMConsumption() {
       {
         id: v4(),
         component: "",
-        location: locationOptions[0]?.value,
+        location: "",
         qty: 0,
         uom: "--",
         remark: "",
@@ -328,11 +394,25 @@ function RMConsumption() {
       renderCell: ({ row }) => (
         <MySelect
           // labelInValue
-          value={locationOptions[0]?.text}
           // value={locationOptions[0]?.text}
-          // options={locationOptions}
+          // value={locationOptions[0]?.text}
+          options={locationOptions}
           onChange={(value) => {
             inputHandler("location", value, row.id);
+          }}
+        />
+      ),
+    },
+    {
+      headerName: "Available Qty",
+      width: 150,
+      renderCell: ({ row }) => (
+        <Input
+          value={row.availableQty}
+          options={locationOptions}
+          suffix={row.uom}
+          onChange={(e) => {
+            inputHandler("availableQty", e.target.value, row.id);
           }}
         />
       ),
@@ -370,7 +450,6 @@ function RMConsumption() {
 
   return (
     <div style={{ height: "90%" }}>
-      
       <SearchHeader title="Create RM Consumption" />
       {/* submit confirm modal */}
       <Modal
@@ -453,7 +532,11 @@ function RMConsumption() {
                 </Col>
                 <Col>
                   <Form.Item>
-                    <Button type="primary" htmlType="submit">
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      onClick={() => validateFields()}
+                    >
                       Save
                     </Button>
                   </Form.Item>
