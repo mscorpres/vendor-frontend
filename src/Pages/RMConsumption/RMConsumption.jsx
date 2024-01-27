@@ -208,13 +208,13 @@ function RMConsumption() {
   const submitHandler = async () => {
     if (showSubmitConfirm) {
       let fileData;
-      setSubmitLoading(true);
+      // setSubmitLoading(true);
       const response = await axios.post(
         "/jwvendor/upload-invoice",
         showSubmitConfirm.fromdata
       );
       if (response.status != 200) {
-        setSubmitLoading(false);
+        // setSubmitLoading(false);
         return toast.error("something went worng while uploading the file");
       }
       const uploadedFile = response.data;
@@ -233,7 +233,7 @@ function RMConsumption() {
         );
         // console.log("data", data);
 
-        setSubmitLoading(false);
+        // setSubmitLoading(false);
         setShowSubmitConfirm(false);
         if (data.code === 200) {
           toast.success(data.message);
@@ -244,13 +244,13 @@ function RMConsumption() {
         setTimeout(() => {
           toast.error("Time Out!");
           resetHandler();
-          setSubmitLoading(false);
+          // setSubmitLoading(false);
         }, 30000);
         submitLoading(false);
       }
       setTimeout(() => {
         toast.error("Time Out!");
-        setSubmitLoading(false);
+        // setSubmitLoading(false);
       }, 60000);
     }
   };
