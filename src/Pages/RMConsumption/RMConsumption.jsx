@@ -44,6 +44,7 @@ function RMConsumption() {
       qty: 0,
       uom: "--",
       remark: "",
+      // closing: "",
     },
   ]);
   const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
@@ -93,6 +94,7 @@ function RMConsumption() {
       qty: "",
       uom: "--",
       remark: "",
+      // closing: "",
     };
     let arr = rows;
     arr = [newRow, ...arr];
@@ -243,13 +245,13 @@ function RMConsumption() {
         }
         setTimeout(() => {
           toast.error("Time Out!");
-          resetHandler();
+          // resetHandler();
           // setSubmitLoading(false);
         }, 30000);
         submitLoading(false);
       }
       setTimeout(() => {
-        toast.error("Time Out!");
+        toast.error("Time Out for File Upload!");
         // setSubmitLoading(false);
       }, 60000);
     }
@@ -272,10 +274,35 @@ function RMConsumption() {
         qty: 0,
         uom: "--",
         remark: "",
+        // closing: "",
       },
     ]);
     setShowResetConfirm(false);
   };
+  const getClosing = async (id, component, location) => {
+    const response = await axios.post("/jwreport/compClosing", {
+      component: component.value,
+      location: location,
+    });
+    // console.log("response", response);
+    // console.log("id", id);
+    let { data } = response;
+    // rows[id].closing = data.data.closingStock;
+    let arr = rows;
+    let a = arr.filter((r) => r.id === id);
+    // console.log("arr", a);
+    a[0].closing = data?.data?.closingStock;
+  };
+  useEffect(() => {
+    // console.log("rows.id", rows);
+    rows.forEach((element) => {
+      if (typeof element.closing === "undefined") {
+        // console.log("here is the element", element);
+        getClosing(element?.id, element?.component, locationOptions[0]?.value);
+      }
+    });
+  }, [rows]);
+
   const columns = [
     {
       headerName: (
@@ -338,6 +365,20 @@ function RMConsumption() {
       ),
     },
     {
+      headerName: "Closing",
+      width: 150,
+      renderCell: ({ row }) => (
+        <Input
+          value={row.closing}
+          // options={locationOptions}
+          // suffix={row.uom}
+          onChange={(e) => {
+            inputHandler("closing", e.target.value, row.id);
+          }}
+        />
+      ),
+    },
+    {
       headerName: "Qty",
       width: 150,
       renderCell: ({ row }) => (
@@ -370,7 +411,6 @@ function RMConsumption() {
 
   return (
     <div style={{ height: "90%" }}>
-      
       <SearchHeader title="Create RM Consumption" />
       {/* submit confirm modal */}
       <Modal
