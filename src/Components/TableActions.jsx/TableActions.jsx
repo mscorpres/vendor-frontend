@@ -62,7 +62,16 @@ export default function TableActions({ disabled, onClick, action, label }) {
     />
   );
 }
-export function CommonIcons({ action, onClick, disabled, loading, size }) {
+export function CommonIcons({
+  action,
+  onClick,
+  disabled,
+  loading,
+  size,
+  type,
+  onMouseEnter,
+  tooltip,
+}) {
   const Icon = () => {
     if (action === "addRow") {
       return (
@@ -84,15 +93,18 @@ export function CommonIcons({ action, onClick, disabled, loading, size }) {
       );
     } else if (action === "downloadButton") {
       return (
-        <Button
-          size={size ?? "default"}
-          type="primary"
-          onClick={onClick}
-          shape="circle"
-          icon={<DownloadOutlined />}
-          disabled={disabled}
-          loading={loading}
-        />
+        <Tooltip title={tooltip ?? ""}>
+          <Button
+            size={size ?? "default"}
+            type={type ?? "primary"}
+            onClick={onClick}
+            shape="circle"
+            icon={<DownloadOutlined />}
+            disabled={disabled}
+            loading={loading}
+            onMouseEnter={onMouseEnter}
+          />
+        </Tooltip>
       );
     } else if (action === "printButton") {
       return (

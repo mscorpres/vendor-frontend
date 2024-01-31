@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Space } from "antd";
+import { Button, Col, Space } from "antd";
 import MySelect from "../../../Components/MySelect";
 import MyDatePicker from "../../../Components/MyDatePicker";
 import TableActions, {
@@ -11,6 +11,8 @@ import showToast from "../../../Components/MyToast";
 import SearchHeader from "../../../Components/SearchHeader";
 import ChallanInward from "./ChallanInward";
 import { toast } from "react-toastify";
+import { Flex } from "@adobe/react-spectrum";
+import { downloadCSV } from "../../../Components/exportToCSV";
 
 function PendingRequests() {
   document.title = "Pending Requests";
@@ -48,6 +50,16 @@ function PendingRequests() {
     }
     setSearchLoading(false);
   };
+  const downloadData = () => {
+    downloadCSV(rows, colcolumns, "Pending Report");
+  };
+  const colcolumns = [
+    { headerName: "Sr. No.", field: "index", width: 70 },
+    { headerName: "Jobwork ID", field: "jobwork", flex: 1 },
+    { headerName: "Challan Id", field: "challan", flex: 1 },
+    { headerName: "Insert Date", field: "insert_dt", flex: 1 },
+    { headerName: "Insert By", field: "insert_by", flex: 1 },
+  ];
   const columns = [
     { headerName: "Sr. No.", field: "index", width: 70 },
     { headerName: "Jobwork ID", field: "jobwork", flex: 1 },
@@ -88,9 +100,21 @@ function PendingRequests() {
       />
     </Space>
   );
+
   return (
     <div style={{ height: "90%" }}>
-      <SearchHeader title="Pending Requests" searchBar={searchBar} />
+      <div style={{ display: "flex", alignItems: "baseline" }}>
+        <Col span={23}>
+          <SearchHeader title="Pending Requests" searchBar={searchBar} />
+        </Col>
+        {/* <Button action="download" /> */}
+        <CommonIcons
+          type="secondary"
+          onClick={downloadData}
+          disabled={rows.length === 0}
+          action={"downloadButton"}
+        />
+      </div>
       <ChallanInward
         challanInward={challanInward}
         setChallanInward={setChallanInward}
