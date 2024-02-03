@@ -243,6 +243,11 @@ const columns = [
     flex: 1,
     field: "create_by",
   },
+  {
+    headerName: "Transaction Id",
+    flex: 1,
+    field: "txn_id",
+  },
 ];
 
 export default Vr03;
