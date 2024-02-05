@@ -170,7 +170,7 @@ const App = () => {
   const handleChangePageStatus = (value) => {
     let status = value ? "TEST" : "LIVE";
     // console.log(value);
-    socket(user?.token).emit("setPageStatus", {
+    socket.emit("setPageStatus", {
       page: pathname,
       status: status,
     });
@@ -206,7 +206,7 @@ const App = () => {
       if (pathname === "/") navigate("/requests/pending");
     }
     if (user) {
-      socket(user?.token).emit("fetch_notifications", { source: "react" });
+      socket.emit("fetch_notifications", { source: "react" });
     }
     getLocations();
   }, []);
@@ -215,12 +215,12 @@ const App = () => {
       navigate("/login");
     } else if (user) {
       if (user.token) {
-        socket(user.token).emit("fetch_notifications", { source: "react" });
+        socket.emit("fetch_notifications", { source: "react" });
         getLocations();
       }
       // getting new notification
       getLocations();
-      socket(user?.token).on("socket_receive_notification", (data) => {
+      socket.on("socket_receive_notification", (data) => {
         console.log("new notifications file recieved");
         if (data.type === "message") {
           let arr = notificationsRef.current.filter(
@@ -254,7 +254,7 @@ const App = () => {
         }
       });
       // getting all notifications
-      socket(user?.token).on("all-notifications", (data) => {
+      socket.on("all-notifications", (data) => {
         let arr = data.data;
         console.log("allnotifications", arr);
         arr = arr.map((row) => {
@@ -269,7 +269,7 @@ const App = () => {
         dispatch(setNotifications(arr));
       });
       // event for starting detail
-      socket(user.token).on("download_start_detail", (data) => {
+      socket.on("download_start_detail", (data) => {
         console.log("start details arrived");
         if (data.title && data.details) {
           let arr = notificationsRef.current;
@@ -278,7 +278,7 @@ const App = () => {
         }
       });
       // getting percentages
-      socket(user.token).on("getting-loading-percentage", (data) => {
+      socket.on("getting-loading-percentage", (data) => {
         let arr = notificationsRef.current;
         console.log("percentage", data);
         if (
@@ -301,7 +301,7 @@ const App = () => {
         }
         dispatch(setNotifications(arr));
       });
-      socket(user.token).on("getPageStatus", (data) => {
+      socket.on("getPageStatus", (data) => {
         setTestToggleLoading(false);
         let pages;
         if (user.testPages) {

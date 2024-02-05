@@ -1,18 +1,17 @@
 import io from "socket.io-client";
 import { socketLink } from "../axiosInterceptor";
-const socket = (userToken) => {
-  if (userToken) {
-    return io(socketLink, {
-      extraHeaders: {
-        token: userToken,
-      },
-    });
-  }
-};
+const userToken = JSON.parse(localStorage.getItem("loggedInUser"))?.token;
+const companyBranch = JSON.parse(
+  localStorage.getItem("otherData")
+)?.company_branch;
 
-export default socket;
-// io(link, {
-//   extraHeaders: {
-//     token: userToken,
-//   },
-// }),
+export default io(socketLink, {
+  extraHeaders: {
+    token: userToken,
+  },
+  auth: {
+    token: userToken,
+    companyBranch: companyBranch,
+  },
+  transports: ["websocket"],
+});

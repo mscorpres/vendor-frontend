@@ -13,6 +13,9 @@ import ChallanInward from "./ChallanInward";
 import { toast } from "react-toastify";
 import { Flex } from "@adobe/react-spectrum";
 import { downloadCSV } from "../../../Components/exportToCSV";
+import socket from "../../../Components/socket";
+import { v4 } from "uuid";
+import { useSelector } from "react-redux";
 
 function PendingRequests() {
   document.title = "Pending Requests";
@@ -21,6 +24,7 @@ function PendingRequests() {
   const [rows, setRows] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [challanInward, setChallanInward] = useState(false);
+  const { user, notifications } = useSelector((state) => state.login);
 
   const wiseOptions = [{ text: "Date Wise", value: "datewise" }];
   const getRows = async () => {
@@ -51,7 +55,26 @@ function PendingRequests() {
     setSearchLoading(false);
   };
   const downloadData = () => {
-    downloadCSV(rows, colcolumns, "Pending Report");
+    // downloadCSV(rows, colcolumns, "Pending Report");
+    let newId = v4();
+    let arr = notifications;
+
+    // if (!user.company_branch) {
+    //   toast.error("Please select a branch to download report");
+    //   return;
+    // }
+    // const payload = {
+    //   date: dateRange,
+    //   notificationId: newId,
+    // };
+    // console.log("payload", payload);
+    // console.log("here in socket");
+    socket.emit("vendorReqPending", {
+      otherdata: {
+        searchValue: searchInput,
+        searchBy: wise,
+      },
+    });
   };
   const colcolumns = [
     { headerName: "Sr. No.", field: "index", width: 70 },

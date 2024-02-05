@@ -55,7 +55,7 @@ export default function MessageModal({
     }
   };
   const getAllConverationById = async (rec) => {
-    socket(user?.token).emit("socket_join_room", {
+    socket.emit("socket_join_room", {
       conversationId: rec.conversationId,
     });
     setGetMessagesLoading(true);
@@ -91,7 +91,7 @@ export default function MessageModal({
       });
       setSendMessageLoading(false);
       if (data.code == 200) {
-        socket(user?.token).emit("send_chat_msg", {
+        socket.emit("send_chat_msg", {
           // senderId: receiver.unique_id,
           receiver: data.data.receiver,
           text: data.data.text,
