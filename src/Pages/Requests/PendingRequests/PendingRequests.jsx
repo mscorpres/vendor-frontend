@@ -70,10 +70,11 @@ function PendingRequests() {
     // console.log("payload", payload);
     // console.log("here in socket");
     socket.emit("vendorReqPending", {
-      otherdata: {
+      otherdata:JSON.stringify ({
         searchValue: searchInput,
         searchBy: wise,
-      },
+      }),
+      notificationId:newId
     });
   };
   const colcolumns = [
