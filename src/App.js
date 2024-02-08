@@ -219,7 +219,7 @@ const App = () => {
     // "https://oakter.vendor.mscorpres.co.in/requests/pending?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjcm5fbW9iaWxlIjoiOTY4MjE3MzYwNiIsImNybl9lbWFpbCI6ImFiaGlzaGVrLmJhdm9yaWFAbXNjb3JwcmVzLmluIiwiY3JuX2lkIjoiQ1JOMjE3MzYwNiIsImNvbXBhbnlfaWQiOiJDT00wMDAxIiwidXNlcl9uYW1lIjoiQWJoaXNoZWsgQmF2b3JpYSIsInZlbmRvciI6IlZFTjAyNjYiLCJpYXQiOjE3MDY5NTE0NDAsImV4cCI6MTczODQ4NzQ0MH0.m2zQFw3L218xELiG_Mrcf9Hh4pBc2GgWI_Z-1m0LN10";
     let url1 = url.split("token=");
     let getTokenFromUrl = url1[1];
-    if (url) {
+    if (getTokenFromUrl) {
       var payload = decodeJwt(getTokenFromUrl);
       console.log("payload", payload);
       localStorage.setItem(
