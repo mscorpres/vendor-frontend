@@ -190,19 +190,6 @@ const App = () => {
     }
   };
   // notifications recieve handlers
-  //extract the information
-  function decodeJwt(token) {
-    var base64Payload = token.split(".")[1];
-    var payload = decodeURIComponent(
-      atob(base64Payload)
-        .split("")
-        .map(function (c) {
-          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-        })
-        .join("")
-    );
-    return JSON.parse(payload);
-  }
   useEffect(() => {
     if (Notification.permission === "default") {
       Notification.requestPermission();
@@ -212,33 +199,6 @@ const App = () => {
         setShowSideBar(false);
       }
     });
-    navigate("/login");
-    console.log("here");
-    let url = window.location.href;
-    console.log("url", url);
-    // "https://oakter.vendor.mscorpres.co.in/requests/pending?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjcm5fbW9iaWxlIjoiOTY4MjE3MzYwNiIsImNybl9lbWFpbCI6ImFiaGlzaGVrLmJhdm9yaWFAbXNjb3JwcmVzLmluIiwiY3JuX2lkIjoiQ1JOMjE3MzYwNiIsImNvbXBhbnlfaWQiOiJDT00wMDAxIiwidXNlcl9uYW1lIjoiQWJoaXNoZWsgQmF2b3JpYSIsInZlbmRvciI6IlZFTjAyNjYiLCJpYXQiOjE3MDY5NTE0NDAsImV4cCI6MTczODQ4NzQ0MH0.m2zQFw3L218xELiG_Mrcf9Hh4pBc2GgWI_Z-1m0LN10";
-    let url1 = url.split("token=");
-    let getTokenFromUrl = url1[1];
-    if (url) {
-      var payload = decodeJwt(getTokenFromUrl);
-      console.log("payload", payload);
-      localStorage.setItem(
-        "loggedInUserVendor",
-        JSON.stringify({
-          token: getTokenFromUrl,
-          email: payload.crn_email,
-          emailConfirmed: "C",
-          favPages: "[]",
-          id: payload.crn_id,
-          mobileConfirmed: "C",
-          passwordChanged: "C",
-          phone: payload.crn_mobile,
-          token: getTokenFromUrl,
-          userName: payload.user_name,
-        })
-      );
-      navigate("/requests/pending");
-    }
     if (!user) {
       navigate("/login");
     }
