@@ -18,6 +18,8 @@ function ManufacturingSFG() {
   const [asyncOptions, setAsyncOptions] = useState([]);
   const [selectLoading, setSelectLoading] = useState(false);
   const [challans, setChallans] = useState([]);
+  const [bomList, setBomList] = useState(false);
+  const [bomListRows, setBomListRows] = useState([]);
   const [headerOptions, setHeaderOptions] = useState({
     jobwork: "",
     challan: "",
@@ -78,11 +80,20 @@ function ManufacturingSFG() {
   };
   const getBomFromJW = async () => {
     console.log("rows", rows);
-    const { data } = await axios.post("/jobwork/getBomItem", {
-      jw_id: headerOptions.jobwork,
+    const { data } = await axios.post("/jwvendor/getBomItem", {
+      jwID: headerOptions.jobwork,
       sfgCreateQty: rows[0].mfgQty,
     });
-    // console.log("data->", data);
+    setBomList(true);
+    console.log("data->", data);
+    if (data.code === 200) {
+      let arr = data.data.map((r) => {
+        return {
+          ...r,
+        };
+      });
+      setBomListRows(arr);
+    }
   };
   const getProductDetails = async () => {
     setSelectLoading(true);
@@ -227,6 +238,66 @@ function ManufacturingSFG() {
       ),
     },
   ];
+  const removeRows = (id) => {
+    let arr = rows;
+    arr = arr.filter((row) => row.id !== id);
+    setRows(arr);
+  };
+  const addRows = () => {
+    const newRow = {
+      id: v4(),
+      remark: "",
+      // hsn: "",
+      unit: "",
+      component: "",
+      pick_location: locationOptions[0]?.value,
+      drop_location: locationOptions[0]?.value,
+      availableQty: "",
+    };
+    setRows((rows) => [...rows, newRow]);
+  };
+  const columnsBOM = [
+    {
+      // headerName: (
+      //   <CommonIcons
+      //     disabled
+      //     action="addRow"
+      //        onClick={addRows}
+      //   />
+      // ),
+      width: 40,
+      field: "add",
+      sortable: false,
+      renderCell: ({ row }) => (
+        <CommonIcons
+          action="removeRow"
+          disabled
+          onClick={() => removeRows(rows?.id)}
+        />
+      ),
+      // sortable: false,
+    },
+    {
+      headerName: "Part Name",
+      width: 150,
+      renderCell: ({ row }) => <Input value={row.part_name} disabled />,
+    },
+    {
+      headerName: "Part No.",
+      width: 150,
+      renderCell: ({ row }) => <Input value={row.part_no} disabled />,
+    },
+    {
+      headerName: "BOM Qty",
+      width: 150,
+      renderCell: ({ row }) => <Input value={row.bom_qty} disabled />,
+    },
+    {
+      headerName: "Location Qty ",
+      width: 150,
+      renderCell: ({ row }) => <Input value={row.loc_qty} disabled />,
+    },
+  ];
 
   useEffect(() => {
     getChallans();
@@ -344,7 +415,12 @@ function ManufacturingSFG() {
             padding: 0,
           }}
         >
-          <FormTable columns={columns} data={rows} />
+          {bomList ? (
+            <FormTable columns={columnsBOM} data={bomListRows} />
+          ) : (
+            <FormTable columns={columns} data={rows} />
+          )}
+
           <NavFooter
             // selectLoading={selectLoading}
             submitFunction={getBomFromJW}
