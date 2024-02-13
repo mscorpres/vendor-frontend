@@ -13,7 +13,7 @@ import SummaryCard from "../../Components/SummaryCard";
 import { CommonIcons } from "../../Components/TableActions.jsx/TableActions";
 import { setLocations } from "../../Features/loginSlice.js/loginSlice";
 import { toast } from "react-toastify";
-function RMStockReport() {
+function RmConsumptionReport() {
   document.title = "RM Location Query";
   const [searchLoading, setSearchLoading] = useState(false);
   const [asyncOptions, setAsyncOptions] = useState([]);
@@ -23,7 +23,8 @@ function RMStockReport() {
   const [summaryData, setSummaryData] = useState([
     { title: "Component" },
     { title: "Part Code" },
-    { title: "ClosingQty" },
+    { title: "Cat Part Code" },
+    // { title: "ClosingQty" },
   ]);
   useEffect(() => {
     getLocations();
@@ -52,9 +53,9 @@ function RMStockReport() {
   };
   const getRows = async () => {
     setFetchLoading(true);
-    // console.log("searchObj", searchObj);
-    searchObj.location = locationOptions[0]?.value;
-    const response = await axios.post("/jwreport/vq01", searchObj);
+    searchObj.location = searchObj.location.value;
+    console.log("searchObj", searchObj);
+    const response = await axios.post("/jwreport/vq02", searchObj);
 
     const { data } = response;
     if (data.code === 200) {
@@ -71,10 +72,10 @@ function RMStockReport() {
 
       let summaryArr = [
         { title: "Component", description: data.response.data1.component },
-        { title: "part Code", description: data.response.data1.partno },
+        { title: "Part Code", description: data.response.data1.partno },
         {
-          title: "Closing Quantity",
-          description: `${data.response.data1.closingqty} ${data.response.data1.uom}`,
+          title: "Cat Part Code",
+          description: `${data.response.data1.new_partno} `,
         },
       ];
       setSummaryData(summaryArr);
@@ -112,7 +113,7 @@ function RMStockReport() {
 
   const columns = [
     { headerName: "Sr. No", field: "serial_no", width: 80 },
-    { headerName: "Date", field: "date", flex: 1 },
+    { headerName: "Date", field: "date", width: 150 },
     {
       headerName: "Trans Type",
       field: "transaction_type",
@@ -134,13 +135,19 @@ function RMStockReport() {
         </div>
       ),
     },
-    { headerName: "Qty In", field: "qty_in", flex: 1 },
-    { headerName: "Qty Out", field: "qty_out", flex: 1 },
-    { headerName: "Location Inward", field: "location_in", flex: 1 },
-    { headerName: "Location Outward", field: "location_out", flex: 1 },
+    { headerName: "Qty In", field: "qty_in", width: 100 },
+    { headerName: "Qty Out", field: "qty_out", width: 100 },
+    { headerName: "Location Inward", field: "location_in", width: 150 },
+    { headerName: "Location Outward", field: "location_out", width: 150 },
+    // { headerName: "Type", field: "type", width: 150 },
+    { headerName: "Transaction", field: "transaction", width: 150 },
+    { headerName: "Mode", field: "mode", width: 150 },
+    { headerName: "Transaction By", field: "transaction_by", width: 150 },
+    { headerName: "Vendor", field: "vendor", width: 150 },
+    // { headerName: "Key", field: "key", width: 150 },
   ];
   const handleDownloadExcel = () => {
-    downloadCSV(rows, columns, "RM Stock Report");
+    downloadCSV(rows, columns, "RM Consumption Report");
   };
 
   const searchBar = () => (
@@ -165,8 +172,8 @@ function RMStockReport() {
         <MySelect
           placeholder="Select Location"
           labelInValue
-          value={locationOptions[0]?.text}
-          // options={locationOptions}
+          value={searchObj.location?.text}
+          options={locationOptions}
           onChange={(value) => {
             setSearchObj((obj) => ({
               ...obj,
@@ -185,13 +192,13 @@ function RMStockReport() {
   );
   return (
     <div style={{ height: "90%" }}>
-      <SearchHeader title="RM Stock" searchBar={searchBar} />
+      <SearchHeader title="RM Consumption Stock" searchBar={searchBar} />
       <Row gutter={4} style={{ height: "100%", padding: "0px 5px" }}>
-        <Col span={6}>
+        <Col span={4}>
           <SummaryCard summary={summaryData} loading={fetchLoading} />
         </Col>
-        <Col span={18}>
-          <div style={{ height: "97%" }}>
+        <Col span={20}>
+          <div style={{ height: "95%" }}>
             <MyDataTable loading={fetchLoading} data={rows} columns={columns} />
           </div>
         </Col>
@@ -200,4 +207,4 @@ function RMStockReport() {
   );
 }
 
-export default RMStockReport;
+export default RmConsumptionReport;

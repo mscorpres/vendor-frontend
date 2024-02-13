@@ -5,6 +5,7 @@ import {
   useNavigate,
   useLocation,
   Link,
+  useSearchParams,
 } from "react-router-dom";
 import Sidebar from "./Components/Sidebar";
 import Rout from "./Routes/Routes";
@@ -23,6 +24,7 @@ import Logo from "./Components/Logo";
 import socket from "./Components/socket.js";
 import Notifications from "./Components/Notifications";
 import axios from "axios";
+import { setUser } from "./Features/loginSlice.js/loginSlice";
 // import MessageModal from "./Components/MessageModal/MessageModal";
 // antd imports
 import Layout, { Content, Header } from "antd/lib/layout/layout";
@@ -40,12 +42,14 @@ import {
   CalculatorOutlined,
   MinusOutlined,
   RadiusBottomrightOutlined,
+  LineChartOutlined,
 } from "@ant-design/icons";
 import InternalNav from "./Components/InternalNav";
 import showToast from "./Components/MyToast";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+// import BarChartIcon from "@mui/icons-material/BarChart";
+//
 const App = () => {
   const { user, notifications, currentLinks } = useSelector(
     (state) => state.login
@@ -60,6 +64,7 @@ const App = () => {
   const [newNotification, setNewNotification] = useState(null);
   const [favLoading, setFavLoading] = useState(false);
   const { pathname } = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [internalLinks, setInternalLinks] = useState([]);
   const [testToggleLoading, setTestToggleLoading] = useState(false);
   const [testPage, setTestPage] = useState(false);
@@ -80,6 +85,11 @@ const App = () => {
         // <MinusOutlined />
       ),
       getItem(
+        <Link to="/requests/transfer">Transfer Requests</Link>,
+        "/requests/requests/transfer"
+        // <MinusOutlined />
+      ),
+      getItem(
         <Link to="/requests/completed">Completed Requests</Link>,
         "/requests/requests/completed"
         // <MinusOutlined />
@@ -88,6 +98,12 @@ const App = () => {
     getItem(
       <Link to="/rm_consumption">RM Consumption</Link>,
       "/rm_consumption",
+      <LineChartOutlined />
+      // <BarChartIcon />
+    ),
+    getItem(
+      <Link to="/rm_rejection">RM Rejection</Link>,
+      "/rm_rejection",
       <MinusOutlined />
     ),
     getItem("SFG", "B", <RadiusBottomrightOutlined />, [
@@ -104,8 +120,13 @@ const App = () => {
     ]),
     getItem("Reports", "C", <CalculatorOutlined />, [
       getItem(
-        <Link to="/reports/rm_stock">RM Stock</Link>,
+        <Link to="/reports/rm_stock">VQ01</Link>,
         "/reports/rm_stock"
+        // <MinusOutlined />
+      ),
+      getItem(
+        <Link to="/reports/rmConsumption_report">VQ02 </Link>,
+        "/reports/rmConsumption_report"
         // <MinusOutlined />
       ),
       getItem(
@@ -118,6 +139,10 @@ const App = () => {
       ),
       getItem(
         <Link to="/vr03">VR03</Link>
+        // <MinusOutlined />
+      ),
+      getItem(
+        <Link to="/vr03">VR04</Link>
         // <MinusOutlined />
       ),
     ]),
@@ -179,7 +204,7 @@ const App = () => {
   };
   const getLocations = async () => {
     // setPageLoading(true);
-    const { data } = await axios.get("/jwvendor/fetchMINLocation");
+    const { data } = await axios.get("/jwvendor/fetchAllotedLocation");
     // setPageLoading(false);
     if (data.code == 200) {
       let arr = data.data.map((row) => ({
@@ -201,6 +226,7 @@ const App = () => {
         })
         .join("")
     );
+
     return JSON.parse(payload);
   }
   useEffect(() => {
@@ -212,16 +238,13 @@ const App = () => {
         setShowSideBar(false);
       }
     });
-    navigate("/login");
-    console.log("here");
-    let url = window.location.href;
-    console.log("url", url);
-    // "https://oakter.vendor.mscorpres.co.in/requests/pending?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjcm5fbW9iaWxlIjoiOTY4MjE3MzYwNiIsImNybl9lbWFpbCI6ImFiaGlzaGVrLmJhdm9yaWFAbXNjb3JwcmVzLmluIiwiY3JuX2lkIjoiQ1JOMjE3MzYwNiIsImNvbXBhbnlfaWQiOiJDT00wMDAxIiwidXNlcl9uYW1lIjoiQWJoaXNoZWsgQmF2b3JpYSIsInZlbmRvciI6IlZFTjAyNjYiLCJpYXQiOjE3MDY5NTE0NDAsImV4cCI6MTczODQ4NzQ0MH0.m2zQFw3L218xELiG_Mrcf9Hh4pBc2GgWI_Z-1m0LN10";
-    let url1 = url.split("token=");
-    let getTokenFromUrl = url1[1];
+
+
+    // let url = "https://oakter.vendor.mscorpres.co.in/requests/pending?";
+
+    var getTokenFromUrl = searchParams.get("token");
     if (getTokenFromUrl) {
       var payload = decodeJwt(getTokenFromUrl);
-      console.log("payload", payload);
       localStorage.setItem(
         "loggedInUserVendor",
         JSON.stringify({
@@ -237,21 +260,30 @@ const App = () => {
           userName: payload.user_name,
         })
       );
+      dispatch(
+        setUser({
+          token: getTokenFromUrl,
+          email: payload.crn_email,
+          emailConfirmed: "C",
+          favPages: "[]",
+          id: payload.crn_id,
+          mobileConfirmed: "C",
+          passwordChanged: "C",
+          phone: payload.crn_mobile,
+          token: getTokenFromUrl,
+          userName: payload.user_name,
+        })
+      );
       navigate("/requests/pending");
-    }
-    if (!user) {
-      navigate("/login");
-    }
-    if (user) {
-      if (pathname === "/") navigate("/requests/pending");
-    }
-    if (user) {
-      socket.emit("fetch_notifications", { source: "react" });
+     
+      if (user) {
+        socket.emit("fetch_notifications", { source: "react" });
+      }
     }
     getLocations();
   }, []);
   useEffect(() => {
-    if (!user) {
+    if (!user && !searchParams.get("token")) {
       navigate("/login");
     } else if (user) {
       if (user.token) {
@@ -436,7 +468,6 @@ const App = () => {
   useEffect(() => {
     setInternalLinks(currentLinks);
   }, [currentLinks]);
-  const options = [{ label: "A-21 [BRMSC012]", value: "BRMSC012" }];
   return (
     <div style={{ height: "100vh" }}>
       <ToastContainer

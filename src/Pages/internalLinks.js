@@ -376,6 +376,10 @@ const links = [
       routePath: "/requests/pending",
     },
     {
+      routeName: "Transfer Requests",
+      routePath: "/requests/transfer",
+    },
+    {
       routeName: "Completed Requests",
       routePath: "/requests/completed",
     },
@@ -385,6 +389,11 @@ const links = [
       routeName: "VQ01",
       routePath: "/reports/rm_stock",
       placeholder: "RM Location Query",
+    },
+    {
+      routeName: "VQ02",
+      routePath: "/reports/rmConsumption_report",
+      placeholder: "RM Consumption Report",
     },
     {
       routeName: "VR01",
@@ -400,6 +409,11 @@ const links = [
       routeName: "VR03",
       routePath: "/vr03",
       placeholder: "RM Consumption",
+    },
+    {
+      routeName: "VR04",
+      routePath: "/vr04",
+      placeholder: "RM Rejection Report",
     },
   ],
 ];

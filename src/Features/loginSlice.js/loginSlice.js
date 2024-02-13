@@ -123,6 +123,11 @@ const loginSlice = createSlice({
         })
       );
     },
+    setUser: (state, action) => {
+      let obj = { ...state.user, ...action.payload };
+      state.user = obj;
+      localStorage.setItem("loggedInUser", JSON.stringify(obj));
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -158,6 +163,8 @@ const loginSlice = createSlice({
 
 export const {
   logout,
+
+  setUser,
   removeNotification,
   setNotifications,
   setFavourites,

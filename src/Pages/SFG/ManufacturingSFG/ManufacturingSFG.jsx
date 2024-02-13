@@ -11,6 +11,7 @@ import { v4 } from "uuid";
 import { toast } from "react-toastify";
 import showToast from "../../../Components/MyToast";
 import { useEffect } from "react";
+import NavFooter from "../../../Components/NavFooter";
 
 function ManufacturingSFG() {
   document.title = "Create SFG";
@@ -25,14 +26,15 @@ function ManufacturingSFG() {
     {
       id: v4(),
       sku: "",
-      skuid:'',
+      skuid: "",
       location: "",
       finishedqty: 0,
       pendingqty: 0,
       orderqty: 0,
       skuCode: "",
-      rate:"",
+      rate: "",
       remark: "",
+      mfgQty: "0",
     },
   ]);
   const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
@@ -74,24 +76,30 @@ function ManufacturingSFG() {
       setAsyncOptions([]);
     }
   };
-
-const getProductDetails = async () => {
-  setSelectLoading(true);
+  const getBomFromJW = async () => {
+    console.log("rows", rows);
+    const { data } = await axios.post("/jobwork/getBomItem", {
+      jw_id: headerOptions.jobwork,
+      sfgCreateQty: rows[0].mfgQty,
+    });
+    // console.log("data->", data);
+  };
+  const getProductDetails = async () => {
+    setSelectLoading(true);
     const { data } = await axios.post("/jwvendor/getJwSkuDetails", {
       jw_id: headerOptions.jobwork,
     });
     if (data.code === 200) {
-    rows[0].sku = data.data.skuname
-    rows[0].skuid = data.data.sku
-    rows[0].pendingqty = data.data.pending_qty
-    rows[0].orderqty = data.data.ord_qty
-    rows[0].rate = data.data.rate
-    rows[0].skuCode = data.data.skucode
+      rows[0].sku = data.data.skuname;
+      rows[0].skuid = data.data.sku;
+      rows[0].pendingqty = data.data.pending_qty;
+      rows[0].orderqty = data.data.ord_qty;
+      rows[0].rate = data.data.rate;
+      rows[0].skuCode = data.data.skucode;
     }
     setSelectLoading(false);
-    console.log(data)
-}
-
+    console.log(data);
+  };
 
   const getComponentDetails = async (value, id) => {
     const { data } = await axios.post("/jwvendor/getComponentDetailsByCode", {
@@ -100,39 +108,38 @@ const getProductDetails = async () => {
     return data;
   };
   const inputHandler = async (name, value, id) => {
-    console.log(name,value,id)
+    console.log(name, value, id);
     let arr = rows;
     if (name === "rate") {
-       rows[0].rate = value
-    }else if(name === 'qty'){
-      rows[0].finishedqty = value
+      rows[0].rate = value;
+    } else if (name === "qty") {
+      rows[0].finishedqty = value;
+    } else if (name === "mfgQty") {
+      rows[0].mfgQty = value;
     }
   };
   const validationHandler = (headerData) => {
     let validation = false;
-    let message = ""; 
+    let message = "";
     if (validation === "qty") {
       message = "Please enter a quanity more than 0";
     }
     if (validation) {
       return toast.error(message);
     }
-    let finalObj = { }
+    let finalObj = {};
     setShowSubmitConfirm(finalObj);
   };
   const submitHandler = async () => {
     if (showSubmitConfirm) {
       setSubmitLoading(true);
-      const { data } = await axios.post(
-        '/jwvendor/sfgInward',
-        {
-          "jw_id": headerOptions.jobwork,
-          "jw_challan": headerOptions.challan,
-          "sku": rows[0].skuCode,
-          "qty": rows[0].finishedqty,
-          "rate": rows[0].rate,
-        }
-      );
+      const { data } = await axios.post("/jwvendor/sfgInward", {
+        jw_id: headerOptions.jobwork,
+        jw_challan: headerOptions.challan,
+        sku: rows[0].skuCode,
+        qty: rows[0].finishedqty,
+        rate: rows[0].rate,
+      });
       setSubmitLoading(false);
       setShowSubmitConfirm(false);
       if (data.code === 200) {
@@ -161,6 +168,7 @@ const getProductDetails = async () => {
         qty: 0,
         uom: "--",
         remark: "",
+        mfgQty: 0,
       },
     ]);
     setShowResetConfirm(false);
@@ -168,15 +176,11 @@ const getProductDetails = async () => {
   const columns = [
     {
       headerName: "SKU Name",
-      renderCell: ({ row }) => (
-        <Input disabled value={row.sku} />
-      ),
+      renderCell: ({ row }) => <Input disabled value={row.sku} />,
     },
     {
       headerName: "SKU Code",
-      renderCell: ({ row }) => (
-        <Input disabled value={row.skuCode} />
-      ),
+      renderCell: ({ row }) => <Input disabled value={row.skuCode} />,
     },
     {
       headerName: "Qty",
@@ -184,7 +188,7 @@ const getProductDetails = async () => {
         <Input
           defaultValue={row.finishedqty}
           onChange={(e) => {
-            inputHandler("qty", e.target.value)
+            inputHandler("qty", e.target.value);
           }}
         />
       ),
@@ -192,22 +196,12 @@ const getProductDetails = async () => {
     {
       headerName: "Pending Qty",
       width: 150,
-      renderCell: ({ row }) => (
-        <Input
-          value={row.pendingqty}
-          disabled
-        />
-      ),
+      renderCell: ({ row }) => <Input value={row.pendingqty} disabled />,
     },
     {
       headerName: "Order Qty",
       width: 150,
-      renderCell: ({ row }) => (
-        <Input
-          value={row.orderqty}
-          disabled
-        />
-      ),
+      renderCell: ({ row }) => <Input value={row.orderqty} disabled />,
     },
     {
       headerName: "Rate",
@@ -216,7 +210,18 @@ const getProductDetails = async () => {
           disabled
           value={row.rate}
           onChange={(e) => {
-            inputHandler("rate", e.target.value)
+            inputHandler("rate", e.target.value);
+          }}
+        />
+      ),
+    },
+    {
+      headerName: "MFG QTY",
+      renderCell: ({ row }) => (
+        <Input
+          value={row.mfgQty}
+          onChange={(e) => {
+            inputHandler("mfgQty", e.target.value);
           }}
         />
       ),
@@ -340,6 +345,13 @@ const getProductDetails = async () => {
           }}
         >
           <FormTable columns={columns} data={rows} />
+          <NavFooter
+            // selectLoading={selectLoading}
+            submitFunction={getBomFromJW}
+            // resetFunction={resetModal}
+            nextLabel="Next"
+            // setSelectLoading={setSelectLoading}
+          />
         </Col>
       </Row>
     </div>

@@ -32,6 +32,8 @@ function RMConsumption() {
   const [asyncOptions, setAsyncOptions] = useState([]);
   const [selectLoading, setSelectLoading] = useState(false);
   const [challans, setChallans] = useState([]);
+
+  const [availQty, setAvailQty] = useState("");
   const [headerOptions, setHeaderOptions] = useState({
     jobwork: "",
     challan: "",
@@ -40,11 +42,11 @@ function RMConsumption() {
     {
       id: v4(),
       component: "",
-      location: locationOptions[0]?.value,
+      location: "",
       qty: 0,
       uom: "--",
       remark: "",
-      // closing: "",
+      availableQty: "",
     },
   ]);
   const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
@@ -90,11 +92,10 @@ function RMConsumption() {
     const newRow = {
       id: v4(),
       component: "",
-      location: locationOptions[0]?.value,
+      location: "",
       qty: "",
       uom: "--",
       remark: "",
-      // closing: "",
     };
     let arr = rows;
     arr = [newRow, ...arr];
@@ -157,9 +158,7 @@ function RMConsumption() {
       qty: rows.map((row) =>
         row.qty === "" || row.qty === 0 ? (validation = "qty") : row.qty
       ),
-      pick_location: rows.map(
-        (row) => (row.location = locationOptions[0]?.value)
-      ),
+      pick_location: rows.map((row) => row.location),
       remark: rows.map((row) => row.remark),
     };
     if (validation === "component") {
@@ -206,17 +205,91 @@ function RMConsumption() {
     },
     fileList,
   };
+  const getDetails = async (c, l) => {
+    console.log("c", c.value);
+    console.log("l", l);
+    // setPageLoading(true);
+    const { data } = await axios.post("/jwvendor/getStock", {
+      component: c.value,
+      pick_location: l,
+    });
+    rows[0].availableQty = "";
+    if (data.code === 200) {
+      // console.log("data", data);
+      rows[0].availableQty = data.data.calculated_qty;
+      // availQty = data.data.location_qty;
+      setAvailQty(data.data.calculated_qty);
+      // console.log("data.data.location_qty- >>", data.data.location_qty);
+    }
+  };
+  useEffect(() => {
+    // console.log("availQty", availQty);
+    if (availQty) {
+      // console.log("availQty inside avail Qty", availQty);
+      setAvailQty(availQty);
+      // rows[0].availableQty = availQty;
+    }
+  }, [availQty]);
 
+  useEffect(() => {
+    // console.log("rows?.pick_location", rows);
+    if (rows[0]?.component && rows[0]?.location) {
+      console.log("rows[0]?.pick_location", rows[0]?.location);
+      console.log("rows[0]?.component", rows[0]?.component);
+      getDetails(rows[0].component, rows[0].location);
+    }
+  }, [rows[0]?.component, rows[0]?.location]);
+  const confirmModal = () => {
+    Modal.confirm({
+      title: "Are you sure you want to submit this Tranfer Request?",
+      content:
+        "Please make sure that the values are correct, This process is irreversible",
+      onOk() {
+        validateFields();
+      },
+      onCancel() {},
+    });
+  };
+  const validateFields = async () => {
+    const values = await form.validateFields();
+    console.log("valuesss", values);
+    submitData(values);
+  };
+  const submitData = async (values) => {
+    console.log("rows=>", rows);
+
+    let payload = {
+      challan_no: values.challan_no,
+      challan_date: values.challan_date,
+      jobwork_attach: values.file,
+      component: rows.map((r) => r.component.value),
+      qty: rows.map((r) => r.qty),
+      pick_location: rows.map((r) => r.location),
+      remark: rows.map((r) => r.remark),
+    };
+    console.log("payload", payload);
+    const response = await axios.post("/jwvendor/rmConsp", payload);
+    const { data } = response;
+    console.log("data", data);
+    if (data.code === 200) {
+      toast.success(data.message);
+      resetHandler();
+    } else {
+      toast.error(data.message.msg);
+    }
+  };
   const submitHandler = async () => {
-    if (showSubmitConfirm) {
+    if (showSubmitConfirm && showSubmitConfirm.fromdata) {
+    }
+    {
       let fileData;
-      // setSubmitLoading(true);
+      setSubmitLoading(true);
       const response = await axios.post(
         "/jwvendor/upload-invoice",
         showSubmitConfirm.fromdata
       );
       if (response.status != 200) {
-        // setSubmitLoading(false);
+        setSubmitLoading(false);
         return toast.error("something went worng while uploading the file");
       }
       const uploadedFile = response.data;
@@ -225,17 +298,17 @@ function RMConsumption() {
       showSubmitConfirm.finalObj.jobwork_attach = uploadedFile.data;
       if (fileData.code != 200) {
         console.log("fileDatafileData", fileData);
-        return toast.error(
-          "Some error occured while uploading invoices, Please try again"
-        );
+        // return toast.error(
+        //   "Some error occured while uploading invoices, Please try again"
+        // );
       } else {
         const { data } = await axios.post(
           "/jwvendor/rmConsp",
           showSubmitConfirm.finalObj
         );
-        // console.log("data", data);
+        console.log("data", showSubmitConfirm.finalObj);
 
-        // setSubmitLoading(false);
+        setSubmitLoading(false);
         setShowSubmitConfirm(false);
         if (data.code === 200) {
           toast.success(data.message);
@@ -245,14 +318,14 @@ function RMConsumption() {
         }
         setTimeout(() => {
           toast.error("Time Out!");
-          // resetHandler();
-          // setSubmitLoading(false);
+          resetHandler();
+          setSubmitLoading(false);
         }, 30000);
         submitLoading(false);
       }
       setTimeout(() => {
-        toast.error("Time Out for File Upload!");
-        // setSubmitLoading(false);
+        toast.error("Time Out!");
+        setSubmitLoading(false);
       }, 60000);
     }
   };
@@ -270,39 +343,14 @@ function RMConsumption() {
       {
         id: v4(),
         component: "",
-        location: locationOptions[0]?.value,
+        location: "",
         qty: 0,
         uom: "--",
         remark: "",
-        // closing: "",
       },
     ]);
     setShowResetConfirm(false);
   };
-  const getClosing = async (id, component, location) => {
-    const response = await axios.post("/jwreport/compClosing", {
-      component: component.value,
-      location: location,
-    });
-    // console.log("response", response);
-    // console.log("id", id);
-    let { data } = response;
-    // rows[id].closing = data.data.closingStock;
-    let arr = rows;
-    let a = arr.filter((r) => r.id === id);
-    // console.log("arr", a);
-    a[0].closing = data?.data?.closingStock;
-  };
-  useEffect(() => {
-    // console.log("rows.id", rows);
-    rows.forEach((element) => {
-      if (typeof element.closing === "undefined") {
-        // console.log("here is the element", element);
-        getClosing(element?.id, element?.component, locationOptions[0]?.value);
-      }
-    });
-  }, [rows]);
-
   const columns = [
     {
       headerName: (
@@ -333,6 +381,7 @@ function RMConsumption() {
     },
     {
       headerName: "Component",
+      width: 200,
       renderCell: ({ row }) => (
         <MyAsyncSelect
           //   placeholder="Search Part Code"
@@ -352,12 +401,13 @@ function RMConsumption() {
     },
     {
       headerName: "Pick Location",
+      width: 100,
       renderCell: ({ row }) => (
         <MySelect
           // labelInValue
-          value={locationOptions[0]?.text}
           // value={locationOptions[0]?.text}
-          // options={locationOptions}
+          // value={locationOptions[0]?.text}
+          options={locationOptions}
           onChange={(value) => {
             inputHandler("location", value, row.id);
           }}
@@ -365,15 +415,16 @@ function RMConsumption() {
       ),
     },
     {
-      headerName: "Closing",
+      headerName: "Available Qty",
       width: 150,
       renderCell: ({ row }) => (
         <Input
-          value={row.closing}
-          // options={locationOptions}
-          // suffix={row.uom}
+          value={row.availableQty}
+          options={locationOptions}
+          suffix={row.uom}
+          disabled
           onChange={(e) => {
-            inputHandler("closing", e.target.value, row.id);
+            inputHandler("availableQty", e.target.value, row.id);
           }}
         />
       ),
@@ -493,7 +544,11 @@ function RMConsumption() {
                 </Col>
                 <Col>
                   <Form.Item>
-                    <Button type="primary" htmlType="submit">
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      onClick={() => confirmModal()}
+                    >
                       Save
                     </Button>
                   </Form.Item>

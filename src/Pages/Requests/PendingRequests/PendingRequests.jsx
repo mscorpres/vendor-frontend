@@ -16,7 +16,6 @@ import { downloadCSV } from "../../../Components/exportToCSV";
 import socket from "../../../Components/socket";
 import { v4 } from "uuid";
 import { useSelector } from "react-redux";
-
 function PendingRequests() {
   document.title = "Pending Requests";
   const [wise, setWise] = useState("datewise");
@@ -55,26 +54,13 @@ function PendingRequests() {
     setSearchLoading(false);
   };
   const downloadData = () => {
-    // downloadCSV(rows, colcolumns, "Pending Report");
     let newId = v4();
     let arr = notifications;
-
-    // if (!user.company_branch) {
-    //   toast.error("Please select a branch to download report");
-    //   return;
-    // }
-    // const payload = {
-    //   date: dateRange,
-    //   notificationId: newId,
-    // };
-    // console.log("payload", payload);
-    // console.log("here in socket");
     socket.emit("vendorReqPending", {
-      otherdata:JSON.stringify ({
+      otherdata: {
         searchValue: searchInput,
         searchBy: wise,
-      }),
-      notificationId:newId
+      },
     });
   };
   const colcolumns = [
