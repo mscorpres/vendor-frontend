@@ -250,12 +250,6 @@ const App = () => {
       );
       navigate("/requests/pending");
     }
-    if (!user) {
-      navigate("/login");
-    }
-    if (user) {
-      if (pathname === "/") navigate("/requests/pending");
-    }
     if (user) {
       socket.emit("fetch_notifications", { source: "react" });
     }
