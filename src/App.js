@@ -25,7 +25,6 @@ import socket from "./Components/socket.js";
 import Notifications from "./Components/Notifications";
 import axios from "axios";
 import { setUser } from "./Features/loginSlice.js/loginSlice";
-// import MessageModal from "./Components/MessageModal/MessageModal";
 // antd imports
 import Layout, { Content, Header } from "antd/lib/layout/layout";
 import { Badge, Row, Select, Space, Switch, notification } from "antd";
