@@ -36,7 +36,7 @@ function ManufacturingSFG() {
       skuCode: "",
       rate: "",
       remark: "",
-      mfgQty: "0",
+      mfgQty: "",
     },
   ]);
   const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
@@ -90,6 +90,7 @@ function ManufacturingSFG() {
       let arr = data.data.map((r) => {
         return {
           ...r,
+          bom_qty: r.bom_qty * Number(rows[0].mfgQty),
         };
       });
       setBomListRows(arr);
@@ -144,13 +145,23 @@ function ManufacturingSFG() {
   const submitHandler = async () => {
     if (showSubmitConfirm) {
       setSubmitLoading(true);
-      const { data } = await axios.post("/jwvendor/sfgInward", {
-        jw_id: headerOptions.jobwork,
-        jw_challan: headerOptions.challan,
-        sku: rows[0].skuCode,
-        qty: rows[0].finishedqty,
-        rate: rows[0].rate,
-      });
+      let pao = {
+        header: {
+          jw_id: headerOptions.jobwork,
+          jw_challan: headerOptions.challan,
+          sku: rows[0].skuCode,
+          qty: rows[0].finishedqty,
+          rate: rows[0].rate,
+        },
+        material: {
+          partName: bomListRows.map((r) => r.part_name),
+          partCode: bomListRows.map((r) => r.part_no),
+          bomQty: bomListRows.map((r) => r.bom_qty),
+          locQty: bomListRows.map((r) => r.loc_qty),
+        },
+      };
+      console.log("pao", pao);
+      const { data } = await axios.post("/jwvendor/sfgInward", {});
       setSubmitLoading(false);
       setShowSubmitConfirm(false);
       if (data.code === 200) {
@@ -230,7 +241,7 @@ function ManufacturingSFG() {
       headerName: "MFG QTY",
       renderCell: ({ row }) => (
         <Input
-          value={row.mfgQty}
+          // value={row.mfgQty}
           onChange={(e) => {
             inputHandler("mfgQty", e.target.value);
           }}
@@ -298,7 +309,9 @@ function ManufacturingSFG() {
       renderCell: ({ row }) => <Input value={row.loc_qty} disabled />,
     },
   ];
-
+  const backTable = () => {
+    setBomList(false);
+  };
   useEffect(() => {
     getChallans();
     getProductDetails();
@@ -385,7 +398,7 @@ function ManufacturingSFG() {
                   }}
                 />
               </Form.Item>
-              <Row justify="end" gutter={8}>
+              <Row justify="end" gutter={8} style={{}}>
                 <Col>
                   <Form.Item>
                     <Button
@@ -424,7 +437,7 @@ function ManufacturingSFG() {
           <NavFooter
             // selectLoading={selectLoading}
             submitFunction={getBomFromJW}
-            // resetFunction={resetModal}
+            backFunction={backTable}
             nextLabel="Next"
             // setSelectLoading={setSelectLoading}
           />
