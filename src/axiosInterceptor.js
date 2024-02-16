@@ -20,9 +20,8 @@ import { toast } from "react-toastify";
 // });
 // //
 
-// const link = "https://ims.mscapi.live/";
-const link = "https://dev.mscorpres.net/";
-const socketLink = "https://socket.mscapi.live:3005";
+const link = process.env.REACT_APP_API_BASE_URL;
+const socketLink = process.env.REACT_APP_SOCKET_BASE_URL;
 
 const imsAxios = axios.create({
   baseURL: link,
