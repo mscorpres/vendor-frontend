@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Card, Col, Form, Input, Modal, Row } from "antd";
+import { Button, Card, Col, Drawer, Form, Input, Modal, Row } from "antd";
 import axios from "axios";
 import SearchHeader from "../../../Components/SearchHeader";
 import MyAsyncSelect from "../../../Components/MyAsyncSelect";
@@ -12,11 +12,11 @@ import { toast } from "react-toastify";
 import showToast from "../../../Components/MyToast";
 import { useEffect } from "react";
 import NavFooter from "../../../Components/NavFooter";
-
 function ManufacturingSFG() {
   document.title = "Create SFG";
   const [asyncOptions, setAsyncOptions] = useState([]);
   const [selectLoading, setSelectLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [challans, setChallans] = useState([]);
   const [bomList, setBomList] = useState(false);
   const [bomListRows, setBomListRows] = useState([]);
@@ -78,8 +78,12 @@ function ManufacturingSFG() {
       setAsyncOptions([]);
     }
   };
+  const backFunction = () => {
+    setShowSubmitConfirm(false);
+    setSelectLoading(false);
+  };
   const getBomFromJW = async () => {
-    console.log("rows", rows);
+    setLoading(true);
     const { data } = await axios.post("/jwvendor/getBomItem", {
       jwID: headerOptions.jobwork,
       sfgCreateQty: rows[0].mfgQty,
@@ -94,10 +98,15 @@ function ManufacturingSFG() {
         };
       });
       setBomListRows(arr);
+      setLoading(false);
+    } else {
+      toast.error(data.message.msg);
+      setLoading(false);
     }
+    setLoading(false);
   };
   const getProductDetails = async () => {
-    setSelectLoading(true);
+    // setSelectLoading(true);
     const { data } = await axios.post("/jwvendor/getJwSkuDetails", {
       jw_id: headerOptions.jobwork,
     });
@@ -161,7 +170,7 @@ function ManufacturingSFG() {
         },
       };
       console.log("pao", pao);
-      const { data } = await axios.post("/jwvendor/sfgInward", {});
+      const { data } = await axios.post("/jwvendor/sfgInward", pao);
       setSubmitLoading(false);
       setShowSubmitConfirm(false);
       if (data.code === 200) {
@@ -169,7 +178,9 @@ function ManufacturingSFG() {
         resetHandler();
       } else {
         toast.error(data.message.msg);
+        setSubmitLoading(false);
       }
+      setSubmitLoading(false);
     }
   };
   const resetHandler = () => {
@@ -238,7 +249,7 @@ function ManufacturingSFG() {
       ),
     },
     {
-      headerName: "MFG QTY",
+      headerName: "SFG QTY",
       renderCell: ({ row }) => (
         <Input
           // value={row.mfgQty}
@@ -319,6 +330,38 @@ function ManufacturingSFG() {
 
   return (
     <div style={{ height: "90%" }}>
+      <Drawer
+        open={bomList}
+        onClose={() => setBomList(false)}
+        placement="right"
+        title="Bom List"
+        closable={true}
+        width="100vw"
+      >
+        <FormTable columns={columnsBOM} data={bomListRows} />
+        <NavFooter
+          selectLoading={selectLoading}
+          submitFunction={() => setShowSubmitConfirm(true)}
+          backFunction={() => setBomList(false)}
+          nextLabel="Submit"
+          // setSelectLoading={setSelectLoading}
+        />
+        {/*     <Form.Item>
+                    <Button
+                      htmlType="button"
+                      onClick={() => setShowResetConfirm(true)}
+                    >
+                      Reset
+                    </Button>
+                  </Form.Item>
+                </Col>
+                <Col>
+                  <Form.Item>
+                    <Button type="primary" htmlType="submit">
+                      Save
+                    </Button>
+                  </Form.Item> */}
+      </Drawer>
       <SearchHeader title="Create SFG" />
       {/* submit confirm modal */}
       <Modal
@@ -326,7 +369,7 @@ function ManufacturingSFG() {
         open={showSubmitConfirm}
         onOk={submitHandler}
         confirmLoading={submitLoading}
-        onCancel={() => setShowSubmitConfirm(false)}
+        onCancel={() => backFunction()}
       >
         Are you sure to create this SFG?
       </Modal>
@@ -398,25 +441,6 @@ function ManufacturingSFG() {
                   }}
                 />
               </Form.Item>
-              <Row justify="end" gutter={8} style={{}}>
-                <Col>
-                  <Form.Item>
-                    <Button
-                      htmlType="button"
-                      onClick={() => setShowResetConfirm(true)}
-                    >
-                      Reset
-                    </Button>
-                  </Form.Item>
-                </Col>
-                <Col>
-                  <Form.Item>
-                    <Button type="primary" htmlType="submit">
-                      Save
-                    </Button>
-                  </Form.Item>
-                </Col>
-              </Row>
             </Form>
           </Card>
         </Col>
@@ -428,14 +452,14 @@ function ManufacturingSFG() {
             padding: 0,
           }}
         >
-          {bomList ? (
+          {/* {bomList ? (
             <FormTable columns={columnsBOM} data={bomListRows} />
-          ) : (
-            <FormTable columns={columns} data={rows} />
-          )}
+          ) : ( */}
+          <FormTable columns={columns} data={rows} />
+          {/* )} */}
 
           <NavFooter
-            // selectLoading={selectLoading}
+            loading={loading}
             submitFunction={getBomFromJW}
             backFunction={backTable}
             nextLabel="Next"
