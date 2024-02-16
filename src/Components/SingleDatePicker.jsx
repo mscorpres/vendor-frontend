@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
-import moment from "moment";
+import dayjs from "dayjs";
 import { DatePicker } from "antd";
+import { useState } from "react";
 
 export default function SingleDatePicker({
   setDate,
@@ -13,6 +14,7 @@ export default function SingleDatePicker({
   tablePicker,
   name,
   disabled,
+  format,
 }) {
   const onChange = (date, dateString) => {
     if (tablePicker) {
@@ -25,11 +27,16 @@ export default function SingleDatePicker({
   };
   useEffect(() => {
     if (setDate) {
-      setDate(
-        daysAgo
-          ? moment().subtract(daysAgo, "d").format("DD-MM-YYYY")
-          : moment().format("DD-MM-YYYY")
-      );
+      if (daysAgo) {
+        setDate(
+          daysAgo &&
+            dayjs()
+              .subtract(daysAgo, "d")
+              .format(format ?? "DD-MM-YYYY")
+        );
+      } else {
+        setDate(value);
+      }
     }
   }, []);
 
@@ -38,15 +45,11 @@ export default function SingleDatePicker({
       disabled={disabled}
       size={size ?? "default"}
       style={{ width: "100%", height: "100%" }}
-      format="DD-MM-YYYY"
-      defaultValue={
-        value
-          ? value == "empty"
-            ? null
-            : moment(value, "DD-MM-YYYY")
-          : daysAgo
-            ? moment().subtract(daysAgo, "d")
-            : moment()
+      format={format ?? "DD-MM-YYYY"}
+      value={
+        daysAgo
+          ? dayjs().subtract(daysAgo, "d")
+          : value && dayjs(value, format ?? "DD-MM-YYYY")
       }
       onChange={onChange}
       placeholder={placeholder && placeholder}

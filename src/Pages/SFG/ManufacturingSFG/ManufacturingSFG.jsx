@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Button, Card, Col, Drawer, Form, Input, Modal, Row } from "antd";
-import axios from "axios";
 import SearchHeader from "../../../Components/SearchHeader";
 import MyAsyncSelect from "../../../Components/MyAsyncSelect";
 import { CommonIcons } from "../../../Components/TableActions.jsx/TableActions";
@@ -11,6 +10,8 @@ import { v4 } from "uuid";
 import { toast } from "react-toastify";
 import showToast from "../../../Components/MyToast";
 import { useEffect } from "react";
+import { imsAxios } from "../../../axiosInterceptor";
+
 import NavFooter from "../../../Components/NavFooter";
 function ManufacturingSFG() {
   document.title = "Create SFG";
@@ -48,7 +49,7 @@ function ManufacturingSFG() {
 
   const getChallans = async () => {
     setSelectLoading(true);
-    const { data } = await axios.post("/jwvendor/getJWChallan", {
+    const { data } = await imsAxios.post("/jwvendor/getJWChallan", {
       jobwork: headerOptions.jobwork,
     });
     setSelectLoading(false);
@@ -64,7 +65,7 @@ function ManufacturingSFG() {
   };
   const getAsyncOptions = async (search, url) => {
     setSelectLoading(true);
-    const { data } = await axios.post(url, {
+    const { data } = await imsAxios.post(url, {
       search: search,
     });
     setSelectLoading(false);
@@ -84,9 +85,13 @@ function ManufacturingSFG() {
   };
   const getBomFromJW = async () => {
     setLoading(true);
+<<<<<<< HEAD
     console.log("rows[0].mfgQty", rows[0].mfgQty);
     let sfg = rows[0].mfgQty;
     const { data } = await axios.post("/jwvendor/getBomItem", {
+=======
+    const { data } = await imsAxios.post("/jwvendor/getBomItem", {
+>>>>>>> 706820c6c690272c4efb09b171369a11229cf194
       jwID: headerOptions.jobwork,
       sfgCreateQty: sfg,
     });
@@ -109,7 +114,7 @@ function ManufacturingSFG() {
   };
   const getProductDetails = async () => {
     // setSelectLoading(true);
-    const { data } = await axios.post("/jwvendor/getJwSkuDetails", {
+    const { data } = await imsAxios.post("/jwvendor/getJwSkuDetails", {
       jw_id: headerOptions.jobwork,
     });
     if (data.code === 200) {
@@ -125,9 +130,12 @@ function ManufacturingSFG() {
   };
 
   const getComponentDetails = async (value, id) => {
-    const { data } = await axios.post("/jwvendor/getComponentDetailsByCode", {
-      component_code: value.value,
-    });
+    const { data } = await imsAxios.post(
+      "/jwvendor/getComponentDetailsByCode",
+      {
+        component_code: value.value,
+      }
+    );
     return data;
   };
   const inputHandler = async (name, value, id) => {
@@ -137,8 +145,6 @@ function ManufacturingSFG() {
       rows[0].rate = value;
     } else if (name === "qty") {
       rows[0].finishedqty = value;
-    } else if (name === "mfgQty") {
-      rows[0].mfgQty = value;
     }
   };
   const validationHandler = (headerData) => {
@@ -172,7 +178,7 @@ function ManufacturingSFG() {
         },
       };
       console.log("pao", pao);
-      const { data } = await axios.post("/jwvendor/sfgInward", pao);
+      const { data } = await imsAxios.post("/jwvendor/sfgInward", pao);
       setSubmitLoading(false);
       setShowSubmitConfirm(false);
       if (data.code === 200) {
@@ -203,7 +209,6 @@ function ManufacturingSFG() {
         qty: 0,
         uom: "--",
         remark: "",
-        mfgQty: 0,
       },
     ]);
     setShowResetConfirm(false);

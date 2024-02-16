@@ -18,15 +18,12 @@ import {
   setFavourites,
   setTestPages,
   setLocations,
+  setUser,
 } from "./Features/loginSlice.js/loginSlice";
 import UserMenu from "./Components/UserMenu";
 import Logo from "./Components/Logo";
 import socket from "./Components/socket.js";
 import Notifications from "./Components/Notifications";
-import axios from "axios";
-import { setUser } from "./Features/loginSlice.js/loginSlice";
-// import MessageModal from "./Components/MessageModal/MessageModal";
-// antd imports
 import Layout, { Content, Header } from "antd/lib/layout/layout";
 import { Badge, Row, Select, Space, Switch, notification } from "antd";
 // icons import
@@ -42,14 +39,13 @@ import {
   CalculatorOutlined,
   MinusOutlined,
   RadiusBottomrightOutlined,
-  LineChartOutlined,
 } from "@ant-design/icons";
 import InternalNav from "./Components/InternalNav";
 import showToast from "./Components/MyToast";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-// import BarChartIcon from "@mui/icons-material/BarChart";
-//
+import { imsAxios } from "./axiosInterceptor";
+
 const App = () => {
   const { user, notifications, currentLinks } = useSelector(
     (state) => state.login
@@ -64,11 +60,11 @@ const App = () => {
   const [newNotification, setNewNotification] = useState(null);
   const [favLoading, setFavLoading] = useState(false);
   const { pathname } = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams();
   const [internalLinks, setInternalLinks] = useState([]);
   const [testToggleLoading, setTestToggleLoading] = useState(false);
   const [testPage, setTestPage] = useState(false);
   const notificationsRef = useRef();
+  const [searchParams, setSearchParams] = useSearchParams();
   function getItem(label, key, icon, children) {
     return {
       key,
@@ -85,11 +81,6 @@ const App = () => {
         // <MinusOutlined />
       ),
       getItem(
-        <Link to="/requests/transfer">Transfer Requests</Link>,
-        "/requests/requests/transfer"
-        // <MinusOutlined />
-      ),
-      getItem(
         <Link to="/requests/completed">Completed Requests</Link>,
         "/requests/requests/completed"
         // <MinusOutlined />
@@ -98,12 +89,6 @@ const App = () => {
     getItem(
       <Link to="/rm_consumption">RM Consumption</Link>,
       "/rm_consumption",
-      <LineChartOutlined />
-      // <BarChartIcon />
-    ),
-    getItem(
-      <Link to="/rm_rejection">RM Rejection</Link>,
-      "/rm_rejection",
       <MinusOutlined />
     ),
     getItem("SFG", "B", <RadiusBottomrightOutlined />, [
@@ -120,13 +105,8 @@ const App = () => {
     ]),
     getItem("Reports", "C", <CalculatorOutlined />, [
       getItem(
-        <Link to="/reports/rm_stock">VQ01</Link>,
+        <Link to="/reports/rm_stock">RM Stock</Link>,
         "/reports/rm_stock"
-        // <MinusOutlined />
-      ),
-      getItem(
-        <Link to="/reports/rmConsumption_report">VQ02 </Link>,
-        "/reports/rmConsumption_report"
         // <MinusOutlined />
       ),
       getItem(
@@ -139,10 +119,6 @@ const App = () => {
       ),
       getItem(
         <Link to="/vr03">VR03</Link>
-        // <MinusOutlined />
-      ),
-      getItem(
-        <Link to="/vr03">VR04</Link>
         // <MinusOutlined />
       ),
     ]),
@@ -165,7 +141,7 @@ const App = () => {
 
     if (!status) {
       setFavLoading(true);
-      const { data } = await axios.post("/backend/favouritePages", {
+      const { data } = await imsAxios.post("/backend/favouritePages", {
         pageUrl: pathname,
         source: "react",
       });
@@ -178,7 +154,7 @@ const App = () => {
     } else {
       let page_id = favs.filter((f) => f.url === pathname)[0].page_id;
       setFavLoading(true);
-      const { data } = await axios.post("/backend/removeFavouritePages", {
+      const { data } = await imsAxios.post("/backend/removeFavouritePages", {
         page_id,
       });
       setFavLoading(false);
@@ -204,7 +180,7 @@ const App = () => {
   };
   const getLocations = async () => {
     // setPageLoading(true);
-    const { data } = await axios.get("/jwvendor/fetchAllotedLocation");
+    const { data } = await imsAxios.get("/jwvendor/fetchAllotedLocation");
     // setPageLoading(false);
     if (data.code == 200) {
       let arr = data.data.map((row) => ({
@@ -226,7 +202,6 @@ const App = () => {
         })
         .join("")
     );
-
     return JSON.parse(payload);
   }
   useEffect(() => {
@@ -238,13 +213,10 @@ const App = () => {
         setShowSideBar(false);
       }
     });
-
-
-    // let url = "https://oakter.vendor.mscorpres.co.in/requests/pending?";
-
     var getTokenFromUrl = searchParams.get("token");
     if (getTokenFromUrl) {
       var payload = decodeJwt(getTokenFromUrl);
+      console.log("payload", payload);
       localStorage.setItem(
         "loggedInUserVendor",
         JSON.stringify({
@@ -275,10 +247,9 @@ const App = () => {
         })
       );
       navigate("/requests/pending");
-     
-      if (user) {
-        socket.emit("fetch_notifications", { source: "react" });
-      }
+    }
+    if (user) {
+      socket.emit("fetch_notifications", { source: "react" });
     }
     getLocations();
   }, []);
@@ -468,6 +439,7 @@ const App = () => {
   useEffect(() => {
     setInternalLinks(currentLinks);
   }, [currentLinks]);
+  const options = [{ label: "A-21 [BRMSC012]", value: "BRMSC012" }];
   return (
     <div style={{ height: "100vh" }}>
       <ToastContainer

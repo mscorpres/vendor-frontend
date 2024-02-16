@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import { toast } from "react-toastify";
 import showToast from "../../Components/MyToast";
+import { imsAxios } from "../../axiosInterceptor";
 let fav =
   typeof JSON.parse(localStorage.getItem("loggedInUserVendor"))?.favPages ==
   "string"
@@ -33,7 +33,7 @@ export const loginAuth = createAsyncThunk(
   "auth/login",
   async (user, thunkAPI) => {
     try {
-      const { data } = await axios.post("/auth/vendor_signin", {
+      const { data } = await imsAxios.post("/auth/vendor_signin", {
         username: user.username,
         password: user.password,
       });
@@ -52,7 +52,7 @@ export const loginAuth = createAsyncThunk(
             emailConfirmed: data.data.emailConfirmed,
           })
         );
-
+        imsAxios.defaults.headers["x-csrf-token"] = data.data.token;
         return await data.data;
       } else {
         return thunkAPI.rejectWithValue(data.message);

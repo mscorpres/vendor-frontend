@@ -9,7 +9,10 @@ import { CommonIcons } from "../../Components/TableActions.jsx/TableActions";
 import { downloadCSV } from "../../Components/exportToCSV";
 import MyAsyncSelect from "../../Components/MyAsyncSelect";
 import { toast } from "react-toastify";
-import printFunction, { downloadFunction } from "../../Components/printFunction";
+import printFunction, {
+  downloadFunction,
+} from "../../Components/printFunction";
+import { imsAxios } from "../../axiosInterceptor";
 
 const Vr01 = () => {
   document.title = "All RM Transaction";
@@ -61,65 +64,18 @@ const Vr01 = () => {
   const [rows, setRows] = useState([]);
   const [showView, setShowView] = useState(false);
 
-
-  const printwocompleted = async(row)=>{
+  const printwocompleted = async (row) => {
     try {
       setLoading("fetch");
-      const response = await axios.post('/createwo/print_wo_completed_list',{
-        "transaction": row.transactionId
-      })
-      const {data} = response
-      printFunction(response.data.data.buffer.data)
-     toast.success(data.message)
-    } catch (error) {
-      console.log("some error occured while fetching rows", error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  const downloadwocompleted = async(row)=>{
-    try {
-      setLoading("fetch");
-      const response = await axios.post('/createwo/print_wo_completed_list',{
-          "transaction": row.transactionId
-      })
-      const {data} = response
-      downloadFunction(response.data.data.buffer.data)
-      toast.success(data.message)
-    } catch (error) {
-      console.log("some error occured while fetching rows", error);
-    } finally {
-      setLoading(false);
-    }
-  }
-const downloadCol =()=>{
-  downloadCSV(rows, columns, "VR01 Report");
-}
-  const getRows = async () => {
-    try {
-      setLoading("fetch");
-      const response = await axios.post('/vr01/partTransaction',{
-        date: searchInput,
-      })
-      const {data} = response
-      console.log(data)
-      if(data.code === 200){
-      const arr = data.response.data.map((row, index) => ({
-        id: index + 1,
-        date: row.date,
-        part: row.part,
-        part_code: row.part_code,
-        type: row.type,
-        qty: row.qty,
-        hsn: row.hsn,
-        txn_id: row.txn_id,
-      }));
-      setRows(arr);
-    }else{
-      toast.error(data.message.msg)
-      setRows([]);
-    }
+      const response = await imsAxios.post(
+        "/createwo/print_wo_completed_list",
+        {
+          transaction: row.transactionId,
+        }
+      );
+      const { data } = response;
+      printFunction(response.data.data.buffer.data);
+      toast.success(data.message);
     } catch (error) {
       console.log("some error occured while fetching rows", error);
     } finally {
@@ -127,6 +83,57 @@ const downloadCol =()=>{
     }
   };
 
+  const downloadwocompleted = async (row) => {
+    try {
+      setLoading("fetch");
+      const response = await imsAxios.post(
+        "/createwo/print_wo_completed_list",
+        {
+          transaction: row.transactionId,
+        }
+      );
+      const { data } = response;
+      downloadFunction(response.data.data.buffer.data);
+      toast.success(data.message);
+    } catch (error) {
+      console.log("some error occured while fetching rows", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const downloadCol = () => {
+    downloadCSV(rows, columns, "VR01 Report");
+  };
+  const getRows = async () => {
+    try {
+      setLoading("fetch");
+      const response = await imsAxios.post("/vr01/partTransaction", {
+        date: searchInput,
+      });
+      const { data } = response;
+      console.log(data);
+      if (data.code === 200) {
+        const arr = data.response.data.map((row, index) => ({
+          id: index + 1,
+          date: row.date,
+          part: row.part,
+          part_code: row.part_code,
+          type: row.type,
+          qty: row.qty,
+          hsn: row.hsn,
+          txn_id: row.txn_id,
+        }));
+        setRows(arr);
+      } else {
+        toast.error(data.message.msg);
+        setRows([]);
+      }
+    } catch (error) {
+      console.log("some error occured while fetching rows", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -168,7 +175,6 @@ const downloadCol =()=>{
     </>
   );
 };
-
 
 // id: index + 1,
 //         date: row.date,
@@ -218,6 +224,5 @@ const columns = [
     field: "txn_id",
   },
 ];
-
 
 export default Vr01;
