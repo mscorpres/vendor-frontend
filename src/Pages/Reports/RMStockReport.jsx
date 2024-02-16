@@ -43,7 +43,7 @@ function RMStockReport() {
   const dispatch = useDispatch();
   const getLocations = async () => {
     // setPageLoading(true);
-    const { data } = await imsAxios.get("/jwvendor/fetchAllotedLocation");
+    const { data } = await imsAxios.get("/jwvendor/fetchMINLocation");
     // setPageLoading(false);
     if (data.code == 200) {
       let arr = data.data.map((row) => ({
