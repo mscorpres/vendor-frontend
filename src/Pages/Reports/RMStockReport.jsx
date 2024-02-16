@@ -14,11 +14,13 @@ import { CommonIcons } from "../../Components/TableActions.jsx/TableActions";
 import { setLocations } from "../../Features/loginSlice.js/loginSlice";
 import { toast } from "react-toastify";
 import { imsAxios } from "../../axiosInterceptor";
+import useApi from "../../hooks/useApi";
+import { getComponentOptions } from "../../api/general";
+import { convertSelectOptions } from "../../utils/general";
 function RMStockReport() {
   document.title = "RM Location Query";
   const [searchLoading, setSearchLoading] = useState(false);
   const [asyncOptions, setAsyncOptions] = useState([]);
-  const [selectLoading, setSelectLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(false);
   const [rows, setRows] = useState([]);
   const [summaryData, setSummaryData] = useState([
@@ -30,7 +32,7 @@ function RMStockReport() {
     getLocations();
   }, []);
 
-  const [pageLoading, setPageLoading] = useState(false);
+  const { executeFun, loading } = useApi();
 
   const { locations: locationOptions } = useSelector((state) => state.login);
   // console.log("locationOptions", locationOptions);
@@ -95,20 +97,29 @@ function RMStockReport() {
     setFetchLoading(false);
   };
   const getPartCodes = async (search) => {
-    setSelectLoading(true);
-    const { data } = await imsAxios.post("/backend/getComponentByNameAndNo", {
-      search: search,
-    });
-    setSelectLoading(false);
-    if (data[0]) {
-      let arr = data.map((row) => ({
-        value: row.id,
-        text: row.text,
-      }));
-      setAsyncOptions(arr);
-    } else {
-      setAsyncOptions([]);
+    const response = await executeFun(
+      () => getComponentOptions(search),
+      "select"
+    );
+    let arr = [];
+    if (response.success) {
+      arr = convertSelectOptions(response.data);
     }
+    setAsyncOptions(arr);
+    // setSelectLoading(true);
+    // const { data } = await imsAxios.post("/backend/getComponentByNameAndNo", {
+    //   search: search,
+    // });
+    // setSelectLoading(false);
+    // if (data[0]) {
+    //   let arr = data.map((row) => ({
+    //     value: row.id,
+    //     text: row.text,
+    //   }));
+    //   setAsyncOptions(arr);
+    // } else {
+    //   setAsyncOptions([]);
+    // }
   };
 
   const columns = [
@@ -149,7 +160,7 @@ function RMStockReport() {
       <div style={{ width: 200 }}>
         <MyAsyncSelect
           placeholder="Search Part Code"
-          selectLoading={selectLoading}
+          selectLoading={loading("select")}
           optionsState={asyncOptions}
           onBlur={() => setAsyncOptions([])}
           value={searchObj.part_code}
