@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Button, Card, Col, Form, Input, Modal, Row } from "antd";
-import axios from "axios";
+import { Button, Card, Col, Drawer, Form, Input, Modal, Row } from "antd";
 import SearchHeader from "../../../Components/SearchHeader";
 import MyAsyncSelect from "../../../Components/MyAsyncSelect";
 import { CommonIcons } from "../../../Components/TableActions.jsx/TableActions";
@@ -13,11 +12,15 @@ import showToast from "../../../Components/MyToast";
 import { useEffect } from "react";
 import { imsAxios } from "../../../axiosInterceptor";
 
+import NavFooter from "../../../Components/NavFooter";
 function ManufacturingSFG() {
   document.title = "Create SFG";
   const [asyncOptions, setAsyncOptions] = useState([]);
   const [selectLoading, setSelectLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [challans, setChallans] = useState([]);
+  const [bomList, setBomList] = useState(false);
+  const [bomListRows, setBomListRows] = useState([]);
   const [headerOptions, setHeaderOptions] = useState({
     jobwork: "",
     challan: "",
@@ -34,6 +37,7 @@ function ManufacturingSFG() {
       skuCode: "",
       rate: "",
       remark: "",
+      mfgQty: "",
     },
   ]);
   const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
@@ -75,9 +79,35 @@ function ManufacturingSFG() {
       setAsyncOptions([]);
     }
   };
-
+  const backFunction = () => {
+    setShowSubmitConfirm(false);
+    setSelectLoading(false);
+  };
+  const getBomFromJW = async () => {
+    setLoading(true);
+    const { data } = await imsAxios.post("/jwvendor/getBomItem", {
+      jwID: headerOptions.jobwork,
+      sfgCreateQty: rows[0].mfgQty,
+    });
+    setBomList(true);
+    console.log("data->", data);
+    if (data.code === 200) {
+      let arr = data.data.map((r) => {
+        return {
+          ...r,
+          bom_qty: r.bom_qty * Number(rows[0].mfgQty),
+        };
+      });
+      setBomListRows(arr);
+      setLoading(false);
+    } else {
+      toast.error(data.message.msg);
+      setLoading(false);
+    }
+    setLoading(false);
+  };
   const getProductDetails = async () => {
-    setSelectLoading(true);
+    // setSelectLoading(true);
     const { data } = await imsAxios.post("/jwvendor/getJwSkuDetails", {
       jw_id: headerOptions.jobwork,
     });
@@ -126,13 +156,23 @@ function ManufacturingSFG() {
   const submitHandler = async () => {
     if (showSubmitConfirm) {
       setSubmitLoading(true);
-      const { data } = await imsAxios.post("/jwvendor/sfgInward", {
-        jw_id: headerOptions.jobwork,
-        jw_challan: headerOptions.challan,
-        sku: rows[0].skuCode,
-        qty: rows[0].finishedqty,
-        rate: rows[0].rate,
-      });
+      let pao = {
+        header: {
+          jw_id: headerOptions.jobwork,
+          jw_challan: headerOptions.challan,
+          sku: rows[0].skuCode,
+          qty: rows[0].finishedqty,
+          rate: rows[0].rate,
+        },
+        material: {
+          partName: bomListRows.map((r) => r.part_name),
+          partCode: bomListRows.map((r) => r.part_no),
+          bomQty: bomListRows.map((r) => r.bom_qty),
+          locQty: bomListRows.map((r) => r.loc_qty),
+        },
+      };
+      console.log("pao", pao);
+      const { data } = await imsAxios.post("/jwvendor/sfgInward", pao);
       setSubmitLoading(false);
       setShowSubmitConfirm(false);
       if (data.code === 200) {
@@ -140,7 +180,9 @@ function ManufacturingSFG() {
         resetHandler();
       } else {
         toast.error(data.message.msg);
+        setSubmitLoading(false);
       }
+      setSubmitLoading(false);
     }
   };
   const resetHandler = () => {
@@ -207,8 +249,81 @@ function ManufacturingSFG() {
         />
       ),
     },
+    {
+      headerName: "SFG QTY",
+      renderCell: ({ row }) => (
+        <Input
+          // value={row.mfgQty}
+          onChange={(e) => {
+            inputHandler("mfgQty", e.target.value);
+          }}
+        />
+      ),
+    },
   ];
-
+  const removeRows = (id) => {
+    let arr = rows;
+    arr = arr.filter((row) => row.id !== id);
+    setRows(arr);
+  };
+  const addRows = () => {
+    const newRow = {
+      id: v4(),
+      remark: "",
+      // hsn: "",
+      unit: "",
+      component: "",
+      pick_location: locationOptions[0]?.value,
+      drop_location: locationOptions[0]?.value,
+      availableQty: "",
+    };
+    setRows((rows) => [...rows, newRow]);
+  };
+  const columnsBOM = [
+    {
+      // headerName: (
+      //   <CommonIcons
+      //     disabled
+      //     action="addRow"
+      //        onClick={addRows}
+      //   />
+      // ),
+      width: 40,
+      field: "add",
+      sortable: false,
+      renderCell: ({ row }) => (
+        <CommonIcons
+          action="removeRow"
+          disabled
+          onClick={() => removeRows(rows?.id)}
+        />
+      ),
+      // sortable: false,
+    },
+    {
+      headerName: "Part Name",
+      width: 150,
+      renderCell: ({ row }) => <Input value={row.part_name} disabled />,
+    },
+    {
+      headerName: "Part No.",
+      width: 150,
+      renderCell: ({ row }) => <Input value={row.part_no} disabled />,
+    },
+    {
+      headerName: "BOM Qty",
+      width: 150,
+      renderCell: ({ row }) => <Input value={row.bom_qty} disabled />,
+    },
+    {
+      headerName: "Location Qty ",
+      width: 150,
+      renderCell: ({ row }) => <Input value={row.loc_qty} disabled />,
+    },
+  ];
+  const backTable = () => {
+    setBomList(false);
+  };
   useEffect(() => {
     getChallans();
     getProductDetails();
@@ -216,6 +331,38 @@ function ManufacturingSFG() {
 
   return (
     <div style={{ height: "90%" }}>
+      <Drawer
+        open={bomList}
+        onClose={() => setBomList(false)}
+        placement="right"
+        title="Bom List"
+        closable={true}
+        width="100vw"
+      >
+        <FormTable columns={columnsBOM} data={bomListRows} />
+        <NavFooter
+          selectLoading={selectLoading}
+          submitFunction={() => setShowSubmitConfirm(true)}
+          backFunction={() => setBomList(false)}
+          nextLabel="Submit"
+          // setSelectLoading={setSelectLoading}
+        />
+        {/*     <Form.Item>
+                    <Button
+                      htmlType="button"
+                      onClick={() => setShowResetConfirm(true)}
+                    >
+                      Reset
+                    </Button>
+                  </Form.Item>
+                </Col>
+                <Col>
+                  <Form.Item>
+                    <Button type="primary" htmlType="submit">
+                      Save
+                    </Button>
+                  </Form.Item> */}
+      </Drawer>
       <SearchHeader title="Create SFG" />
       {/* submit confirm modal */}
       <Modal
@@ -223,7 +370,7 @@ function ManufacturingSFG() {
         open={showSubmitConfirm}
         onOk={submitHandler}
         confirmLoading={submitLoading}
-        onCancel={() => setShowSubmitConfirm(false)}
+        onCancel={() => backFunction()}
       >
         Are you sure to create this SFG?
       </Modal>
@@ -295,25 +442,6 @@ function ManufacturingSFG() {
                   }}
                 />
               </Form.Item>
-              <Row justify="end" gutter={8}>
-                <Col>
-                  <Form.Item>
-                    <Button
-                      htmlType="button"
-                      onClick={() => setShowResetConfirm(true)}
-                    >
-                      Reset
-                    </Button>
-                  </Form.Item>
-                </Col>
-                <Col>
-                  <Form.Item>
-                    <Button type="primary" htmlType="submit">
-                      Save
-                    </Button>
-                  </Form.Item>
-                </Col>
-              </Row>
             </Form>
           </Card>
         </Col>
@@ -325,7 +453,19 @@ function ManufacturingSFG() {
             padding: 0,
           }}
         >
+          {/* {bomList ? (
+            <FormTable columns={columnsBOM} data={bomListRows} />
+          ) : ( */}
           <FormTable columns={columns} data={rows} />
+          {/* )} */}
+
+          <NavFooter
+            loading={loading}
+            submitFunction={getBomFromJW}
+            backFunction={backTable}
+            nextLabel="Next"
+            // setSelectLoading={setSelectLoading}
+          />
         </Col>
       </Row>
     </div>
