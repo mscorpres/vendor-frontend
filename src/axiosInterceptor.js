@@ -21,7 +21,7 @@ import { toast } from "react-toastify";
 // //
 
 // const link = "https://ims.mscapi.live/";
-const link = "https://dev.mscorpres.net/";
+const link = "https://ims.mscapi.live";
 const socketLink = "https://socket.mscapi.live:3005";
 
 const imsAxios = axios.create({
