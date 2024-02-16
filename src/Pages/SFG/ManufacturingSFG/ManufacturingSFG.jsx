@@ -85,8 +85,8 @@ function ManufacturingSFG() {
   };
   const getBomFromJW = async () => {
     setLoading(true);
-    console.log("rows[0].mfgQty", rows[0].mfgQty);
     let sfg = rows[0].mfgQty;
+    console.log("rows[0].mfgQty", sfg);
     const { data } = imsAxios.post("/jwvendor/getBomItem", {
       jwID: headerOptions.jobwork,
       sfgCreateQty: sfg,
