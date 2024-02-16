@@ -11,6 +11,7 @@ import { v4 } from "uuid";
 import { toast } from "react-toastify";
 import showToast from "../../../Components/MyToast";
 import { useEffect } from "react";
+import { imsAxios } from "../../../axiosInterceptor";
 
 function ManufacturingSFG() {
   document.title = "Create SFG";
@@ -25,13 +26,13 @@ function ManufacturingSFG() {
     {
       id: v4(),
       sku: "",
-      skuid:'',
+      skuid: "",
       location: "",
       finishedqty: 0,
       pendingqty: 0,
       orderqty: 0,
       skuCode: "",
-      rate:"",
+      rate: "",
       remark: "",
     },
   ]);
@@ -44,7 +45,7 @@ function ManufacturingSFG() {
 
   const getChallans = async () => {
     setSelectLoading(true);
-    const { data } = await axios.post("/jwvendor/getJWChallan", {
+    const { data } = await imsAxios.post("/jwvendor/getJWChallan", {
       jobwork: headerOptions.jobwork,
     });
     setSelectLoading(false);
@@ -60,7 +61,7 @@ function ManufacturingSFG() {
   };
   const getAsyncOptions = async (search, url) => {
     setSelectLoading(true);
-    const { data } = await axios.post(url, {
+    const { data } = await imsAxios.post(url, {
       search: search,
     });
     setSelectLoading(false);
@@ -75,64 +76,63 @@ function ManufacturingSFG() {
     }
   };
 
-const getProductDetails = async () => {
-  setSelectLoading(true);
-    const { data } = await axios.post("/jwvendor/getJwSkuDetails", {
+  const getProductDetails = async () => {
+    setSelectLoading(true);
+    const { data } = await imsAxios.post("/jwvendor/getJwSkuDetails", {
       jw_id: headerOptions.jobwork,
     });
     if (data.code === 200) {
-    rows[0].sku = data.data.skuname
-    rows[0].skuid = data.data.sku
-    rows[0].pendingqty = data.data.pending_qty
-    rows[0].orderqty = data.data.ord_qty
-    rows[0].rate = data.data.rate
-    rows[0].skuCode = data.data.skucode
+      rows[0].sku = data.data.skuname;
+      rows[0].skuid = data.data.sku;
+      rows[0].pendingqty = data.data.pending_qty;
+      rows[0].orderqty = data.data.ord_qty;
+      rows[0].rate = data.data.rate;
+      rows[0].skuCode = data.data.skucode;
     }
     setSelectLoading(false);
-    console.log(data)
-}
-
+    console.log(data);
+  };
 
   const getComponentDetails = async (value, id) => {
-    const { data } = await axios.post("/jwvendor/getComponentDetailsByCode", {
-      component_code: value.value,
-    });
+    const { data } = await imsAxios.post(
+      "/jwvendor/getComponentDetailsByCode",
+      {
+        component_code: value.value,
+      }
+    );
     return data;
   };
   const inputHandler = async (name, value, id) => {
-    console.log(name,value,id)
+    console.log(name, value, id);
     let arr = rows;
     if (name === "rate") {
-       rows[0].rate = value
-    }else if(name === 'qty'){
-      rows[0].finishedqty = value
+      rows[0].rate = value;
+    } else if (name === "qty") {
+      rows[0].finishedqty = value;
     }
   };
   const validationHandler = (headerData) => {
     let validation = false;
-    let message = ""; 
+    let message = "";
     if (validation === "qty") {
       message = "Please enter a quanity more than 0";
     }
     if (validation) {
       return toast.error(message);
     }
-    let finalObj = { }
+    let finalObj = {};
     setShowSubmitConfirm(finalObj);
   };
   const submitHandler = async () => {
     if (showSubmitConfirm) {
       setSubmitLoading(true);
-      const { data } = await axios.post(
-        '/jwvendor/sfgInward',
-        {
-          "jw_id": headerOptions.jobwork,
-          "jw_challan": headerOptions.challan,
-          "sku": rows[0].skuCode,
-          "qty": rows[0].finishedqty,
-          "rate": rows[0].rate,
-        }
-      );
+      const { data } = await imsAxios.post("/jwvendor/sfgInward", {
+        jw_id: headerOptions.jobwork,
+        jw_challan: headerOptions.challan,
+        sku: rows[0].skuCode,
+        qty: rows[0].finishedqty,
+        rate: rows[0].rate,
+      });
       setSubmitLoading(false);
       setShowSubmitConfirm(false);
       if (data.code === 200) {
@@ -168,15 +168,11 @@ const getProductDetails = async () => {
   const columns = [
     {
       headerName: "SKU Name",
-      renderCell: ({ row }) => (
-        <Input disabled value={row.sku} />
-      ),
+      renderCell: ({ row }) => <Input disabled value={row.sku} />,
     },
     {
       headerName: "SKU Code",
-      renderCell: ({ row }) => (
-        <Input disabled value={row.skuCode} />
-      ),
+      renderCell: ({ row }) => <Input disabled value={row.skuCode} />,
     },
     {
       headerName: "Qty",
@@ -184,7 +180,7 @@ const getProductDetails = async () => {
         <Input
           defaultValue={row.finishedqty}
           onChange={(e) => {
-            inputHandler("qty", e.target.value)
+            inputHandler("qty", e.target.value);
           }}
         />
       ),
@@ -192,22 +188,12 @@ const getProductDetails = async () => {
     {
       headerName: "Pending Qty",
       width: 150,
-      renderCell: ({ row }) => (
-        <Input
-          value={row.pendingqty}
-          disabled
-        />
-      ),
+      renderCell: ({ row }) => <Input value={row.pendingqty} disabled />,
     },
     {
       headerName: "Order Qty",
       width: 150,
-      renderCell: ({ row }) => (
-        <Input
-          value={row.orderqty}
-          disabled
-        />
-      ),
+      renderCell: ({ row }) => <Input value={row.orderqty} disabled />,
     },
     {
       headerName: "Rate",
@@ -216,7 +202,7 @@ const getProductDetails = async () => {
           disabled
           value={row.rate}
           onChange={(e) => {
-            inputHandler("rate", e.target.value)
+            inputHandler("rate", e.target.value);
           }}
         />
       ),

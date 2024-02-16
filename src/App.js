@@ -24,9 +24,6 @@ import UserMenu from "./Components/UserMenu";
 import Logo from "./Components/Logo";
 import socket from "./Components/socket.js";
 import Notifications from "./Components/Notifications";
-import axios from "axios";
-// import MessageModal from "./Components/MessageModal/MessageModal";
-// antd imports
 import Layout, { Content, Header } from "antd/lib/layout/layout";
 import { Badge, Row, Select, Space, Switch, notification } from "antd";
 // icons import
@@ -47,6 +44,7 @@ import InternalNav from "./Components/InternalNav";
 import showToast from "./Components/MyToast";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { imsAxios } from "./axiosInterceptor";
 
 const App = () => {
   const { user, notifications, currentLinks } = useSelector(
@@ -143,7 +141,7 @@ const App = () => {
 
     if (!status) {
       setFavLoading(true);
-      const { data } = await axios.post("/backend/favouritePages", {
+      const { data } = await imsAxios.post("/backend/favouritePages", {
         pageUrl: pathname,
         source: "react",
       });
@@ -156,7 +154,7 @@ const App = () => {
     } else {
       let page_id = favs.filter((f) => f.url === pathname)[0].page_id;
       setFavLoading(true);
-      const { data } = await axios.post("/backend/removeFavouritePages", {
+      const { data } = await imsAxios.post("/backend/removeFavouritePages", {
         page_id,
       });
       setFavLoading(false);
@@ -182,7 +180,7 @@ const App = () => {
   };
   const getLocations = async () => {
     // setPageLoading(true);
-    const { data } = await axios.get("/jwvendor/fetchMINLocation");
+    const { data } = await imsAxios.get("/jwvendor/fetchAllotedLocation");
     // setPageLoading(false);
     if (data.code == 200) {
       let arr = data.data.map((row) => ({

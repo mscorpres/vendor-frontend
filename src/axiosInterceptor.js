@@ -1,20 +1,60 @@
 import axios from "axios";
-const link = "https://ims.mscapi.live/";
-// const link = "https://dev.mscorpres.net/";
-const socketLink = "https://socket.mscapi.live:3005";
+import { toast } from "react-toastify";
+// const link = "https://ims.mscapi.live/";
+// // const link = "https://dev.mscorpres.net/";
+// const socketLink = "https://socket.mscapi.live:3005";
 
 // comment the above two links and decomment below two links for production
 
 // const link = "https://api.mscorpres.net:3001/";
 // let socketLink = "https://socket.mscorpres.net:3005";
-export { socketLink, link };
-axios.defaults.baseURL = link;
-export default axios.interceptors.request.use((config) => {
-  const user = JSON.parse(localStorage.getItem("loggedInUserVendor"));
-  if (user) {
-    config.headers["x-csrf-token"] = user?.token;
-    config.headers["Company-Branch"] = "BRMSC012";
-  }
-  return config;
+// export { socketLink, link };
+// axios.defaults.baseURL = link;
+// export default axios.interceptors.request.use((config) => {
+//   const user = JSON.parse(localStorage.getItem("loggedInUserVendor"));
+//   if (user) {
+//     config.headers["x-csrf-token"] = user?.token;
+//     config.headers["Company-Branch"] = "BRMSC012";
+//   }
+//   return config;
+// });
+// //
+
+// const link = "https://ims.mscapi.live/";
+const link = "https://dev.mscorpres.net/";
+const socketLink = "https://socket.mscapi.live:3005";
+
+const imsAxios = axios.create({
+  baseURL: link,
+  headers: {
+    "x-csrf-token": JSON.parse(localStorage.getItem("loggedInUserVendor"))
+      ?.token,
+  },
 });
-//
+
+imsAxios.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    console.log("this is the error response", error.response);
+    // if (error.response.status === 404) {
+    //   toast.error("Some Internal error occured");
+    // } else {
+    toast.error(error.response.data);
+    if (error.response.data.message) {
+      toast.error(error.response.data.message.msg);
+    }
+    // }
+    return error.response;
+  }
+);
+
+let branch =
+  JSON.parse(localStorage.getItem("otherData"))?.company_branch ?? "BRMSC012";
+// let session = JSON.parse(localStorage.getItem("otherData"))?.session ?? "23-24";
+
+imsAxios.defaults.headers["Company-Branch"] = branch;
+// imsAxios.defaults.headers["Session"] = session;
+
+export { imsAxios, socketLink };

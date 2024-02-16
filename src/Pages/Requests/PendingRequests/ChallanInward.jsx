@@ -18,9 +18,9 @@ import MySelect from "../../../Components/MySelect";
 import { CommonIcons } from "../../../Components/TableActions.jsx/TableActions";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { imsAxios } from "../../../axiosInterceptor";
 
-
-function ChallanInward({ challanInward, setChallanInward,getRows }) {
+function ChallanInward({ challanInward, setChallanInward, getRows }) {
   const [rows, setRows] = useState([]);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
@@ -140,7 +140,7 @@ function ChallanInward({ challanInward, setChallanInward,getRows }) {
   const getDetails = async () => {
     if (challanInward) {
       setPageLoading(true);
-      const { data } = await axios.post(
+      const { data } = await imsAxios.post(
         "/jwvendor/fetchPendingJWChallanRM",
         challanInward
       );
@@ -241,11 +241,11 @@ function ChallanInward({ challanInward, setChallanInward,getRows }) {
       // console.log("finalObj", finalObj);
       // return;
       setSubmitLoading(true);
-      const { data } = await axios.post("/jwvendor/minVendorRM", finalObj);
+      const { data } = await imsAxios.post("/jwvendor/minVendorRM", finalObj);
       setSubmitLoading(false);
       if (data.code === 200) {
-         toast.success(data.message);
-         getRows()
+        toast.success(data.message);
+        getRows();
         setChallanInward(false);
       } else {
         toast.error(data.message.msg);

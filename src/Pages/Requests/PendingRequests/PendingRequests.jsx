@@ -16,6 +16,7 @@ import { downloadCSV } from "../../../Components/exportToCSV";
 import socket from "../../../Components/socket";
 import { v4 } from "uuid";
 import { useSelector } from "react-redux";
+import { imsAxios } from "../../../axiosInterceptor";
 
 function PendingRequests() {
   document.title = "Pending Requests";
@@ -35,7 +36,7 @@ function PendingRequests() {
     // );
     console.log("searchInput", searchInput);
     setSearchLoading(true);
-    const { data } = await axios.post("/jwvendor/fetchPendingJWChallan", {
+    const { data } = await imsAxios.post("/jwvendor/fetchPendingJWChallan", {
       searchBy: wise,
       searchValue: searchInput,
     });
@@ -70,11 +71,11 @@ function PendingRequests() {
     // console.log("payload", payload);
     // console.log("here in socket");
     socket.emit("vendorReqPending", {
-      otherdata:JSON.stringify ({
+      otherdata: JSON.stringify({
         searchValue: searchInput,
         searchBy: wise,
       }),
-      notificationId:newId
+      notificationId: newId,
     });
   };
   const colcolumns = [
