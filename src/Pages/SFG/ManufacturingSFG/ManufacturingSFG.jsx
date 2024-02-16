@@ -84,9 +84,11 @@ function ManufacturingSFG() {
   };
   const getBomFromJW = async () => {
     setLoading(true);
+    console.log("rows[0].mfgQty", rows[0].mfgQty);
+    let sfg = rows[0].mfgQty;
     const { data } = await axios.post("/jwvendor/getBomItem", {
       jwID: headerOptions.jobwork,
-      sfgCreateQty: rows[0].mfgQty,
+      sfgCreateQty: sfg,
     });
     setBomList(true);
     console.log("data->", data);
