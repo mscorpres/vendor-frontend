@@ -84,15 +84,19 @@ function ManufacturingSFG() {
     setSelectLoading(false);
   };
   const getBomFromJW = async () => {
+    console.log("rows", rows);
     setLoading(true);
     let sfg = rows[0].mfgQty;
     console.log("rows[0].mfgQty", sfg);
-    const { data } = imsAxios.post("/jwvendor/getBomItem", {
+
+    const response = await imsAxios.post("/jwvendor/getBomItem", {
       jwID: headerOptions.jobwork,
       sfgCreateQty: sfg,
     });
     setBomList(true);
-    console.log("data->", data);
+    // console.log("data->", data);
+    // console.log("response->", response);
+    const { data } = response;
     if (data.code === 200) {
       let arr = data.data.map((r) => {
         return {
@@ -135,13 +139,21 @@ function ManufacturingSFG() {
     return data;
   };
   const inputHandler = async (name, value, id) => {
-    console.log(name, value, id);
-    let arr = rows;
-    if (name === "rate") {
-      rows[0].rate = value;
-    } else if (name === "qty") {
-      rows[0].finishedqty = value;
-    }
+    setRows((curr) => {
+      let obj = curr[0];
+      obj[name] = value;
+      return [obj];
+    });
+    // console.log(name, value, id);
+    // let arr = rows;
+    // if (name === "rate") {
+    //   arr[0].rate = value;
+    // } else if (name === "qty") {
+    //   arr[0].finishedqty = value;
+    // } else if (name === "mfgQty") {
+    //   arr[0].mfgQty = value;
+    // }
+    // setRows(arr);
   };
   const validationHandler = (headerData) => {
     let validation = false;
@@ -224,7 +236,7 @@ function ManufacturingSFG() {
         <Input
           defaultValue={row.finishedqty}
           onChange={(e) => {
-            inputHandler("qty", e.target.value);
+            inputHandler("finishedqty", e.target.value);
           }}
         />
       ),
@@ -255,8 +267,9 @@ function ManufacturingSFG() {
       headerName: "SFG QTY",
       renderCell: ({ row }) => (
         <Input
-          // value={row.mfgQty}
+          value={row.mfgQty}
           onChange={(e) => {
+            // console.log("this is the row", row.mfgQty);
             inputHandler("mfgQty", e.target.value);
           }}
         />
