@@ -9,7 +9,10 @@ import { CommonIcons } from "../../Components/TableActions.jsx/TableActions";
 import { downloadCSV } from "../../Components/exportToCSV";
 import MyAsyncSelect from "../../Components/MyAsyncSelect";
 import { toast } from "react-toastify";
-import printFunction, { downloadFunction } from "../../Components/printFunction";
+import printFunction, {
+  downloadFunction,
+} from "../../Components/printFunction";
+import { imsAxios } from "../../axiosInterceptor";
 
 const Vr02 = () => {
   document.title = "RM Stock";
@@ -61,67 +64,41 @@ const Vr02 = () => {
   const [rows, setRows] = useState([]);
   const [showView, setShowView] = useState(false);
 
-
-  const printwocompleted = async(row)=>{
+  const printwocompleted = async (row) => {
     try {
       setLoading("fetch");
-      const response = await axios.post('/createwo/print_wo_completed_list',{
-        "transaction": row.transactionId
-      })
-      const {data} = response
-      printFunction(response.data.data.buffer.data)
-     toast.success(data.message)
+      const response = await imsAxios.post(
+        "/createwo/print_wo_completed_list",
+        {
+          transaction: row.transactionId,
+        }
+      );
+      const { data } = response;
+      printFunction(response.data.data.buffer.data);
+      toast.success(data.message);
     } catch (error) {
       console.log("some error occured while fetching rows", error);
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const downloadCol = () => {
     downloadCSV(rows, columns, "VR02 Report");
   };
 
-  const downloadwocompleted = async(row)=>{
+  const downloadwocompleted = async (row) => {
     try {
       setLoading("fetch");
-      const response = await axios.post('/createwo/print_wo_completed_list',{
-          "transaction": row.transactionId
-      })
-      const {data} = response
-      downloadFunction(response.data.data.buffer.data)
-      toast.success(data.message)
-    } catch (error) {
-      console.log("some error occured while fetching rows", error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  const getRows = async () => {
-    try {
-      setLoading("fetch");
-      const response = await axios.post('/vr02',{
-        date: searchInput,
-      })
-      const {data} = response
-      console.log(data)
-      if(data.code === 200){
-      const arr = data.response.data.map((row, index) => ({
-        id: index + 1,
-        date: row.date,
-        part: row.part_name,
-        part_code: row.part_code,
-        inward: row.inward,
-        outward: row.outward,
-        opening: row.opening,
-        closing: row.closing,
-      }));
-      setRows(arr);
-    } else {
-      toast.error(data.message.msg)
-      setRows([]);
-    }
+      const response = await imsAxios.post(
+        "/createwo/print_wo_completed_list",
+        {
+          transaction: row.transactionId,
+        }
+      );
+      const { data } = response;
+      downloadFunction(response.data.data.buffer.data);
+      toast.success(data.message);
     } catch (error) {
       console.log("some error occured while fetching rows", error);
     } finally {
@@ -129,41 +106,77 @@ const Vr02 = () => {
     }
   };
 
+  const getRows = async () => {
+    try {
+      setLoading("fetch");
+      const response = await imsAxios.post("/vr02", {
+        date: searchInput,
+      });
+      const { data } = response;
+      console.log(data);
+      if (data.code === 200) {
+        const arr = data.response.data.map((row, index) => ({
+          id: index + 1,
+          date: row.date,
+          part: row.part_name,
+          part_code: row.part_code,
+          inward: row.inward,
+          outward: row.outward,
+          opening: row.opening,
+          closing: row.closing,
+        }));
+        setRows(arr);
+      } else {
+        toast.error(data.message.msg);
+        setRows([]);
+      }
+    } catch (error) {
+      console.log("some error occured while fetching rows", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <><div style={{ height: "90%" }}>
-      <Row style={{ padding: 5, paddingTop: 0 }} justify="space-between">
-        <Col>
-          <Space>
-            <div style={{ paddingBottom: '10px' }}>
-              <Space>
-                <div style={{ width: 250 }}>
-                <MyDatePicker setDateRange={setSearchInput} />
-                </div>
-                
-                <Button
-                  onClick={getRows}
-                  loading={loading === "fetch"}
-                  type="primary"
-                >
-                  Fetch
-                </Button>
-              </Space>
-            </div>
-          </Space>
-        </Col>
-        <CommonIcons
-          action="downloadButton"
-          onClick={downloadCol}
-          type="primary" />
-      </Row>
-      <div style={{ height: "95%", paddingRight: 5, paddingLeft: 5 }}>
-        <MyDataTable loading={loading === "fetch"} data={rows} columns={columns} />
+    <>
+      <div style={{ height: "90%" }}>
+        <Row style={{ padding: 5, paddingTop: 0 }} justify="space-between">
+          <Col>
+            <Space>
+              <div style={{ paddingBottom: "10px" }}>
+                <Space>
+                  <div style={{ width: 250 }}>
+                    <MyDatePicker setDateRange={setSearchInput} />
+                  </div>
+
+                  <Button
+                    onClick={getRows}
+                    loading={loading === "fetch"}
+                    type="primary"
+                  >
+                    Fetch
+                  </Button>
+                </Space>
+              </div>
+            </Space>
+          </Col>
+          <CommonIcons
+            action="downloadButton"
+            onClick={downloadCol}
+            type="primary"
+          />
+        </Row>
+        <div style={{ height: "95%", paddingRight: 5, paddingLeft: 5 }}>
+          <MyDataTable
+            loading={loading === "fetch"}
+            data={rows}
+            columns={columns}
+          />
+        </div>
       </div>
-    </div></>
+    </>
   );
 };
-
 
 // id: index + 1,
 //         date: row.date,
@@ -209,6 +222,5 @@ const columns = [
     field: "closing",
   },
 ];
-
 
 export default Vr02;

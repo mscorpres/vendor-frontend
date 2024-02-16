@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import printFunction, {
   downloadFunction,
 } from "../../Components/printFunction";
+import { imsAxios } from "../../axiosInterceptor";
 
 const Vr03 = () => {
   document.title = "RM Consumption";
@@ -67,9 +68,12 @@ const Vr03 = () => {
   const printwocompleted = async (row) => {
     try {
       setLoading("fetch");
-      const response = await axios.post("/createwo/print_wo_completed_list", {
-        transaction: row.transactionId,
-      });
+      const response = await imsAxios.post(
+        "/createwo/print_wo_completed_list",
+        {
+          transaction: row.transactionId,
+        }
+      );
       const { data } = response;
       printFunction(response.data.data.buffer.data);
       toast.success(data.message);
@@ -83,9 +87,12 @@ const Vr03 = () => {
   const downloadwocompleted = async (row) => {
     try {
       setLoading("fetch");
-      const response = await axios.post("/createwo/print_wo_completed_list", {
-        transaction: row.transactionId,
-      });
+      const response = await imsAxios.post(
+        "/createwo/print_wo_completed_list",
+        {
+          transaction: row.transactionId,
+        }
+      );
       const { data } = response;
       downloadFunction(response.data.data.buffer.data);
       toast.success(data.message);
@@ -102,7 +109,7 @@ const Vr03 = () => {
   const getRows = async () => {
     try {
       setLoading("fetch");
-      const response = await axios.post("/vr03", {
+      const response = await imsAxios.post("/vr03", {
         wise: "create_date",
         data: searchInput,
       });

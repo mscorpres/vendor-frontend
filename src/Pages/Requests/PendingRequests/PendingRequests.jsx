@@ -16,6 +16,8 @@ import { downloadCSV } from "../../../Components/exportToCSV";
 import socket from "../../../Components/socket";
 import { v4 } from "uuid";
 import { useSelector } from "react-redux";
+import { imsAxios } from "../../../axiosInterceptor";
+
 function PendingRequests() {
   document.title = "Pending Requests";
   const [wise, setWise] = useState("datewise");
@@ -34,7 +36,7 @@ function PendingRequests() {
     // );
     console.log("searchInput", searchInput);
     setSearchLoading(true);
-    const { data } = await axios.post("/jwvendor/fetchPendingJWChallan", {
+    const { data } = await imsAxios.post("/jwvendor/fetchPendingJWChallan", {
       searchBy: wise,
       searchValue: searchInput,
     });
@@ -54,13 +56,26 @@ function PendingRequests() {
     setSearchLoading(false);
   };
   const downloadData = () => {
+    // downloadCSV(rows, colcolumns, "Pending Report");
     let newId = v4();
     let arr = notifications;
+
+    // if (!user.company_branch) {
+    //   toast.error("Please select a branch to download report");
+    //   return;
+    // }
+    // const payload = {
+    //   date: dateRange,
+    //   notificationId: newId,
+    // };
+    // console.log("payload", payload);
+    // console.log("here in socket");
     socket.emit("vendorReqPending", {
-      otherdata: {
+      otherdata: JSON.stringify({
         searchValue: searchInput,
         searchBy: wise,
-      },
+      }),
+      notificationId: newId,
     });
   };
   const colcolumns = [

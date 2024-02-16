@@ -13,7 +13,6 @@ import {
   Drawer,
 } from "antd";
 import { useSelector, useDispatch } from "react-redux/es/exports";
-import axios from "axios";
 import socket from "../../Components/socket";
 import { toast } from "react-toastify";
 import { removeNotification } from "../../Features/loginSlice.js/loginSlice";
@@ -21,6 +20,7 @@ import { SendOutlined, SmileOutlined } from "@ant-design/icons";
 import Message from "../../Pages/Messenger/Message";
 import "./messageModal.css";
 import ToolTipEllipses from "../ToolTipEllipses";
+import { imsAxios } from "../../axiosInterceptor";
 
 export default function MessageModal({
   showMessageDrawer,
@@ -48,7 +48,7 @@ export default function MessageModal({
 
   const getAllConverations = async () => {
     setGetConversationLoading(true);
-    const { data } = await axios.get("/chat/get-conversations");
+    const { data } = await imsAxios.get("/chat/get-conversations");
     setGetConversationLoading(false);
     if (data.code == 200) {
       setConversations(data.data);
@@ -59,7 +59,7 @@ export default function MessageModal({
       conversationId: rec.conversationId,
     });
     setGetMessagesLoading(true);
-    const { data } = await axios.post("/chat/get-conversationById", {
+    const { data } = await imsAxios.post("/chat/get-conversationById", {
       conversationId: rec.conversationId,
     });
     setGetMessagesLoading(false);
@@ -83,7 +83,7 @@ export default function MessageModal({
     if (newMessage.length > 0) {
       setSendMessageLoading(true);
 
-      const { data } = await axios.post("/chat/save-messages", {
+      const { data } = await imsAxios.post("/chat/save-messages", {
         text: newMessage,
         conversationId: currentConversation.conversationId,
         receiver: currentConversation.receiver.id,
@@ -138,7 +138,7 @@ export default function MessageModal({
   };
   const searchUsers = async (search) => {
     setGetConversationLoading(true);
-    const { data } = await axios.post("backend/fetchAllUser", {
+    const { data } = await imsAxios.post("backend/fetchAllUser", {
       search: search,
     });
     setGetConversationLoading(false);
@@ -165,7 +165,7 @@ export default function MessageModal({
         name: searchedUser.fname,
       },
     };
-    const { data } = await axios.post("/chat/checkConvertation", {
+    const { data } = await imsAxios.post("/chat/checkConvertation", {
       user: searchedUser.id,
     });
     if (data.code == 200) {

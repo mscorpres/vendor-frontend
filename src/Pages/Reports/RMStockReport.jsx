@@ -13,6 +13,7 @@ import SummaryCard from "../../Components/SummaryCard";
 import { CommonIcons } from "../../Components/TableActions.jsx/TableActions";
 import { setLocations } from "../../Features/loginSlice.js/loginSlice";
 import { toast } from "react-toastify";
+import { imsAxios } from "../../axiosInterceptor";
 function RMStockReport() {
   document.title = "RM Location Query";
   const [searchLoading, setSearchLoading] = useState(false);
@@ -40,7 +41,7 @@ function RMStockReport() {
   const dispatch = useDispatch();
   const getLocations = async () => {
     // setPageLoading(true);
-    const { data } = await axios.get("/jwvendor/fetchMINLocation");
+    const { data } = await imsAxios.get("/jwvendor/fetchAllotedLocation");
     // setPageLoading(false);
     if (data.code == 200) {
       let arr = data.data.map((row) => ({
@@ -54,7 +55,7 @@ function RMStockReport() {
     setFetchLoading(true);
     // console.log("searchObj", searchObj);
     searchObj.location = locationOptions[0]?.value;
-    const response = await axios.post("/jwreport/vq01", searchObj);
+    const response = await imsAxios.post("/jwreport/rmLocStock", searchObj);
 
     const { data } = response;
     if (data.code === 200) {
@@ -95,7 +96,7 @@ function RMStockReport() {
   };
   const getPartCodes = async (search) => {
     setSelectLoading(true);
-    const { data } = await axios.post("/backend/getComponentByNameAndNo", {
+    const { data } = await imsAxios.post("/backend/getComponentByNameAndNo", {
       search: search,
     });
     setSelectLoading(false);

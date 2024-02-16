@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import printFunction, {
   downloadFunction,
 } from "../../Components/printFunction";
+import { imsAxios } from "../../axiosInterceptor";
 
 const ViewSFG = () => {
   document.title = "View SFG";
@@ -28,9 +29,12 @@ const ViewSFG = () => {
   const printwocompleted = async (row) => {
     try {
       setLoading("fetch");
-      const response = await axios.post("/createwo/print_wo_completed_list", {
-        transaction: row.transactionId,
-      });
+      const response = await imsAxios.post(
+        "/createwo/print_wo_completed_list",
+        {
+          transaction: row.transactionId,
+        }
+      );
       const { data } = response;
       printFunction(response.data.data.buffer.data);
       toast.success(data.message);
@@ -44,9 +48,12 @@ const ViewSFG = () => {
   const downloadwocompleted = async (row) => {
     try {
       setLoading("fetch");
-      const response = await axios.post("/createwo/print_wo_completed_list", {
-        transaction: row.transactionId,
-      });
+      const response = await imsAxios.post(
+        "/createwo/print_wo_completed_list",
+        {
+          transaction: row.transactionId,
+        }
+      );
       const { data } = response;
       downloadFunction(response.data.data.buffer.data);
       toast.success(data.message);
@@ -67,7 +74,7 @@ const ViewSFG = () => {
   const getRows = async () => {
     try {
       setLoading("fetch");
-      const response = await axios.post("/jwvendor/vendorSfgInwardList", {
+      const response = await imsAxios.post("/jwvendor/vendorSfgInwardList", {
         wise: wise,
         data: searchInput,
       });
