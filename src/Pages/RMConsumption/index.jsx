@@ -99,7 +99,7 @@ function RMConsumption() {
     return e?.fileList;
   };
   const calculation = async (fieldName, values) => {
-    if (values.component && values.pickLocation) {
+    if (values.component && values.component?.value && values.pickLocation) {
       const closingStock = await handleFetchComponentClosingStock(
         values.component.value,
         values.pickLocation
@@ -120,7 +120,7 @@ function RMConsumption() {
     >
       <Row gutter={6} style={{ height: "95%", padding: 10, paddingTop: 0 }}>
         <Col span={4}>
-          <Card title="Create RM Consumption">
+          <Card title="Create RM Consumption" size="small">
             <Form.Item
               name="documentNumber"
               label="Document Number"
@@ -182,9 +182,9 @@ function RMConsumption() {
               nonRemovableColumns={1}
               form={form}
               watchKeys={["component", "pickLocation"]}
-              nonListWatchValues={["closingStock", "qty", "remark"]}
+              // nonListWatchValues={["closingStock", "qty", "remark"]}
               calculation={calculation}
-              componentRequiredRef={["component", "qty"]}
+              // componentRequiredRef={["component", "qty"]}
             />
           </Card>
         </Col>
