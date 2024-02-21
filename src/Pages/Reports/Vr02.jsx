@@ -192,7 +192,8 @@ const columns = [
   },
   {
     headerName: "Part Name",
-    width: 400,
+    minWidth: 400,
+    flex: 1,
     field: "part",
   },
   {
@@ -220,6 +221,11 @@ const columns = [
     headerName: "Closing",
     width: 150,
     field: "closing",
+  },
+  {
+    headerName: "Closing Date Until",
+    width: 200,
+    field: "closingDate",
   },
 ];
 
