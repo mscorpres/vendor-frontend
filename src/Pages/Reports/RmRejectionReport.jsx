@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import printFunction, {
   downloadFunction,
 } from "../../Components/printFunction";
+import { imsAxios } from "../../axiosInterceptor";
 
 const RmRejectionReport = () => {
   document.title = "RM Rejection";
@@ -67,9 +68,12 @@ const RmRejectionReport = () => {
   const printwocompleted = async (row) => {
     try {
       setLoading("fetch");
-      const response = await axios.post("/createwo/print_wo_completed_list", {
-        transaction: row.transactionId,
-      });
+      const response = await imsAxios.post(
+        "/createwo/print_wo_completed_list",
+        {
+          transaction: row.transactionId,
+        }
+      );
       const { data } = response;
       printFunction(response.data.data.buffer.data);
       toast.success(data.message);
@@ -83,9 +87,12 @@ const RmRejectionReport = () => {
   const downloadwocompleted = async (row) => {
     try {
       setLoading("fetch");
-      const response = await axios.post("/createwo/print_wo_completed_list", {
-        transaction: row.transactionId,
-      });
+      const response = await imsAxios.post(
+        "/createwo/print_wo_completed_list",
+        {
+          transaction: row.transactionId,
+        }
+      );
       const { data } = response;
       downloadFunction(response.data.data.buffer.data);
       toast.success(data.message);
@@ -114,7 +121,7 @@ const RmRejectionReport = () => {
     console.log("searchInput", searchInput);
     try {
       setLoading("fetch");
-      const response = await axios.post("/vr04", {
+      const response = await imsAxios.post("/vr04", {
         wise: wise,
         data: searchInput,
       });

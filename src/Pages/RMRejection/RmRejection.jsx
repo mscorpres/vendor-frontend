@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import FormTable from "../../Components/FormTable";
 import { Button, Input, Modal } from "antd";
 import { v4 } from "uuid";
-import axios from "axios";
 import { toast } from "react-toastify";
 import MyAsyncSelect from "../../Components/MyAsyncSelect";
 import MySelect from "../../Components/MySelect";
@@ -11,6 +10,7 @@ import { useSelector } from "react-redux";
 import { Footer } from "@adobe/react-spectrum";
 import NavFooter from "../../Components/NavFooter";
 import { CommonIcons } from "../../Components/TableActions.jsx/TableActions";
+import { imsAxios } from "../../axiosInterceptor";
 function RmRejection() {
   const { locations: locationOptions } = useSelector((state) => state.login);
   const [rows, setRows] = useState([
@@ -72,9 +72,12 @@ function RmRejection() {
   //         }
   //   };
   const getComponentDetails = async (value, id) => {
-    const { data } = await axios.post("/jwvendor/getComponentDetailsByCode", {
-      component_code: value.value,
-    });
+    const { data } = await imsAxios.post(
+      "/jwvendor/getComponentDetailsByCode",
+      {
+        component_code: value.value,
+      }
+    );
     if (data.code === 200) {
       rows[0].hsn = data.data.hsn;
       rows[0].uom = data.data.unit;
@@ -83,7 +86,7 @@ function RmRejection() {
   };
   const getAsyncOptions = async (search, url) => {
     setSelectLoading(true);
-    const { data } = await axios.post(url, {
+    const { data } = await imsAxios.post(url, {
       search: search,
     });
     setSelectLoading(false);
@@ -196,7 +199,7 @@ function RmRejection() {
   };
   const submitHandler = async () => {
     setSelectLoading(true);
-    const { data } = await axios.post("/jwreject/saveRejection", {
+    const { data } = await imsAxios.post("/jwreject/saveRejection", {
       component: rows.map((r) => r.component.value),
       qty: rows.map((r) => r.qty),
       remark: rows.map((r) => r.remark),
@@ -214,7 +217,7 @@ function RmRejection() {
     // console.log("c", c.value);
     // console.log("l", l);
     // setPageLoading(true);
-    const { data } = await axios.post("/jwtransfer/getStock", {
+    const { data } = await imsAxios.post("/jwtransfer/getStock", {
       component: c.value,
       pick_location: l,
     });

@@ -216,7 +216,8 @@ const App = () => {
     var getTokenFromUrl = searchParams.get("token");
     if (getTokenFromUrl) {
       var payload = decodeJwt(getTokenFromUrl);
-      console.log("payload", payload);
+
+      imsAxios.defaults.headers["x-csrf-token"] = getTokenFromUrl;
       localStorage.setItem(
         "loggedInUserVendor",
         JSON.stringify({
