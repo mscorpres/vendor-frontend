@@ -168,7 +168,7 @@ function ManufacturingSFG() {
     setShowSubmitConfirm(finalObj);
   };
   const submitHandler = async () => {
-    console.log("bomListRows", bomListRows);
+    // console.log("bomListRows", bomListRows);
     if (showSubmitConfirm) {
       setSubmitLoading(true);
       let pao = {
