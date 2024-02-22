@@ -168,6 +168,7 @@ function ManufacturingSFG() {
     setShowSubmitConfirm(finalObj);
   };
   const submitHandler = async () => {
+    console.log("bomListRows", bomListRows);
     if (showSubmitConfirm) {
       setSubmitLoading(true);
       let pao = {
@@ -179,14 +180,16 @@ function ManufacturingSFG() {
           rate: rows[0].rate,
         },
         material: {
-          partName: bomListRows.map((r) => r.part_name),
-          partCode: bomListRows.map((r) => r.part_no),
-          bomQty: bomListRows.map((r) => r.bom_qty),
-          locQty: bomListRows.map((r) => r.loc_qty),
+          consumptPart: bomListRows.map((r) => r.key),
+          consumptQty: bomListRows.map((r) => r.bom_qty),
+          consumptLoc: bomListRows.map((r) => r.loc_qty),
         },
       };
       console.log("pao", pao);
-      const { data } = await imsAxios.post("/jwvendor/sfgInward", pao);
+      const { data } = await imsAxios.post(
+        "http://localhost:3001/jwvendor/sfgInward",
+        pao
+      );
       setSubmitLoading(false);
       setShowSubmitConfirm(false);
       if (data.code === 200) {
