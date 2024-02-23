@@ -186,10 +186,7 @@ function ManufacturingSFG() {
         },
       };
       console.log("pao", pao);
-      const { data } = await imsAxios.post(
-        "http://localhost:3001/jwvendor/sfgInward",
-        pao
-      );
+      const { data } = await imsAxios.post("/jwvendor/sfgInward", pao);
       setSubmitLoading(false);
       setShowSubmitConfirm(false);
       if (data.code === 200) {
@@ -233,17 +230,17 @@ function ManufacturingSFG() {
       headerName: "SKU Code",
       renderCell: ({ row }) => <Input disabled value={row.skuCode} />,
     },
-    {
-      headerName: "Qty",
-      renderCell: ({ row }) => (
-        <Input
-          defaultValue={row.finishedqty}
-          onChange={(e) => {
-            inputHandler("finishedqty", e.target.value);
-          }}
-        />
-      ),
-    },
+    // {
+    //   headerName: "Qty",
+    //   renderCell: ({ row }) => (
+    //     <Input
+    //       defaultValue={row.finishedqty}
+    //       onChange={(e) => {
+    //         inputHandler("finishedqty", e.target.value);
+    //       }}
+    //     />
+    //   ),
+    // },
     {
       headerName: "Pending Qty",
       width: 150,
