@@ -85,11 +85,6 @@ const App = () => {
         "/requests/requests/completed"
         // <MinusOutlined />
       ),
-      getItem(
-        <Link to="/requests/completed">Transfer Requests</Link>,
-        "/requests/requests/transfer"
-        // <MinusOutlined />
-      ),
     ]),
     getItem(
       <Link to="/rm_consumption">RM Consumption</Link>,
