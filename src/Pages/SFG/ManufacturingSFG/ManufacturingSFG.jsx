@@ -176,7 +176,7 @@ function ManufacturingSFG() {
           jw_id: headerOptions.jobwork,
           jw_challan: headerOptions.challan,
           sku: rows[0].skuCode,
-          qty: rows[0].finishedqty,
+          qty: rows[0].mfgQty,
           rate: rows[0].rate,
         },
         material: {
@@ -186,15 +186,13 @@ function ManufacturingSFG() {
         },
       };
       console.log("pao", pao);
-      const { data } = await imsAxios.post(
-        "http://localhost:3001/jwvendor/sfgInward",
-        pao
-      );
+      const { data } = await imsAxios.post("/jwvendor/sfgInward", pao);
       setSubmitLoading(false);
       setShowSubmitConfirm(false);
       if (data.code === 200) {
         toast.success(data.message);
         resetHandler();
+        setBomList(false);
       } else {
         toast.error(data.message.msg);
         setSubmitLoading(false);
@@ -233,27 +231,28 @@ function ManufacturingSFG() {
       headerName: "SKU Code",
       renderCell: ({ row }) => <Input disabled value={row.skuCode} />,
     },
+    // {
+    //   headerName: "Qty",
+    //   renderCell: ({ row }) => (
+    //     <Input
+    //       defaultValue={row.finishedqty}
+    //       onChange={(e) => {
+    //         inputHandler("finishedqty", e.target.value);
+    //       }}
+    //     />
+    //   ),
+    // },
     {
-      headerName: "Qty",
-      renderCell: ({ row }) => (
-        <Input
-          defaultValue={row.finishedqty}
-          onChange={(e) => {
-            inputHandler("finishedqty", e.target.value);
-          }}
-        />
-      ),
+      headerName: "Order Qty",
+      width: 150,
+      renderCell: ({ row }) => <Input value={row.orderqty} disabled />,
     },
     {
       headerName: "Pending Qty",
       width: 150,
       renderCell: ({ row }) => <Input value={row.pendingqty} disabled />,
     },
-    {
-      headerName: "Order Qty",
-      width: 150,
-      renderCell: ({ row }) => <Input value={row.orderqty} disabled />,
-    },
+
     {
       headerName: "Rate",
       renderCell: ({ row }) => (
