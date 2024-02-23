@@ -179,9 +179,9 @@ const App = () => {
     setTestPage(value);
   };
   const getLocations = async () => {
-    // setPageLoading(true);
+    
     const { data } = await imsAxios.get("/jwvendor/fetchMINLocation");
-    // setPageLoading(false);
+    
     if (data.code == 200) {
       let arr = data.data.map((row) => ({
         text: row.text,
