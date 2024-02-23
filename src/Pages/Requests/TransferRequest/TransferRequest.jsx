@@ -258,13 +258,13 @@ function TransferRequest() {
 
   const columns = [
     {
-      headerName: (
-        <CommonIcons
-          disabled
-          action="addRow"
-          //    onClick={addRows}
-        />
-      ),
+      // headerName: (
+      //   <CommonIcons
+      //     disabled
+      //     action="addRow"
+      //     //    onClick={addRows}
+      //   />
+      // ),
       width: 40,
       field: "add",
       sortable: false,

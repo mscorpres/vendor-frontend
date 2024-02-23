@@ -233,17 +233,17 @@ function ManufacturingSFG() {
       headerName: "SKU Code",
       renderCell: ({ row }) => <Input disabled value={row.skuCode} />,
     },
-    {
-      headerName: "Qty",
-      renderCell: ({ row }) => (
-        <Input
-          defaultValue={row.finishedqty}
-          onChange={(e) => {
-            inputHandler("finishedqty", e.target.value);
-          }}
-        />
-      ),
-    },
+    // {
+    //   headerName: "Qty",
+    //   renderCell: ({ row }) => (
+    //     <Input
+    //       defaultValue={row.finishedqty}
+    //       onChange={(e) => {
+    //         inputHandler("finishedqty", e.target.value);
+    //       }}
+    //     />
+    //   ),
+    // },
     {
       headerName: "Pending Qty",
       width: 150,
