@@ -81,6 +81,11 @@ const App = () => {
         // <MinusOutlined />
       ),
       getItem(
+        <Link to="/requests/pending">Transfer Requests</Link>,
+        "/requests/requests/transfer"
+        // <MinusOutlined />
+      ),
+      getItem(
         <Link to="/requests/completed">Completed Requests</Link>,
         "/requests/requests/completed"
         // <MinusOutlined />
