@@ -60,6 +60,8 @@ function ChallanInward({ challanInward, setChallanInward, getRows }) {
         </Typography.Text>
       ),
     },
+
+    
     {
       headerName: "Total Qty",
       width: 100,

@@ -93,20 +93,6 @@ function TransferRequest() {
     return data;
   };
   const getComponentByNameAndNo = async (search) => {
-    // setSelectLoading(true);
-    // const { data } = await imsAxios.post(url, {
-    //   search: search,
-    // });
-    // setSelectLoading(false);
-    // if (data[0]) {
-    //   let arr = data.map((row) => ({
-    //     value: row.id,
-    //     text: row.text,
-    //   }));
-    //   setAsyncOptions(arr);
-    // } else {
-    //   setAsyncOptions([]);
-    // }
     const response = await imsAxios.post("/backend/getComponentByNameAndNo", {
       search,
     });
