@@ -238,7 +238,22 @@ function RmRejection() {
       // rows[0].availableQty = availQty;
     }
   }, [availQty]);
-
+  const getComponentByNameAndNo = async (search) => {
+    const response = await imsAxios.post("/backend/getComponentByNameAndNo", {
+      search,
+    });
+    // console.log("response", response);
+    const { data } = response;
+    if (data.success) {
+      let arr = data.data.map((row) => ({
+        value: row.id,
+        text: row.text,
+      }));
+      setAsyncOptions(arr);
+    } else {
+      setAsyncOptions([]);
+    }
+  };
   useEffect(() => {
     // console.log("rows?.pick_location", rows);
     if (rows[0]?.component && rows[0]?.pick_location) {
@@ -275,9 +290,7 @@ function RmRejection() {
           labelInValue
           onBlur={() => setAsyncOptions([])}
           value={row.component}
-          loadOptions={(search) =>
-            getAsyncOptions(search, "/backend/getComponentByNameAndNo")
-          }
+          loadOptions={getComponentByNameAndNo}
           onChange={(value) => {
             inputHandler("component", value, row.id);
           }}

@@ -101,8 +101,8 @@ function RmConsumptionReport() {
       search: search,
     });
     setSelectLoading(false);
-    if (data[0]) {
-      let arr = data.map((row) => ({
+    if (data.success) {
+      let arr = data.data.map((row) => ({
         value: row.id,
         text: row.text,
       }));
