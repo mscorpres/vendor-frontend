@@ -98,10 +98,12 @@ function ManufacturingSFG() {
     // console.log("response->", response);
     const { data } = response;
     if (data.code === 200) {
-      let arr = data.data.map((r) => {
+      let arr = data.data.map((r, id) => {
         return {
           ...r,
-          bom_qty: r.bom_qty * Number(rows[0].mfgQty),
+          bom_qty: r.bom_qty,
+          id: id + 1,
+          // * Number(rows[0].mfgQty),
         };
       });
       setBomListRows(arr);
@@ -181,8 +183,8 @@ function ManufacturingSFG() {
         },
         material: {
           consumptPart: bomListRows.map((r) => r.key),
-          consumptQty: bomListRows.map((r) => r.bom_qty),
-          consumptLoc: bomListRows.map((r) => r.loc_qty),
+          consumptQty: bomListRows.map((r) => r.rqd_qty),
+          consumptLoc: bomListRows.map((r) => r.loc_qty ?? "--"),
         },
       };
       console.log("pao", pao);
@@ -279,9 +281,12 @@ function ManufacturingSFG() {
     },
   ];
   const removeRows = (id) => {
-    let arr = rows;
+    let arr = bomListRows;
+    // console.log("arr", arr);
+    // console.log("id", id);
     arr = arr.filter((row) => row.id !== id);
-    setRows(arr);
+    // console.log("rrrrrrrrrrrrr", arr);
+    setBomListRows(arr);
   };
   const addRows = () => {
     const newRow = {
@@ -308,13 +313,14 @@ function ManufacturingSFG() {
       width: 40,
       field: "add",
       sortable: false,
-      renderCell: ({ row }) => (
-        <CommonIcons
-          action="removeRow"
-          disabled
-          onClick={() => removeRows(rows?.id)}
-        />
-      ),
+      renderCell: ({ row }) =>
+        bomListRows.length > 1 && (
+          <CommonIcons
+            action="removeRow"
+            disabled
+            onClick={() => removeRows(row?.id)}
+          />
+        ),
       // sortable: false,
     },
     {
@@ -333,10 +339,15 @@ function ManufacturingSFG() {
       renderCell: ({ row }) => <Input value={row.bom_qty} disabled />,
     },
     {
-      headerName: "Location Qty ",
+      headerName: "Required Qty",
       width: 150,
-      renderCell: ({ row }) => <Input value={row.loc_qty} disabled />,
+      renderCell: ({ row }) => <Input value={row.rqd_qty} />,
     },
+    // {
+    //   headerName: "Location Qty ",
+    //   width: 150,
+    //   renderCell: ({ row }) => <Input value={row.loc_qty} disabled />,
+    // },
   ];
   const backTable = () => {
     setBomList(false);
