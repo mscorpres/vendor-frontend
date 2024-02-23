@@ -92,6 +92,36 @@ function TransferRequest() {
     }
     return data;
   };
+  const getComponentByNameAndNo = async (search) => {
+    // setSelectLoading(true);
+    // const { data } = await imsAxios.post(url, {
+    //   search: search,
+    // });
+    // setSelectLoading(false);
+    // if (data[0]) {
+    //   let arr = data.map((row) => ({
+    //     value: row.id,
+    //     text: row.text,
+    //   }));
+    //   setAsyncOptions(arr);
+    // } else {
+    //   setAsyncOptions([]);
+    // }
+    const response = await imsAxios.post("/backend/getComponentByNameAndNo", {
+      search,
+    });
+    // console.log("response", response);
+    const { data } = response;
+    if (data.success) {
+      let arr = data.data.map((row) => ({
+        value: row.id,
+        text: row.text,
+      }));
+      setAsyncOptions(arr);
+    } else {
+      setAsyncOptions([]);
+    }
+  };
   const getAsyncOptions = async (search, url) => {
     setSelectLoading(true);
     const { data } = await imsAxios.post(url, {
@@ -288,8 +318,9 @@ function TransferRequest() {
           labelInValue
           onBlur={() => setAsyncOptions([])}
           value={row.component}
-          loadOptions={(search) =>
-            getAsyncOptions(search, "/backend/getComponentByNameAndNo")
+          loadOptions={
+            // getAsyncOptions(search, "/backend/getComponentByNameAndNo")
+            getComponentByNameAndNo
           }
           onChange={(value) => {
             inputHandler("component", value, row.id);

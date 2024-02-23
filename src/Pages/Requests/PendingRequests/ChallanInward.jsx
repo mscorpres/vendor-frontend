@@ -65,12 +65,14 @@ function ChallanInward({ challanInward, setChallanInward, getRows }) {
       width: 100,
       renderCell: ({ row }) => (
         <Input
+          disabled
           value={row.jwQty}
           suffix={"" + row.uom}
           onChange={(e) => inputHandler("jwQty", e.target.value, row.id)}
         />
       ),
     },
+
     {
       headerName: "Available Qty",
       width: 100,
@@ -80,6 +82,17 @@ function ChallanInward({ challanInward, setChallanInward, getRows }) {
           value={row.maxQty}
           suffix={"" + row.uom}
           onChange={(e) => inputHandler("maxQty", e.target.value, row.id)}
+        />
+      ),
+    },
+    {
+      headerName: "Required Qty",
+      width: 100,
+      renderCell: ({ row }) => (
+        <Input
+          value={row.inpQty}
+          suffix={"" + row.uom}
+          onChange={(e) => inputHandler("inpQty", e.target.value, row.id)}
         />
       ),
     },
@@ -179,7 +192,7 @@ function ChallanInward({ challanInward, setChallanInward, getRows }) {
       let obj = row;
       console.log(name, value, id);
       if (obj.id === id) {
-        if (name === "jwQty") {
+        if (name === "inpQty") {
           obj = {
             ...obj,
             [name]: value,
@@ -189,7 +202,7 @@ function ChallanInward({ challanInward, setChallanInward, getRows }) {
           obj = {
             ...obj,
             [name]: value,
-            jwValue: +Number(value).toFixed(2) * +Number(row.jwQty).toFixed(2),
+            jwValue: +Number(value).toFixed(2) * +Number(row.inpQty).toFixed(2),
           };
         } else {
           obj = {
@@ -207,7 +220,7 @@ function ChallanInward({ challanInward, setChallanInward, getRows }) {
   const submitHandler = async () => {
     let validationError = "";
     rows.map((row) => {
-      if (row.jwQty === "" || row.jwQty == 0) {
+      if (row.inpQty === "" || row.inpQty == 0) {
         validationError = "qty";
       } else if (row.jwRate === "" || row.jwRate == 0) {
       } else if (row.location === "") {
@@ -236,7 +249,7 @@ function ChallanInward({ challanInward, setChallanInward, getRows }) {
     if (validationError === "") {
       let finalObj = {
         component: rows.map((row) => row.partKey),
-        qty: rows.map((row) => row.jwQty),
+        qty: rows.map((row) => row.inpQty),
         location: rows.map((row) => row.location),
         challan_ref: challanInward.challan,
         jw_ref: challanInward.jw,
