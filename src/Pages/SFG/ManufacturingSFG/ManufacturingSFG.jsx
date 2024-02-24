@@ -363,7 +363,7 @@ function ManufacturingSFG() {
         open={bomList}
         onClose={() => setBomList(false)}
         placement="right"
-        title="Bom List"
+        title={` ${headerOptions.jobwork}`}
         closable={true}
         width="100vw"
       >

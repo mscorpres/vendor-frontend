@@ -15,6 +15,18 @@ const links = [
   ],
   [
     {
+      routeName: "Create",
+      routePath: "/sfg/create",
+      placeholder: "SFG",
+    },
+    {
+      routeName: "View",
+      routePath: "/sfg/view",
+      placeholder: "SFG",
+    },
+  ],
+  [
+    {
       routeName: "VQ01",
       routePath: "/reports/rm_stock",
       placeholder: "RM Location Query",
