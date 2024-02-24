@@ -284,13 +284,14 @@ function TransferRequest() {
       width: 40,
       field: "add",
       sortable: false,
-      renderCell: ({ row }) => (
-        <CommonIcons
-          action="removeRow"
-          disabled
-          //   onClick={() => removeRows(rows?.id)}
-        />
-      ),
+      renderCell: ({ row }) =>
+        rows.indexOf(row) >= 1 && (
+          <CommonIcons
+            action="removeRow"
+            // disabled
+            onClick={() => removeRows(row?.id)}
+          />
+        ),
       // sortable: false,
     },
     {

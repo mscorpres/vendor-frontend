@@ -373,6 +373,7 @@ function ManufacturingSFG() {
           submitFunction={() => setShowSubmitConfirm(true)}
           backFunction={() => setBomList(false)}
           nextLabel="Submit"
+          nextDisabled={bomListRows?.length == 0}
           // setSelectLoading={setSelectLoading}
         />
         {/*     <Form.Item>
@@ -391,7 +392,7 @@ function ManufacturingSFG() {
                     </Button>
                   </Form.Item> */}
       </Drawer>
-      <SearchHeader title="Create SFG" />
+      {/* <SearchHeader title="Create SFG" /> */}
       {/* submit confirm modal */}
       <Modal
         title="Submit Confirm"

@@ -33,9 +33,14 @@ function ChallanInward({ challanInward, setChallanInward, getRows }) {
     {
       headerName: "",
       width: 50,
-      renderCell: ({ row }) => (
-        <CommonIcons action="removeRow" onClick={() => removeRows(row.id)} />
-      ),
+      renderCell: ({ row }) =>
+        rows.indexOf(row) >= 1 && (
+          <CommonIcons
+            action="removeRow"
+            disabled
+            onClick={() => removeRows(row?.id)}
+          />
+        ),
     },
 
     {
@@ -61,7 +66,6 @@ function ChallanInward({ challanInward, setChallanInward, getRows }) {
       ),
     },
 
-    
     {
       headerName: "Total Qty",
       width: 100,

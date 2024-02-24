@@ -42,7 +42,7 @@ function RmConsumptionReport() {
   const dispatch = useDispatch();
   const getLocations = async () => {
     // setPageLoading(true);
-    const { data } = await imsAxios.get("/jwvendor/fetchMINLocation");
+    const { data } = await imsAxios.get("/jwvendor/fetchAllotedLocation");
     // setPageLoading(false);
     if (data.code == 200) {
       let arr = data.data.map((row) => ({
