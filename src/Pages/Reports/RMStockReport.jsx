@@ -57,7 +57,7 @@ function RMStockReport() {
     setFetchLoading(true);
     // console.log("searchObj", searchObj);
     searchObj.location = locationOptions[0]?.value;
-    const response = await imsAxios.post("/jwreport/rmLocStock", searchObj);
+    const response = await imsAxios.post("/jwreport/vq01", searchObj);
 
     const { data } = response;
     if (data.code === 200) {
