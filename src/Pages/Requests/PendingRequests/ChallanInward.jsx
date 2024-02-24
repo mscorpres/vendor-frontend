@@ -27,13 +27,20 @@ function ChallanInward({ challanInward, setChallanInward, getRows }) {
 
   const [resetData, setResetData] = useState([]);
   const { locations: locationOptions } = useSelector((state) => state.login);
+  // console.log("challanInward", challanInward);
+  // console.log("getRows", getRows);
   const columns = [
     {
       headerName: "",
       width: 50,
-      renderCell: ({ row }) => (
-        <CommonIcons action="removeRow" onClick={() => removeRows(row.id)} />
-      ),
+      renderCell: ({ row }) =>
+        rows.indexOf(row) >= 1 && (
+          <CommonIcons
+            action="removeRow"
+            disabled
+            onClick={() => removeRows(row?.id)}
+          />
+        ),
     },
 
     {
@@ -58,19 +65,22 @@ function ChallanInward({ challanInward, setChallanInward, getRows }) {
         </Typography.Text>
       ),
     },
+
     {
       headerName: "Total Qty",
       width: 100,
       renderCell: ({ row }) => (
         <Input
+          disabled
           value={row.jwQty}
           suffix={"" + row.uom}
           onChange={(e) => inputHandler("jwQty", e.target.value, row.id)}
         />
       ),
     },
+
     {
-      headerName: "Left Qty",
+      headerName: "Available Qty",
       width: 100,
       renderCell: ({ row }) => (
         <Input
@@ -78,6 +88,17 @@ function ChallanInward({ challanInward, setChallanInward, getRows }) {
           value={row.maxQty}
           suffix={"" + row.uom}
           onChange={(e) => inputHandler("maxQty", e.target.value, row.id)}
+        />
+      ),
+    },
+    {
+      headerName: "Required Qty",
+      width: 100,
+      renderCell: ({ row }) => (
+        <Input
+          value={row.inpQty}
+          suffix={"" + row.uom}
+          onChange={(e) => inputHandler("inpQty", e.target.value, row.id)}
         />
       ),
     },
@@ -94,10 +115,12 @@ function ChallanInward({ challanInward, setChallanInward, getRows }) {
     {
       headerName: "Value",
       width: 100,
-      renderCell: ({ row }) => <Input value={row.jwValue} disabled={true} />,
+      renderCell: ({ row }) => (
+        <Input value={Number(row.jwValue).toFixed(2)} disabled={true} />
+      ),
     },
     {
-      headerName: "Location",
+      headerName: "Drop Location",
       width: 100,
       renderCell: ({ row }) => (
         <MySelect
@@ -152,7 +175,8 @@ function ChallanInward({ challanInward, setChallanInward, getRows }) {
           maxQty: row.jw_leftqty,
           jwRate: row.jw_rate,
           partKey: row.part_key,
-          jwValue: +Number(row.jw_qty) * +Number(row.jw_rate),
+          jwValue:
+            +Number(row.jw_qty).toFixed(2) * +Number(row.jw_rate).toFixed(2),
           partName: row.part_name,
           partNo: row.part_no,
           uom: row.uom,
@@ -174,7 +198,7 @@ function ChallanInward({ challanInward, setChallanInward, getRows }) {
       let obj = row;
       console.log(name, value, id);
       if (obj.id === id) {
-        if (name === "jwQty") {
+        if (name === "inpQty") {
           obj = {
             ...obj,
             [name]: value,
@@ -184,7 +208,7 @@ function ChallanInward({ challanInward, setChallanInward, getRows }) {
           obj = {
             ...obj,
             [name]: value,
-            jwValue: +Number(value).toFixed(2) * +Number(row.jwQty).toFixed(2),
+            jwValue: +Number(value).toFixed(2) * +Number(row.inpQty).toFixed(2),
           };
         } else {
           obj = {
@@ -202,7 +226,7 @@ function ChallanInward({ challanInward, setChallanInward, getRows }) {
   const submitHandler = async () => {
     let validationError = "";
     rows.map((row) => {
-      if (row.jwQty === "" || row.jwQty == 0) {
+      if (row.inpQty === "" || row.inpQty == 0) {
         validationError = "qty";
       } else if (row.jwRate === "" || row.jwRate == 0) {
       } else if (row.location === "") {
@@ -231,7 +255,7 @@ function ChallanInward({ challanInward, setChallanInward, getRows }) {
     if (validationError === "") {
       let finalObj = {
         component: rows.map((row) => row.partKey),
-        qty: rows.map((row) => row.jwQty),
+        qty: rows.map((row) => row.inpQty),
         location: rows.map((row) => row.location),
         challan_ref: challanInward.challan,
         jw_ref: challanInward.jw,
@@ -271,6 +295,7 @@ function ChallanInward({ challanInward, setChallanInward, getRows }) {
       width="100vw"
       open={challanInward}
       onClose={() => setChallanInward(false)}
+      title={`${challanInward.challan}`}
       extra={
         <Space>
           {/* <Button onClick={resetFunction}>Reset</Button> */}

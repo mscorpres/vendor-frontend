@@ -81,6 +81,11 @@ const App = () => {
         // <MinusOutlined />
       ),
       getItem(
+        <Link to="/requests/pending">Transfer Requests</Link>,
+        "/requests/requests/transfer"
+        // <MinusOutlined />
+      ),
+      getItem(
         <Link to="/requests/completed">Completed Requests</Link>,
         "/requests/requests/completed"
         // <MinusOutlined />
@@ -179,9 +184,11 @@ const App = () => {
     setTestPage(value);
   };
   const getLocations = async () => {
-    
-    const { data } = await imsAxios.get("/jwvendor/fetchMINLocation");
-    
+
+    // setPageLoading(true);
+    const { data } = await imsAxios.get("/jwvendor/fetchAllotedLocation");
+    // setPageLoading(false);
+
     if (data.code == 200) {
       let arr = data.data.map((row) => ({
         text: row.text,

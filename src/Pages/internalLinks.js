@@ -5,8 +5,24 @@ const links = [
       routePath: "/requests/pending",
     },
     {
+      routeName: "Transfer Requests",
+      routePath: "/requests/transfer",
+    },
+    {
       routeName: "Completed Requests",
       routePath: "/requests/completed",
+    },
+  ],
+  [
+    {
+      routeName: "Create",
+      routePath: "/sfg/create",
+      placeholder: "SFG",
+    },
+    {
+      routeName: "View",
+      routePath: "/sfg/view",
+      placeholder: "SFG",
     },
   ],
   [
@@ -14,6 +30,11 @@ const links = [
       routeName: "VQ01",
       routePath: "/reports/rm_stock",
       placeholder: "RM Location Query",
+    },
+    {
+      routeName: "VQ02",
+      routePath: "/reports/rmConsumption_report",
+      placeholder: "RM Consumption Report",
     },
     {
       routeName: "VR01",
@@ -29,6 +50,23 @@ const links = [
       routeName: "VR03",
       routePath: "/vr03",
       placeholder: "RM Consumption",
+    },
+    {
+      routeName: "VR04",
+      routePath: "/vr04",
+      placeholder: "RM Rejection Report",
+    },
+  ],
+  [
+    {
+      routeName: "Create RM Consumption",
+      routePath: "/rm_consumption",
+      // placeholder: "RM Consumption",
+    },
+    {
+      routeName: "Create RM Rejection",
+      routePath: "/rm_rejection",
+      // placeholder: "Create RM Rejection",
     },
   ],
   [

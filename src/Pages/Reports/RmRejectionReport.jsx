@@ -14,9 +14,9 @@ import printFunction, {
 } from "../../Components/printFunction";
 import { imsAxios } from "../../axiosInterceptor";
 
-const Vr03 = () => {
-  document.title = "RM Consumption";
-  const [wise, setWise] = useState("create_date");
+const RmRejectionReport = () => {
+  document.title = "RM Rejection";
+  const [wise, setWise] = useState("txn_id");
   const actionColumn = {
     headerName: "",
     field: "actions",
@@ -105,12 +105,24 @@ const Vr03 = () => {
   const downloadCol = () => {
     downloadCSV(rows, columns, "VR01 Report");
   };
-  const options = [{ text: "Created Date", value: "create_date" }];
+  // "txn_id / txn_part / txn_date"
+  useEffect(() => {
+    if (wise) {
+      setSearchInput("");
+    }
+  }, [wise]);
+
+  const options = [
+    { text: "Transaction Id", value: "txn_id" },
+    { text: "Transaction Part", value: "txn_part" },
+    { text: "Transaction Date", value: "txn_date" },
+  ];
   const getRows = async () => {
+    console.log("searchInput", searchInput);
     try {
       setLoading("fetch");
-      const response = await imsAxios.post("/vr03", {
-        wise: "create_date",
+      const response = await imsAxios.post("/vr04", {
+        wise: wise,
         data: searchInput,
       });
       const { data } = response;
@@ -120,7 +132,7 @@ const Vr03 = () => {
           id: index + 1,
           ...row,
         }));
-        console.log("arr", arr);
+        // console.log("arr", arr);
         setRows(arr);
       } else {
         toast.error(data.message.msg);
@@ -148,9 +160,24 @@ const Vr03 = () => {
                       onChange={(value) => setWise(value)}
                     />
                   </div>
-                  <div style={{ width: 250 }}>
+                  {wise === "txn_date" ? (
+                    <div style={{ width: 250 }}>
+                      <MyDatePicker setDateRange={setSearchInput} />
+                    </div>
+                  ) : (
+                    <div style={{ width: 250 }}>
+                      <Input
+                        value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
+                        // onChange={(value) => setSearchInput(value)}
+                        // setDateRange={setSearchInput}
+                        placeholder="Search here"
+                      />
+                    </div>
+                  )}
+                  {/* <div style={{ width: 250 }}>
                     <MyDatePicker setDateRange={setSearchInput} />
-                  </div>
+                  </div> */}
 
                   <Button
                     onClick={getRows}
@@ -169,7 +196,7 @@ const Vr03 = () => {
             type="primary"
           />
         </Row>
-        <div style={{ height: "95%", paddingRight: 5, paddingLeft: 5 }}>
+        <div style={{ height: "90%", paddingRight: 5, paddingLeft: 5 }}>
           <MyDataTable
             loading={loading === "fetch"}
             data={rows}
@@ -199,6 +226,17 @@ const Vr03 = () => {
 //         "create_by": "user_name",
 //     }
 
+// "data": {
+//     "part_no": "PART_CODE",
+//     "part_name": "PART_NAME",
+//     "unit": "UOM",
+//     "qty": 00,
+//     "txn_id": 123000,
+//     "txn_remark": "NA",
+//     "create_dt": "DD-MM-YYYY HH:mm:ss",
+//     "create_by": "NAME"
+// }
+
 const columns = [
   {
     headerName: "#",
@@ -212,44 +250,39 @@ const columns = [
   },
   {
     headerName: "Part Name",
-    width: "350",
+    width: "250",
     field: "part_name",
   },
   {
     headerName: "Qty",
-    width: "100",
+    width: "50",
     field: "qty",
   },
   {
     headerName: "Unit",
-    width: "50",
+    flex: 1,
     field: "unit",
   },
   {
-    headerName: "HSN",
-    width: "100",
-    field: "hsn",
+    headerName: "Transacton Id",
+    width: "140",
+    field: "txn_id",
   },
   {
-    headerName: "Document Ref.",
-    flex: 1,
-    field: "doc_ref",
-  },
-  {
-    headerName: "Document Date",
-    flex: 1,
-    field: "doc_date",
-  },
-  {
-    headerName: "Created date",
-    flex: 1,
+    headerName: "Created Date",
+    width: "150",
     field: "create_dt",
   },
   {
-    headerName: "Create By",
-    flex: 1,
+    headerName: "Created By",
+    width: 150,
     field: "create_by",
+  },
+  {
+    headerName: "Transaction Remark",
+    width: "250",
+    field: "txn_remark",
   },
 ];
 
-export default Vr03;
+export default RmRejectionReport;
