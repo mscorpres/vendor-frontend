@@ -124,6 +124,7 @@ const Vr02 = () => {
           outward: row.outward,
           opening: row.opening,
           closing: row.closing,
+          closingDate: row.closingDate,
         }));
         setRows(arr);
       } else {

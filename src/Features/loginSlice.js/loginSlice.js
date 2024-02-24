@@ -163,7 +163,6 @@ const loginSlice = createSlice({
 
 export const {
   logout,
-
   setUser,
   removeNotification,
   setNotifications,

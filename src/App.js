@@ -183,10 +183,8 @@ const App = () => {
     setTestToggleLoading(true);
     setTestPage(value);
   };
-  const getLocations = async () => {
-    // setPageLoading(true);
-    const { data } = await imsAxios.get("/jwvendor/fetchAllotedLocation");
-    // setPageLoading(false);
+  const getLocations = async () => {    
+    const { data } = await imsAxios.get("/jwvendor/fetchMINLocation");    
     if (data.code == 200) {
       let arr = data.data.map((row) => ({
         text: row.text,

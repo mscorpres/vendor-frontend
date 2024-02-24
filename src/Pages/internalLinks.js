@@ -57,5 +57,12 @@ const links = [
       // placeholder: "Create RM Rejection",
     },
   ],
+  [
+    {
+      routeName: "Create",
+      routePath: "/rm_consumption",
+      placeholder: "Create RM Consumption",
+    },
+  ],
 ];
 export default links;

@@ -39,6 +39,6 @@ export const postRmConsumption = async (values) => {
     pick_location: values.components.map((row) => row.pickLocation),
     remark: values.components.map((row) => row.remark),
   };
-  const response = await imsAxios.post("/jwvendor/rmConsp/v1", payload);
+  const response = await imsAxios.post("/jwvendor/rmConsp", payload);
   return response;
 };
