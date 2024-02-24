@@ -1,5 +1,6 @@
 import { imsAxios } from "../axiosInterceptor";
 
+
 export const getComponentOptions = async (search) => {
   const response = await imsAxios.post("/backend/getComponentByNameAndNo", {
     search,
@@ -39,6 +40,7 @@ export const postRmConsumption = async (values) => {
     pick_location: values.components.map((row) => row.pickLocation),
     remark: values.components.map((row) => row.remark),
   };
-  const response = await imsAxios.post("/jwvendor/rmConsp/v1", payload);
-  return response;
+
+  const response = await imsAxios.post("/jwvendor/rmConsp", payload);
+  return response
 };
