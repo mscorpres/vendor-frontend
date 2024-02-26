@@ -56,6 +56,7 @@ function RMStockReport() {
   const getRows = async () => {
     setFetchLoading(true);
     // console.log("searchObj", searchObj);
+    // change to trigger deployment
     searchObj.location = locationOptions[0]?.value;
     const response = await imsAxios.post("/jwreport/vq01", searchObj);
 
