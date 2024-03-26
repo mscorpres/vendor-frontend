@@ -76,5 +76,11 @@ const links = [
       placeholder: "Create RM Consumption",
     },
   ],
+  [
+    {
+      routeName: "PO Report",
+      routePath: "/finance/payments",
+    },
+  ],
 ];
 export default links;

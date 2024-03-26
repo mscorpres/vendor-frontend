@@ -37,11 +37,8 @@ function RMConsumption() {
       () => getComponentOptions(componentKey),
       "select"
     );
-    let arr = [];
-    if (response.success) {
-      arr = convertSelectOptions(response.data);
-    }
-    setAsyncOptions(arr);
+
+    setAsyncOptions(response.data);
   };
   const handleFetchComponentClosingStock = async (componentKey, location) => {
     const response = await executeFun(

@@ -39,6 +39,7 @@ import {
   CalculatorOutlined,
   MinusOutlined,
   RadiusBottomrightOutlined,
+  WalletOutlined,
 } from "@ant-design/icons";
 import InternalNav from "./Components/InternalNav";
 import showToast from "./Components/MyToast";
@@ -74,6 +75,11 @@ const App = () => {
     };
   }
   const items = [
+    getItem(
+      <Link to="/finance/payments">Finance</Link>,
+      "F",
+      <WalletOutlined />
+    ),
     getItem("Requests", "A", <SlidersOutlined />, [
       getItem(
         <Link to="/requests/pending">Pending Requests</Link>,
@@ -184,7 +190,6 @@ const App = () => {
     setTestPage(value);
   };
   const getLocations = async () => {
-
     // setPageLoading(true);
     const { data } = await imsAxios.get("/jwvendor/fetchAllotedLocation");
     // setPageLoading(false);
