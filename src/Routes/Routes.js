@@ -16,6 +16,7 @@ import TransferRequest from "../Pages/Requests/TransferRequest/TransferRequest";
 import RmRejection from "../Pages/RMRejection/RmRejection";
 import RmConsumptionReport from "../Pages/Reports/RmConsumptionReport";
 import RmRejectionReport from "../Pages/Reports/RmRejectionReport";
+import PoReport from "../Pages/finance/vendor-payment/PoReport";
 
 const Routes = [
   {
@@ -73,6 +74,10 @@ const Routes = [
   {
     path: "/vr03",
     main: () => <Vr03 />,
+  },
+  {
+    path: "/finance/payments",
+    main: () => <PoReport />,
   },
   // should always be at the end
   {

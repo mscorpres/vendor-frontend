@@ -1,10 +1,15 @@
 import { imsAxios } from "../axiosInterceptor";
-
+import { convertSelectOptions } from "../utils/general";
 
 export const getComponentOptions = async (search) => {
   const response = await imsAxios.post("/backend/getComponentByNameAndNo", {
     search,
   });
+  let arr = [];
+  if (response.success) {
+    arr = convertSelectOptions(response.data);
+  }
+  response.data = arr;
   return response;
 };
 
@@ -42,5 +47,5 @@ export const postRmConsumption = async (values) => {
   };
 
   const response = await imsAxios.post("/jwvendor/rmConsp", payload);
-  return response
+  return response;
 };

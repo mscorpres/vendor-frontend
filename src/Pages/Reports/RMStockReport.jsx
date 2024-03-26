@@ -101,11 +101,8 @@ function RMStockReport() {
       () => getComponentOptions(search),
       "select"
     );
-    let arr = [];
-    if (response.success) {
-      arr = convertSelectOptions(response.data);
-    }
-    setAsyncOptions(arr);
+
+    setAsyncOptions(response.data);
     // setSelectLoading(true);
     // const { data } = await imsAxios.post("/backend/getComponentByNameAndNo", {
     //   search: search,
