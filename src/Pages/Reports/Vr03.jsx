@@ -250,6 +250,11 @@ const columns = [
     flex: 1,
     field: "create_by",
   },
+  {
+    headerName: "Remark",
+    flex: 1,
+    field: "remark",
+  },
 ];
 
 export default Vr03;
