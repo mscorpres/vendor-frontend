@@ -119,6 +119,8 @@ const Completed = () => {
           part_no: row.part_no,
           total_qty: row.jw_qty + "  " + row.uom,
           pending_qty: row.jw_leftqty + "  " + row.uom,
+          rate: row.rate,
+          totalValue: row.totalValue,
           hsn: row.hsn,
           entry_by: row.entry_by,
         }));
@@ -216,9 +218,19 @@ const columns = [
     field: "hsn",
   },
   {
+    headerName: "Rate",
+    width: 200,
+    field: "rate",
+  },
+  {
     headerName: "Total Qty",
     width: 150,
     field: "total_qty",
+  },
+  {
+    headerName: "Total Value",
+    width: 150,
+    field: "totalValue",
   },
   {
     headerName: "Pending Qty",
