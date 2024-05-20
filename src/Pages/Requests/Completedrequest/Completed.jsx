@@ -115,6 +115,7 @@ const Completed = () => {
           date: row.date,
           jobwork: row.jobwork,
           challan: row.challan,
+          challan_date: row.challan_date,
           part: row.part_name,
           part_no: row.part_no,
           total_qty: row.jw_qty + "  " + row.uom,
@@ -201,6 +202,11 @@ const columns = [
     headerName: "Challan Id",
     width: 150,
     field: "challan",
+  },
+  {
+    headerName: "Challan Date",
+    width: 150,
+    field: "challan_date",
   },
   {
     headerName: "Part Name",
