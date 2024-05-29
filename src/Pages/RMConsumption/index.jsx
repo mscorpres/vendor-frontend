@@ -21,6 +21,7 @@ function RMConsumption() {
   const { locations: pickLocationOptions } = useSelector(
     (state) => state.login
   );
+  const [showTypeModal, setTypeModal] = useState(true);
   const [form] = Form.useForm();
   const initialValues = {
     components: [
@@ -31,6 +32,7 @@ function RMConsumption() {
   };
 
   const { executeFun, loading } = useApi();
+  const selectedType = Form.useWatch("type", form);
 
   const handleFetchComponentOptions = async (componentKey) => {
     const response = await executeFun(
@@ -89,7 +91,6 @@ function RMConsumption() {
   };
 
   const normFile = (e) => {
-    console.log("Upload event:", e);
     if (Array.isArray(e)) {
       return e;
     }
@@ -115,9 +116,28 @@ function RMConsumption() {
       layout="vertical"
       initialValues={initialValues}
     >
+      {/* <TypeModal show={showTypeModal} hide=/> */}
       <Row gutter={6} style={{ height: "95%", padding: 10, paddingTop: 0 }}>
         <Col span={4}>
           <Card title="Create RM Consumption" size="small">
+            <Form.Item name="type" label="Type" rules={rules.type}>
+              <MySelect options={typeOptions} />
+            </Form.Item>
+            {selectedType === "consumption" && (
+              <Form.Item
+                name="product"
+                label="Product"
+                rules={selectedType && rules.product}
+              >
+                <MyAsyncSelect
+                  loadOptions={handleFetchComponentOptions}
+                  onBlur={() => setAsyncOptions([])}
+                  optionsState={asyncOptions}
+                  selectLoading={loading("select")}
+                  labelInValue={true}
+                />
+              </Form.Item>
+            )}
             <Form.Item
               name="documentNumber"
               label="Document Number"
@@ -263,6 +283,18 @@ const columns = (
 //   },
 // ];
 const rules = {
+  type: [
+    {
+      required: true,
+      message: "Type is required",
+    },
+  ],
+  product: [
+    {
+      required: true,
+      message: "Product is required in case of Consumption",
+    },
+  ],
   documentNumber: [
     {
       required: true,
@@ -288,3 +320,18 @@ const rules = {
     },
   ],
 };
+
+const typeOptions = [
+  {
+    text: "Rejection",
+    value: "rejection",
+  },
+  {
+    text: "Shortage",
+    value: "shortage",
+  },
+  {
+    text: "Consumption",
+    value: "consumption",
+  },
+];
