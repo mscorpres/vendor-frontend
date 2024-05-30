@@ -1,5 +1,15 @@
 import { useEffect, useState } from "react";
-import { Row, Col, Card, Input, Form, Upload, Button, Modal } from "antd";
+import {
+  Row,
+  Col,
+  Card,
+  Input,
+  Form,
+  Upload,
+  Button,
+  Modal,
+  InputNumber,
+} from "antd";
 import FormTable2 from "../../Components/FormTable2";
 import useApi from "../../hooks/useApi";
 import {
@@ -136,6 +146,16 @@ function RMConsumption() {
                   selectLoading={loading("select")}
                   labelInValue={true}
                 />
+              </Form.Item>
+            )}
+            {selectedType === "consumption" && (
+              <Form.Item
+                style={{ width: "100%" }}
+                name="productQty"
+                label="Consumed Qty"
+                rules={selectedType && rules.productQty}
+              >
+                <InputNumber style={{ width: "100%" }} />
               </Form.Item>
             )}
             <Form.Item
@@ -293,6 +313,12 @@ const rules = {
     {
       required: true,
       message: "Product is required in case of Consumption",
+    },
+  ],
+  productQty: [
+    {
+      required: true,
+      message: "Consumed Qty is required in case of Consumption",
     },
   ],
   documentNumber: [
