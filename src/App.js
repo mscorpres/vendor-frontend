@@ -75,11 +75,11 @@ const App = () => {
     };
   }
   const items = [
-    getItem(
-      <Link to="/finance/payments">Finance</Link>,
-      "F",
-      <WalletOutlined />
-    ),
+    // getItem(
+    //   <Link to="/finance/payments">Finance</Link>,
+    //   "F",
+    //   <WalletOutlined />
+    // ),
     getItem("Requests", "A", <SlidersOutlined />, [
       getItem(
         <Link to="/requests/pending">Pending Requests</Link>,
