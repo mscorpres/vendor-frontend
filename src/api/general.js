@@ -42,6 +42,8 @@ export const postRmConsumption = async (values) => {
     jobwork_attach: values.invoiceNumber,
     type: values.type,
     product: values.type === "consumption" ? values.product?.value : undefined,
+    consumed_product_qty:
+      values.type === "consumption" ? values.productQty : undefined,
     component: values.components.map((row) => row.component?.value),
     qty: values.components.map((row) => row.qty),
     pick_location: values.components.map((row) => row.pickLocation),
