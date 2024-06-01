@@ -9,6 +9,7 @@ import {
   Button,
   Modal,
   InputNumber,
+  Flex,
 } from "antd";
 import FormTable2 from "../../Components/FormTable2";
 import useApi from "../../hooks/useApi";
@@ -26,6 +27,7 @@ import MySelect from "../../Components/MySelect";
 import SingleDatePicker from "../../Components/SingleDatePicker";
 import { InboxOutlined } from "@ant-design/icons";
 import Loading from "../../Components/Loading";
+import { downloadCSV } from "../../Components/exportToCSV";
 
 function RMConsumption() {
   const [asyncOptions, setAsyncOptions] = useState([]);
@@ -142,6 +144,20 @@ function RMConsumption() {
     }
   };
 
+  const handleDownloadSample = () => {
+    downloadCSV(
+      [
+        {
+          partCode: "",
+          qty: "",
+          remarks: "",
+        },
+      ],
+      sampleColumns,
+      "RM Consumption Sample"
+    );
+  };
+
   return (
     <Form
       form={form}
@@ -218,15 +234,18 @@ function RMConsumption() {
                 </Upload.Dragger>
               </Form.Item>
             </Form.Item>
-            <Flex style={{ width: "100%" }}>
-              <Button
-                onClick={handleUploadSheet}
-                loading={loading("upload")}
-                block
-              >
-                Upload
-              </Button>
-            </Flex>
+
+            <Button
+              onClick={handleUploadSheet}
+              loading={loading("upload")}
+              block
+            >
+              Upload
+            </Button>
+            <Button onClick={handleDownloadSample} type="link" block>
+              Download Sample
+            </Button>
+
             <Row justify="end">
               <Button type="primary" onClick={validateHandler}>
                 Save
@@ -325,6 +344,21 @@ const columns = (
     width: 200,
     // renderCell: ({ row }) => ,
     field: (_, index) => <Input />,
+  },
+];
+
+const sampleColumns = [
+  {
+    headerName: "partCode",
+    field: "partCode",
+  },
+  {
+    headerName: "qty",
+    field: "qty",
+  },
+  {
+    headerName: "remark",
+    field: "remark",
   },
 ];
 

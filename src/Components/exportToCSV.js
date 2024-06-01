@@ -87,7 +87,7 @@ export const downloadCSV = async (rows, columns, name) => {
     return newRow;
   });
 
-  let arr2 = Object.keys(arr[0]);
+  let arr2 = Object.keys(arr[0] ?? {});
   let arr1 = [];
   arr.map((row) => {
     let obj = {};
