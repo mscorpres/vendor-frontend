@@ -53,3 +53,27 @@ export const postRmConsumption = async (values) => {
   const response = await imsAxios.post("/jwvendor/rmConsp", payload);
   return response;
 };
+
+export const uploadRmConsumptionSheet = async (values) => {
+  const formData = new FormData();
+  formData.append("jobwork_attach", values.dragger[0].originFileObj);
+  const response = await imsAxios.post("/jwvendor/getDocumentData", formData);
+
+  let arr = [];
+  console.log("response api", response);
+  if (response.success) {
+    arr = response.data.map((row) => ({
+      component: {
+        label: row.component.text,
+        value: row.component.value,
+      },
+      pickLocation: "1689055233554", //change this,
+      closingStock: 0,
+      qty: row.quantity,
+      remark: row.remarks,
+    }));
+  }
+
+  response.data = arr;
+  return response;
+};

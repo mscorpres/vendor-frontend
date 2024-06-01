@@ -17,6 +17,7 @@ import {
   getComponentClosingStock,
   postVendorInvoice,
   postRmConsumption,
+  uploadRmConsumptionSheet,
 } from "../../api/general";
 import MyAsyncSelect from "../../Components/MyAsyncSelect";
 import { convertSelectOptions } from "../../utils/general";
@@ -97,6 +98,28 @@ function RMConsumption() {
     console.log("these are the response", response);
     if (response.success) {
       form.resetFields();
+    }
+  };
+
+  const handleUploadSheet = async () => {
+    const values = await form.validateFields(["dragger"]);
+    const response = await executeFun(
+      () => uploadRmConsumptionSheet(values),
+      "upload"
+    );
+
+    if (response.success) {
+      let arr = response.data;
+      console.log("response data", response.data);
+      for (let i = 0; i < response.data.length; i++) {
+        const current = response.data[i];
+        const closingStock = await handleFetchComponentClosingStock(
+          current.component.value,
+          current.pickLocation
+        );
+        arr[i].closingStock = closingStock;
+      }
+      form.setFieldValue("components", arr);
     }
   };
 
@@ -181,7 +204,11 @@ function RMConsumption() {
                 getValueFromEvent={normFile}
                 noStyle
               >
-                <Upload.Dragger name="files" maxCount={1}>
+                <Upload.Dragger
+                  beforeUpload={() => false}
+                  name="files"
+                  maxCount={1}
+                >
                   <p className="ant-upload-drag-icon">
                     <InboxOutlined />
                   </p>
@@ -191,6 +218,15 @@ function RMConsumption() {
                 </Upload.Dragger>
               </Form.Item>
             </Form.Item>
+            <Flex style={{ width: "100%" }}>
+              <Button
+                onClick={handleUploadSheet}
+                loading={loading("upload")}
+                block
+              >
+                Upload
+              </Button>
+            </Flex>
             <Row justify="end">
               <Button type="primary" onClick={validateHandler}>
                 Save
