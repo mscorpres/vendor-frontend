@@ -119,6 +119,9 @@ const Vr03 = () => {
         const arr = data.data.map((row, index) => ({
           id: index + 1,
           ...row,
+          consumedProduct: row.consumedProduct?.text
+            ? row.consumedProduct?.text
+            : row.consumedProduct,
         }));
         console.log("arr", arr);
         setRows(arr);
@@ -224,6 +227,21 @@ const columns = [
     headerName: "Unit",
     width: "50",
     field: "unit",
+  },
+  {
+    headerName: "Product",
+    width: "350",
+    field: "consumedProduct",
+  },
+  {
+    headerName: "Cons. Qty",
+    width: "80",
+    field: "consumedQty",
+  },
+  {
+    headerName: "Type",
+    width: "100",
+    field: "type",
   },
   {
     headerName: "HSN",
