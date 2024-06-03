@@ -295,6 +295,15 @@ const columns = (
   locationOptions
 ) => [
   {
+    headerName: "#",
+    field: "index",
+    name: "index",
+    width: 30,
+
+    // renderCell: ({ row }) => ,
+    field: (_, index) => index + 1,
+  },
+  {
     headerName: "Component",
     field: "component",
     name: "component",
