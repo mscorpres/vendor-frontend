@@ -191,7 +191,7 @@ function RMConsumption() {
               <Form.Item
                 style={{ width: "100%" }}
                 name="productQty"
-                label="Consumed Qty"
+                label="Product Qty"
                 rules={selectedType && rules.productQty}
               >
                 <InputNumber style={{ width: "100%" }} />
