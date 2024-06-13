@@ -234,7 +234,7 @@ const columns = [
     field: "consumedProduct",
   },
   {
-    headerName: "Cons. Qty",
+    headerName: "Product Qty",
     width: "80",
     field: "consumedQty",
   },
