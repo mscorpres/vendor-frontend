@@ -17,10 +17,7 @@ import RmRejection from "../Pages/RMRejection/RmRejection";
 import RmConsumptionReport from "../Pages/Reports/RmConsumptionReport";
 import RmRejectionReport from "../Pages/Reports/RmRejectionReport";
 import PoReport from "../Pages/finance/vendor-payment/PoReport";
-import CreataePhysical from "./../Pages/PhysicalStock/CreatePhysical.jsx";
-import ViewPhysical from "./../Pages/PhysicalStock/ViewPhysical.jsx";
-import Pending from "./../Pages/PhysicalStock/Pending.jsx";
-import Rejected from "./../Pages/PhysicalStock/Rejected.jsx";
+
 const Routes = [
   {
     path: "/login",
@@ -81,22 +78,6 @@ const Routes = [
   {
     path: "/finance/payments",
     main: () => <PoReport />,
-  },
-  {
-    path: "/PhysicalStock",
-    main: () => <CreataePhysical />,
-  },
-  {
-    path: "/physicalStock/pending",
-    main: () => <Pending />,
-  },
-  {
-    path: "/physicalStock/rejected",
-    main: () => <Rejected />,
-  },
-  {
-    path: "/physicalStock/view",
-    main: () => <ViewPhysical />,
   },
   // should always be at the end
   {

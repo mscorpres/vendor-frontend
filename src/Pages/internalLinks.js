@@ -27,28 +27,6 @@ const links = [
   ],
   [
     {
-      routeName: "Create",
-      routePath: "/PhysicalStock",
-      // placeholder: "Create",
-    },
-    {
-      routeName: "Pending",
-      routePath: "/physicalStock/pending",
-      // placeholder: "Pending",
-    },
-    {
-      routeName: "Rejected",
-      routePath: "/physicalStock/rejected",
-      // placeholder: "Rejected",
-    },
-    {
-      routeName: "View",
-      routePath: "/physicalStock/view",
-      // placeholder: "View",
-    },
-  ],
-  [
-    {
       routeName: "VQ01",
       routePath: "/reports/rm_stock",
       placeholder: "RM Location Query",

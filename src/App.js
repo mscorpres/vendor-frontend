@@ -26,7 +26,6 @@ import socket from "./Components/socket.js";
 import Notifications from "./Components/Notifications";
 import Layout, { Content, Header } from "antd/lib/layout/layout";
 import { Badge, Row, Select, Space, Switch, notification } from "antd";
-import { AiOutlineFund } from "react-icons/ai";
 // icons import
 import {
   MessageOutlined,
@@ -102,11 +101,6 @@ const App = () => {
       <Link to="/rm_consumption">RM Consumption</Link>,
       "/rm_consumption",
       <MinusOutlined />
-    ),
-    getItem(
-      <Link to="/PhysicalStock">Physical Stock</Link>,
-      "/PhysicalStock",
-      <AiOutlineFund />
     ),
     getItem("SFG", "B", <RadiusBottomrightOutlined />, [
       getItem(
