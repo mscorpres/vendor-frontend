@@ -92,18 +92,18 @@ const Manual = () => {
     console.log(name, id, value);
 
     if (name == "comp") {
-      const { data } = await imsAxios.post("/audit/RMStock", {
-        component: value.value,
+      const { data } = await imsAxios.post("vendor/rmAudit/rmStore", {
+        partno: value.value,
       });
-      // console.log(data.data);
-      const exist1 = data?.data.available_qty;
-      const exist2 = data?.data.unit;
-
+      // console.log("data.data", data);
+      const exist1 = data?.closing;
+      // const exist2 = data?.data.unit;
+      // console.log("exist2", exist1);
       setAddRom((comp) =>
         comp.map((h) => {
           if (h.id == id) {
             {
-              return { ...h, comp: value, eStick: exist1, u: exist2 };
+              return { ...h, comp: value.value, eStick: exist1 };
             }
           } else {
             return h;
@@ -163,22 +163,23 @@ const Manual = () => {
     let existStock = [];
     let phyisalStock = [];
     let remarkArr = [];
-
-    addrow.map((a) => comName.push(a.comp?.value));
+    console.log("comp", addrow);
+    addrow.map((a) => comName.push(a.comp));
     addrow.map((a) => existStock.push(a.eStick));
     addrow.map((a) => phyisalStock.push(a.phyStock));
     addrow.map((a) => remarkArr.push(a.rem));
 
-    const { data } = await imsAxios.post("/audit/saveAudit", {
-      branch: "BRMSC012",
+    const response = await imsAxios.post("vendor/rmAudit/saveAudit", {
+      // branch: "BRMSC012",
       component: comName,
       closing: existStock,
       audit: phyisalStock,
       remark: remarkArr,
     });
 
-    console.log(data);
-    if (data.code == 200) {
+    console.log("data", response);
+    let { data } = response;
+    if (response.success == true) {
       setAddRom([
         {
           id: v4(),
@@ -189,12 +190,13 @@ const Manual = () => {
           rem: "",
         },
       ]);
-      toast.success("Success");
+      toast.success(response.message);
       setLoading(false);
-    } else if (data.code == 500) {
+    } else {
       toast.error("Something Went Wrong");
       setLoading(false);
     }
+    setLoading(false);
   };
 
   const resetFunction = () => {

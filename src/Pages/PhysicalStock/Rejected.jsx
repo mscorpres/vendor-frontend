@@ -12,13 +12,14 @@ const RejectedPhysicalStock = () => {
   const { executeFun, loading } = useApi();
 
   const handleGetRows = async () => {
+    setRows([]);
     const response = await executeFun(
       () => getPhysicalStockWithStatus("reject"),
       "fetch"
     );
     let arr = [];
     if (response.success) {
-      arr = response.data.data.map((row, index) => ({
+      arr = response.data.map((row, index) => ({
         id: index + 1,
         component: row.part_name,
         partCode: row.part_code,

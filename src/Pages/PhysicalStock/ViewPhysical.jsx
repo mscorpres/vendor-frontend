@@ -23,6 +23,7 @@ import { getLogs, getVerifiedStocks } from "../../api/general.js";
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import { downloadCSV } from "./../../Components/exportToCSV.js";
 import { convertSelectOptions } from "../../utils/general.js";
+import { toast } from "react-toastify";
 
 function ViewPhysical() {
   const [asyncOptions, setAsyncOptions] = useState([]);
@@ -42,8 +43,15 @@ function ViewPhysical() {
       "fetchComponent"
     );
     let arr = [];
+    console.log("Response right here", response);
     if (response.success) {
-      arr = convertSelectOptions(response.data);
+      arr = response.data.map((r) => {
+        return {
+          text: r.text,
+          value: r.value,
+        };
+      });
+      console.log("arr right here", arr);
     }
     setAsyncOptions(arr);
   };
@@ -54,9 +62,10 @@ function ViewPhysical() {
       () => getVerifiedStocks(values.wise, values.data),
       "fetchRows"
     );
+    console.log("response", response);
     let arr = [];
     if (response.success) {
-      arr = response.data.data.map((row, index) => ({
+      arr = response.data.map((row, index) => ({
         id: index + 1,
         component: row.name,
         partCode: row.part,
@@ -68,6 +77,8 @@ function ViewPhysical() {
         remark: row.remark,
         auditKey: row.audit_key,
       }));
+    } else {
+      toast.error(response.message);
     }
     setRows(arr);
   };
@@ -245,11 +256,12 @@ const Logs = ({ open, hide, selectedAudit, logs, setLogs }) => {
   const { executeFun, loading } = useApi();
 
   const handleFetchLogs = async (auditKey) => {
+    setLogs([]);
     const response = await executeFun(() => getLogs(auditKey), "fetch");
 
     let arr = [];
     if (response.success) {
-      arr = response.data.data.map((row, index) => ({
+      arr = response.data.map((row, index) => ({
         id: index + 1,
         auditBy: row.audit_by,
         auditDate: row.audit_dt,
