@@ -93,7 +93,7 @@ const links = [
   ],
   [
     {
-      routeName: "Create",
+      routeName: "",
       routePath: "/rm_consumption",
       placeholder: "Create RM Consumption",
     },

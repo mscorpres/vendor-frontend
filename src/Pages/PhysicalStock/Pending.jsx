@@ -45,7 +45,7 @@ const PendingPhysicalStock = () => {
       // toast.success(response.message);
       handleGetRows();
     } else {
-      toast.error(response.message);
+      // toast.error(response.message);
     }
   };
 
