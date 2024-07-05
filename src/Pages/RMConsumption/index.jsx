@@ -28,6 +28,7 @@ import SingleDatePicker from "../../Components/SingleDatePicker";
 import { InboxOutlined } from "@ant-design/icons";
 import Loading from "../../Components/Loading";
 import { downloadCSV } from "../../Components/exportToCSV";
+import { toast } from "react-toastify";
 
 function RMConsumption() {
   const [asyncOptions, setAsyncOptions] = useState([]);
@@ -97,9 +98,11 @@ function RMConsumption() {
       () => postRmConsumption(values),
       "submit"
     );
-    console.log("these are the response", response);
+    // console.log("these are the response right herer", response);
     if (response.success) {
       form.resetFields();
+    } else if (response.data.code == 500) {
+      toast.error(response.message.msg);
     }
   };
 
@@ -122,7 +125,7 @@ function RMConsumption() {
         arr[i].closingStock = closingStock;
       }
       form.setFieldValue("components", arr);
-    }
+    } else toast.error(response.error);
   };
 
   const normFile = (e) => {
