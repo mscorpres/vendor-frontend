@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { downloadCSV } from "../../Components/exportToCSV";
-import MyAsyncSelect from "../../Components/MyAsyncSelect";
 import MyDataTable from "../../Components/MyDataTable";
 import MySelect from "../../Components/MySelect";
 import showToast from "../../Components/MyToast";
@@ -14,6 +13,7 @@ import { CommonIcons } from "../../Components/TableActions.jsx/TableActions";
 import { setLocations } from "../../Features/loginSlice.js/loginSlice";
 import { toast } from "react-toastify";
 import { imsAxios } from "../../axiosInterceptor";
+import MyAsyncSelect from "../../Components/MyAsyncSelect";
 function RmConsumptionReport() {
   document.title = "RM Location Query";
   const [searchLoading, setSearchLoading] = useState(false);
@@ -27,6 +27,7 @@ function RmConsumptionReport() {
     { title: "Cat Part Code" },
     // { title: "ClosingQty" },
   ]);
+  const [form] = Form.useForm();
   useEffect(() => {
     getLocations();
   }, []);
@@ -97,15 +98,19 @@ function RmConsumptionReport() {
   };
   const getPartCodes = async (search) => {
     setSelectLoading(true);
-    const { data } = await imsAxios.post("/backend/getComponentByNameAndNo", {
+    const response = await imsAxios.post("/backend/getComponentByNameAndNo", {
       search: search,
     });
+    // console.log("data", data);
+    let { data } = response;
     setSelectLoading(false);
-    if (data.success) {
-      let arr = data.data.map((row) => ({
+    if (response.success) {
+      let arr = data.map((row) => ({
         value: row.id,
         text: row.text,
       }));
+      // console.log("arr", arr);
+
       setAsyncOptions(arr);
     } else {
       setAsyncOptions([]);
@@ -152,48 +157,55 @@ function RmConsumptionReport() {
   };
 
   const searchBar = () => (
-    <Space>
-      <div style={{ width: 200 }}>
-        <MyAsyncSelect
-          placeholder="Search Part Code"
-          selectLoading={selectLoading}
-          optionsState={asyncOptions}
-          onBlur={() => setAsyncOptions([])}
-          value={searchObj.part_code}
-          loadOptions={getPartCodes}
-          onChange={(value) => {
-            setSearchObj((obj) => ({
-              ...obj,
-              part_code: value,
-            }));
-          }}
+    <Form layout="vertical">
+      <Space>
+        <div style={{ width: 200 }}>
+          <Form.Item label="Part Code">
+            <MyAsyncSelect
+              placeholder="Search Part Code"
+              selectLoading={selectLoading}
+              optionsState={asyncOptions}
+              onBlur={() => setAsyncOptions([])}
+              value={searchObj.part_code}
+              loadOptions={getPartCodes}
+              onChange={(value) => {
+                setSearchObj((obj) => ({
+                  ...obj,
+                  part_code: value,
+                }));
+              }}
+            />
+          </Form.Item>
+        </div>
+        <div style={{ width: 300 }}>
+          <Form.Item label="Select Location">
+            <MySelect
+              // placeholder="Select Location"
+              labelInValue
+              value={searchObj.location?.text}
+              options={locationOptions}
+              onChange={(value) => {
+                setSearchObj((obj) => ({
+                  ...obj,
+                  location: value,
+                }));
+              }}
+            />
+          </Form.Item>
+        </div>
+
+        <CommonIcons
+          action="searchButton"
+          loading={searchLoading}
+          onClick={getRows}
         />
-      </div>
-      <div style={{ width: 300 }}>
-        <MySelect
-          placeholder="Select Location"
-          labelInValue
-          value={searchObj.location?.text}
-          options={locationOptions}
-          onChange={(value) => {
-            setSearchObj((obj) => ({
-              ...obj,
-              location: value,
-            }));
-          }}
-        />
-      </div>
-      <CommonIcons
-        action="searchButton"
-        loading={searchLoading}
-        onClick={getRows}
-      />
-      <CommonIcons action="downloadButton" onClick={handleDownloadExcel} />
-    </Space>
+        <CommonIcons action="downloadButton" onClick={handleDownloadExcel} />
+      </Space>
+    </Form>
   );
   return (
     <div style={{ height: "90%" }}>
-      <SearchHeader title="RM Consumption Stock" searchBar={searchBar} />
+      <SearchHeader title="RM Consumption Report" searchBar={searchBar} />
       <Row gutter={4} style={{ height: "100%", padding: "0px 5px" }}>
         <Col span={4}>
           <SummaryCard summary={summaryData} loading={fetchLoading} />

@@ -154,44 +154,51 @@ function RMStockReport() {
   };
 
   const searchBar = () => (
-    <Space>
-      <div style={{ width: 200 }}>
-        <MyAsyncSelect
-          placeholder="Search Part Code"
-          selectLoading={loading("select")}
-          optionsState={asyncOptions}
-          onBlur={() => setAsyncOptions([])}
-          value={searchObj.part_code}
-          loadOptions={getPartCodes}
-          onChange={(value) => {
-            setSearchObj((obj) => ({
-              ...obj,
-              part_code: value,
-            }));
-          }}
+    <Form layout="vertical">
+      <Space>
+        <div style={{ width: 200 }}>
+          <Form.Item label="Part Code">
+            <MyAsyncSelect
+              placeholder="Search Part Code"
+              selectLoading={loading("select")}
+              optionsState={asyncOptions}
+              onBlur={() => setAsyncOptions([])}
+              value={searchObj.part_code}
+              loadOptions={getPartCodes}
+              onChange={(value) => {
+                setSearchObj((obj) => ({
+                  ...obj,
+                  part_code: value,
+                }));
+              }}
+            />{" "}
+          </Form.Item>
+        </div>
+        <div style={{ width: 300 }}>
+          {" "}
+          <Form.Item label="Select Location">
+            <MySelect
+              placeholder="Select Location"
+              labelInValue
+              value={locationOptions[0]?.text}
+              // options={locationOptions}
+              onChange={(value) => {
+                setSearchObj((obj) => ({
+                  ...obj,
+                  location: value,
+                }));
+              }}
+            />
+          </Form.Item>
+        </div>
+        <CommonIcons
+          action="searchButton"
+          loading={searchLoading}
+          onClick={getRows}
         />
-      </div>
-      <div style={{ width: 300 }}>
-        <MySelect
-          placeholder="Select Location"
-          labelInValue
-          value={locationOptions[0]?.text}
-          // options={locationOptions}
-          onChange={(value) => {
-            setSearchObj((obj) => ({
-              ...obj,
-              location: value,
-            }));
-          }}
-        />
-      </div>
-      <CommonIcons
-        action="searchButton"
-        loading={searchLoading}
-        onClick={getRows}
-      />
-      <CommonIcons action="downloadButton" onClick={handleDownloadExcel} />
-    </Space>
+        <CommonIcons action="downloadButton" onClick={handleDownloadExcel} />
+      </Space>
+    </Form>
   );
   return (
     <div style={{ height: "90%" }}>
