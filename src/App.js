@@ -185,7 +185,7 @@ const App = () => {
     dispatch(setFavourites(favs));
   };
   socket.on("connect", () => {
-    console.log("WebSocket connected!!!!!!!!!!!!!");
+    console.log("WebSocket connected!!");
   });
 
   socket.on("connect_error", (error) => {
