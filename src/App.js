@@ -184,7 +184,17 @@ const App = () => {
     }
     dispatch(setFavourites(favs));
   };
+  socket.on("connect", () => {
+    console.log("WebSocket connected!!!!!!!!!!!!!");
+  });
 
+  socket.on("connect_error", (error) => {
+    console.error("Connection error:", error);
+  });
+
+  socket.on("disconnect", (reason) => {
+    console.log("WebSocket disconnected:", reason);
+  });
   const handleChangePageStatus = (value) => {
     let status = value ? "TEST" : "LIVE";
     // console.log(value);
@@ -707,4 +717,4 @@ const App = () => {
 };
 
 export default App;
-// 
+//
