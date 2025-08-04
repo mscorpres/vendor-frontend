@@ -158,6 +158,7 @@ input[type="number"]::-webkit-outer-spin-button {
   border: none !important;
   /* border: 1px solid red !important; */
 }
+
 .date-text-input {
   height: 34px;
   outline: none;
@@ -508,4 +509,8 @@ textarea {
     width: 18px !important;
     line-height: 18px !important;
   }
+}
+
+.location-select .ant-select-selection-item {
+  color: white !important;
 }

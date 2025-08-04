@@ -21,6 +21,8 @@ import CreataePhysical from "./../Pages/PhysicalStock/CreatePhysical.jsx";
 import ViewPhysical from "./../Pages/PhysicalStock/ViewPhysical.jsx";
 import Pending from "./../Pages/PhysicalStock/Pending.jsx";
 import Rejected from "./../Pages/PhysicalStock/Rejected.jsx";
+import R37 from "../Pages/Reports/JobWorkInventoryReport.jsx";
+import POAnalysis from "../Pages/JobWork/POAnalysis.jsx";
 const Routes = [
   {
     path: "/login",
@@ -97,6 +99,14 @@ const Routes = [
   {
     path: "/physicalStock/view",
     main: () => <ViewPhysical />,
+  },
+    {
+    path: "/jobwork-inventory-report",
+    main: () => <R37 />,
+  },
+  {
+    path:"/jobwork-analysis",
+    main: () => <POAnalysis />
   },
   // should always be at the end
   {

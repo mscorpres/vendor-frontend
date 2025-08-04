@@ -50,9 +50,12 @@ export const loginAuth = createAsyncThunk(
             type: data.data.crn_type,
             mobileConfirmed: data.data.mobileConfirmed,
             emailConfirmed: data.data.emailConfirmed,
+            vendor: data.data.vendor,
           })
         );
+        localStorage.setItem("vendor", data.data.vendor);
         imsAxios.defaults.headers["x-csrf-token"] = data.data.token;
+        imsAxios.defaults.headers["session"] = "25-26";
         return await data.data;
       } else {
         return thunkAPI.rejectWithValue(data.message);
@@ -97,6 +100,18 @@ const loginSlice = createSlice({
           ...state.user,
           favPages: action.payload,
         })
+      );
+    },
+      setSession: (state, action) => {
+      // window.location.reload(true);
+      imsAxios.defaults.headers["Session"] = action.payload;
+      //  Axios.defaults.headers["Session"] = action.payload;
+      let user = state.user;
+      user = { ...user, session: action.payload };
+      state.user = user;
+      localStorage.setItem(
+        "otherData",
+        JSON.stringify({ session: user.session })
       );
     },
     setTestPages: (state, action) => {
@@ -169,5 +184,6 @@ export const {
   setFavourites,
   setTestPages,
   setLocations,
+  setSession,   
 } = loginSlice.actions;
 export default loginSlice.reducer;

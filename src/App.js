@@ -19,6 +19,7 @@ import {
   setTestPages,
   setLocations,
   setUser,
+  setSession,
 } from "./Features/loginSlice.js/loginSlice";
 import UserMenu from "./Components/UserMenu";
 import Logo from "./Components/Logo";
@@ -40,7 +41,8 @@ import {
   CalculatorOutlined,
   MinusOutlined,
   RadiusBottomrightOutlined,
-  WalletOutlined,
+  CopyOutlined,
+  UnorderedListOutlined,
 } from "@ant-design/icons";
 import InternalNav from "./Components/InternalNav";
 import showToast from "./Components/MyToast";
@@ -139,6 +141,16 @@ const App = () => {
         // <MinusOutlined />
       ),
     ]),
+    getItem(
+      <Link to="/jobwork-analysis">Job work Analysis</Link>,
+      "/rm_consumption",
+      <CopyOutlined />
+    ),
+       getItem(
+      <Link to="/jobwork-inventory-report">Job Work Inventory Report</Link>,
+      "/jobwork-inventory-report",
+      <UnorderedListOutlined />
+    ),
   ];
   const items1 = [
     // getItem(<Link to="/myprofile">Profile</Link>, "B", <UserOutlined />),
@@ -246,6 +258,7 @@ const App = () => {
       var payload = decodeJwt(getTokenFromUrl);
 
       imsAxios.defaults.headers["x-csrf-token"] = getTokenFromUrl;
+      imsAxios.defaults.headers["session"] = "25-26";
       localStorage.setItem(
         "loggedInUserVendor",
         JSON.stringify({
@@ -469,6 +482,16 @@ const App = () => {
     setInternalLinks(currentLinks);
   }, [currentLinks]);
   const options = [{ label: "A-21 [BRMSC012]", value: "BRMSC012" }];
+  const sessionOptions = [
+    { label: "Session 22-23", value: "22-23" },
+    { label: "Session 23-24", value: "23-24" },
+    { label: "Session 24-25", value: "24-25" },
+    { label: "Session 25-26", value: "25-26" },
+  ];
+    const handleSelectSession = (value) => {
+    dispatch(setSession(value));
+  };
+
   return (
     <div style={{ height: "100vh" }}>
       <ToastContainer
@@ -530,6 +553,16 @@ const App = () => {
                       value="BRMSC012"
                     />
                   </div> */}
+                   <div className="location-select">
+                    <Select
+                      style={{ width: 200, color: "white" }}
+                      options={sessionOptions}
+                      bordered={false}
+                      placeholder="Select Session"
+                      onChange={(value) => handleSelectSession(value)}
+                      value={user.session}
+                    />
+                  </div>
                 </Space>
                 <Space
                   size="large"

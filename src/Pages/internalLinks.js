@@ -104,5 +104,19 @@ const links = [
       routePath: "/finance/payments",
     },
   ],
+  [
+    {
+      routeName: "Job Work Inventory Report",
+      routePath: "/jobwork-inventory-report",
+      // placeholder: "RM Consumption",
+    },
+  ],
+  [
+    {
+      routeName: "Job work Analysis",
+      routePath: "/jobwork-analysis",
+      // placeholder: "RM Consumption",
+    },
+  ],
 ];
 export default links;

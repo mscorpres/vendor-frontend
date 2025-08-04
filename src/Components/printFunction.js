@@ -32,5 +32,5 @@ const downloadExcel = (buffer, filename, type) => {
   ]);
   fileDownload(file, filename);
 };
-export { downloadFunction, downloadExcel };
+export { downloadFunction, downloadExcel ,printFunction};
 export default printFunction;
