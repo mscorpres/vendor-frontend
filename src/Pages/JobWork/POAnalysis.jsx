@@ -41,8 +41,8 @@ const vendor = localStorage.getItem("vendor");
   const getRows = async () => {
     const values = await filterForm.validateFields();
     const payload = {
-      data: values.value,
-      wise: wise.value,
+      // data: values.value,
+      wise: "vendorwise",
       advanced: true,
       dateRange: advancedDate,
       data:vendor,
@@ -174,12 +174,12 @@ const vendor = localStorage.getItem("vendor");
                 layout="vertical"
                 form={filterForm}
               >
-                <Form.Item label="Select Wise" name="wise">
+                {/* <Form.Item label="Select Wise" name="wise">
                   <MySelect options={wiseOptions} labelInValue />
                 </Form.Item>
-                {valueInput(wise, filterForm)}
+                {valueInput(wise, filterForm)} */}
 
-                <Form.Item
+                {/* <Form.Item
                   label="Advanced Filter"
                   name="advancedFilter"
                   className=""
@@ -187,13 +187,15 @@ const vendor = localStorage.getItem("vendor");
                   <Checkbox
                     onChange={(e) => setAdvancedFilter(e.target.checked)}
                   />
-                </Form.Item>
+                </Form.Item> */}
 
-                {selectedWise?.value !== "datewise" && advancedFilter && (
+                {/* {selectedWise?.value !== "datewise" && advancedFilter && ( */}
+                  <Form.Item label="Select Date" name="wise">
                   <MyDatePicker
                     setDateRange={(value) => setAdvancedDate(value)}
                   />
-                )}
+                </Form.Item>
+                {/* )} */}
 
               </Form>
               <Row justify="end">
