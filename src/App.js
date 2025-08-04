@@ -83,64 +83,64 @@ const App = () => {
     //   "F",
     //   <WalletOutlined />
     // ),
-    getItem("Requests", "A", <SlidersOutlined />, [
-      getItem(
-        <Link to="/requests/pending">Pending Requests</Link>,
-        "/requests/requests/pending"
-        // <MinusOutlined />
-      ),
-      getItem(
-        <Link to="/requests/pending">Transfer Requests</Link>,
-        "/requests/requests/transfer"
-        // <MinusOutlined />
-      ),
-      getItem(
-        <Link to="/requests/completed">Completed Requests</Link>,
-        "/requests/requests/completed"
-        // <MinusOutlined />
-      ),
-    ]),
-    getItem(
-      <Link to="/rm_consumption">RM Consumption</Link>,
-      "/rm_consumption",
-      <MinusOutlined />
-    ),
-    getItem(
-      <Link to="/PhysicalStock">Physical Stock</Link>,
-      "/PhysicalStock",
-      <AiOutlineFund />
-    ),
-    getItem("SFG", "B", <RadiusBottomrightOutlined />, [
-      getItem(
-        <Link to="/sfg/create">Create</Link>,
-        "/sfg/create"
-        // <MinusOutlined />
-      ),
-      getItem(
-        <Link to="/sfg/view">View SFG</Link>,
-        "/sfg/create"
-        // <MinusOutlined />
-      ),
-    ]),
-    getItem("Reports", "C", <CalculatorOutlined />, [
-      getItem(
-        <Link to="/reports/rm_stock">RM Stock</Link>,
-        "/reports/rm_stock"
-        // <MinusOutlined />
-      ),
-      getItem(
-        <Link to="/vr01">VR01</Link>
-        // <MinusOutlined />
-      ),
-      getItem(
-        <Link to="/vr02">VR02</Link>
-        // <MinusOutlined />
-      ),
-      getItem(
-        <Link to="/vr03">VR03</Link>
-        // <MinusOutlined />
-      ),
-    ]),
+    // getItem("Requests", "A", <SlidersOutlined />, [
+    //   getItem(
+    //     <Link to="/requests/pending">Pending Requests</Link>,
+    //     "/requests/requests/pending"
+    //     // <MinusOutlined />
+    //   ),
+    //   getItem(
+    //     <Link to="/requests/pending">Transfer Requests</Link>,
+    //     "/requests/requests/transfer"
+    //     // <MinusOutlined />
+    //   ),
+    //   getItem(
+    //     <Link to="/requests/completed">Completed Requests</Link>,
+    //     "/requests/requests/completed"
+    //     // <MinusOutlined />
+    //   ),
+    // ]),
+    // getItem(
+    //   <Link to="/rm_consumption">RM Consumption</Link>,
+    //   "/rm_consumption",
+    //   <MinusOutlined />
+    // ),
+    // getItem(
+    //   <Link to="/PhysicalStock">Physical Stock</Link>,
+    //   "/PhysicalStock",
+    //   <AiOutlineFund />
+    // ),
+    // getItem("SFG", "B", <RadiusBottomrightOutlined />, [
+    //   getItem(
+    //     <Link to="/sfg/create">Create</Link>,
+    //     "/sfg/create"
+    //     // <MinusOutlined />
+    //   ),
+    //   getItem(
+    //     <Link to="/sfg/view">View SFG</Link>,
+    //     "/sfg/create"
+    //     // <MinusOutlined />
+    //   ),
+    // ]),
+    // getItem("Reports", "C", <CalculatorOutlined />, [
+    //   getItem(
+    //     <Link to="/reports/rm_stock">RM Stock</Link>,
+    //     "/reports/rm_stock"
+    //     // <MinusOutlined />
+    //   ),
+    //   getItem(
+    //     <Link to="/vr01">VR01</Link>
+    //     // <MinusOutlined />
+    //   ),
+    //   getItem(
+    //     <Link to="/vr02">VR02</Link>
+    //     // <MinusOutlined />
+    //   ),
+    //   getItem(
+    //     <Link to="/vr03">VR03</Link>
+    //     // <MinusOutlined />
+    //   ),
+    // ]),
     getItem(
       <Link to="/jobwork-analysis">Job work Analysis</Link>,
       "/rm_consumption",

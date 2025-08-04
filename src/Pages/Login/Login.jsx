@@ -41,7 +41,7 @@ const Login = () => {
   useEffect(() => {
     if (message?.length > 0) {
       if (user) {
-        navigate("/vr01");
+        navigate("/jobwork-analysis");
         // toast.success(message);
       }
     }
