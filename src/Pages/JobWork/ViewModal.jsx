@@ -62,12 +62,30 @@ const ViewModal = ({ viewModalOpen, setViewModalOpen }) => {
       field: "bomalt_name",
       headerName: "Alt Part",
       width: 150,
-      renderCell: ({ row }) => {
-        const altNames = Array.isArray(row?.bomalt_name)
-          ? row.bomalt_name.join(", ")
+        renderCell: ({ row }) => {
+        // Handle the new backend structure with alts array
+        if (row?.alts && Array.isArray(row.alts) && row.alts.length > 0) {
+          const altParts = row.alts
+            .filter((alt) => alt.alt_component_part !== "N/A")
+            .map((alt) => alt.alt_component_part)
+            .join(", ");
+
+          const altNames = row.alts
+            .filter((alt) => alt.alt_component_name !== "N/A")
+            .map((alt) => alt.alt_component_name)
+            .join(", ");
+
+          return (
+            <Tooltip title={altNames}>
+              <span>{altParts}</span>
+            </Tooltip>
+          );
+        }
+        const altNames = Array.isArray(row?.alt_component_part)
+          ? row.alt_component_part.join(", ")
           : "";
-        const altParts = Array.isArray(row?.bomalt_part)
-          ? row.bomalt_part.join(", ")
+        const altParts = Array.isArray(row?.alt_component_part)
+          ? row.alt_component_part.join(", ")
           : "";
 
         return (
