@@ -59,7 +59,7 @@ const ViewModal = ({ viewModalOpen, setViewModalOpen }) => {
     { field: "part_code", headerName: "Part Code", width: 120 },
     { field: "component_name", headerName: "Name", width: 350 },
     {
-      field: "bomalt_name",
+      field: "alts",
       headerName: "Alt Part",
       width: 150,
         renderCell: ({ row }) => {
