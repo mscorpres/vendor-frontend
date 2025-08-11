@@ -105,6 +105,7 @@ const loginSlice = createSlice({
       setSession: (state, action) => {
       // window.location.reload(true);
       imsAxios.defaults.headers["Session"] = action.payload;
+      delete imsAxios.defaults.headers["session"];
       //  Axios.defaults.headers["Session"] = action.payload;
       let user = state.user;
       user = { ...user, session: action.payload };
