@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import showToast from "../../Components/MyToast";
 import { imsAxios } from "../../axiosInterceptor";
+import { getCurrentFinancialYearSession } from "../../utils/financialYear";
 let fav =
   typeof JSON.parse(localStorage.getItem("loggedInUserVendor"))?.favPages ==
   "string"
@@ -55,7 +56,7 @@ export const loginAuth = createAsyncThunk(
         );
         localStorage.setItem("vendor", data.data.vendor);
         imsAxios.defaults.headers["x-csrf-token"] = data.data.token;
-        imsAxios.defaults.headers["session"] = "25-26";
+        imsAxios.defaults.headers["session"] = getCurrentFinancialYearSession();
         return await data.data;
       } else {
         return thunkAPI.rejectWithValue(data.message);

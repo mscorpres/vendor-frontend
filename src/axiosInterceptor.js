@@ -1,5 +1,6 @@
 import axios from "axios";
 import { toast } from "react-toastify";
+import { getCurrentFinancialYearSession } from "./utils/financialYear";
 // const link = "https://ims.mscapi.live/";
 // // const link = "https://dev.mscorpres.net/";
 // const socketLink = "https://socket.mscapi.live:3005";
@@ -55,7 +56,9 @@ imsAxios.interceptors.response.use(
 
 let branch =
   JSON.parse(localStorage.getItem("otherData"))?.company_branch ?? "BRMSC012";
-let session = JSON.parse(localStorage.getItem("otherData"))?.session ?? "25-26";
+let session =
+  JSON.parse(localStorage.getItem("otherData"))?.session ??
+  getCurrentFinancialYearSession();
 
 imsAxios.defaults.headers["Company-Branch"] = branch;
 imsAxios.defaults.headers["Session"] = session;

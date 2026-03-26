@@ -49,6 +49,10 @@ import showToast from "./Components/MyToast";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { imsAxios } from "./axiosInterceptor";
+import {
+  getCurrentFinancialYearSession,
+  getFinancialYearSessionOptions,
+} from "./utils/financialYear";
 
 const App = () => {
   const { user, notifications, currentLinks } = useSelector(
@@ -258,7 +262,7 @@ const App = () => {
       var payload = decodeJwt(getTokenFromUrl);
 
       imsAxios.defaults.headers["x-csrf-token"] = getTokenFromUrl;
-      imsAxios.defaults.headers["session"] = "25-26";
+      imsAxios.defaults.headers["session"] = getCurrentFinancialYearSession();
       localStorage.setItem(
         "loggedInUserVendor",
         JSON.stringify({
@@ -295,6 +299,13 @@ const App = () => {
     }
     getLocations();
   }, []);
+
+  useEffect(() => {
+    if (user && !user.session) {
+      dispatch(setSession(getCurrentFinancialYearSession()));
+    }
+  }, [dispatch, user]);
+  
   useEffect(() => {
     if (!user && !searchParams.get("token")) {
       navigate("/login");
@@ -482,12 +493,7 @@ const App = () => {
     setInternalLinks(currentLinks);
   }, [currentLinks]);
   const options = [{ label: "A-21 [BRMSC012]", value: "BRMSC012" }];
-  const sessionOptions = [
-    { label: "Session 22-23", value: "22-23" },
-    { label: "Session 23-24", value: "23-24" },
-    { label: "Session 24-25", value: "24-25" },
-    { label: "Session 25-26", value: "25-26" },
-  ];
+  const sessionOptions = getFinancialYearSessionOptions(2022);
     const handleSelectSession = (value) => {
     dispatch(setSession(value));
   };
@@ -560,7 +566,7 @@ const App = () => {
                       bordered={false}
                       placeholder="Select Session"
                       onChange={(value) => handleSelectSession(value)}
-                      value={user.session}
+                      value={user.session || getCurrentFinancialYearSession()}
                     />
                   </div>
                 </Space>
