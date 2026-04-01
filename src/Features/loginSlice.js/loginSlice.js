@@ -34,32 +34,32 @@ export const loginAuth = createAsyncThunk(
   "auth/login",
   async (user, thunkAPI) => {
     try {
-      const { data } = await imsAxios.post("/auth/vendor_signin", {
+      const response = await imsAxios.post("/auth/vendor/signin", {
         username: user.username,
         password: user.password,
       });
-      if (data.code === 200) {
+      if (response.success) {
         localStorage.setItem(
           "loggedInUserVendor",
           JSON.stringify({
-            userName: data.data.username,
-            token: data.data.token,
-            phone: data.data.crn_mobile,
-            email: data.data.crn_email,
-            id: data.data.crn_id,
-            favPages: data.data.fav_pages,
-            type: data.data.crn_type,
-            mobileConfirmed: data.data.mobileConfirmed,
-            emailConfirmed: data.data.emailConfirmed,
-            vendor: data.data.vendor,
+            userName: response.data.username,
+            token: response.data.token,
+            phone: response.data.crn_mobile,
+            email: response.data.crn_email,
+            id: response.data.crn_id,
+            favPages: response.data.fav_pages,
+            type: response.data.crn_type,
+            mobileConfirmed: response.data.mobileConfirmed,
+            emailConfirmed: response.data.emailConfirmed,
+            vendor: response.data.vendor,
           })
         );
-        localStorage.setItem("vendor", data.data.vendor);
-        imsAxios.defaults.headers["x-csrf-token"] = data.data.token;
+        localStorage.setItem("vendor", response.data.vendor);
+        imsAxios.defaults.headers["Authorization"] = response.data.token;
         imsAxios.defaults.headers["session"] = getCurrentFinancialYearSession();
-        return await data.data;
+        return await response.data;
       } else {
-        return thunkAPI.rejectWithValue(data.message);
+        return thunkAPI.rejectWithValue(response.message);
       }
     } catch (err) {
       const { message } = err.response.data;

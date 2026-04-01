@@ -161,8 +161,18 @@ const App = () => {
     // getItem(<Link to="/messenger">Messenger</Link>, "C", <MessageOutlined />),
   ];
 
-  const logoutHandler = () => {
-    dispatch(logout());
+  const logoutHandler = async () => {
+    try {
+      if (user?.token) {
+        await imsAxios.post(
+          "/auth/logout",
+        );
+      }
+    } catch (error) {
+      console.log("logout api failed", error);
+    } finally {
+      dispatch(logout());
+    }
   };
   const deleteNotification = (id) => {
     let arr = notifications;
@@ -261,7 +271,7 @@ const App = () => {
     if (getTokenFromUrl) {
       var payload = decodeJwt(getTokenFromUrl);
 
-      imsAxios.defaults.headers["x-csrf-token"] = getTokenFromUrl;
+      imsAxios.defaults.headers["Authorization"] = getTokenFromUrl;
       imsAxios.defaults.headers["session"] = getCurrentFinancialYearSession();
       localStorage.setItem(
         "loggedInUserVendor",

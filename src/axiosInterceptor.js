@@ -21,13 +21,13 @@ import { getCurrentFinancialYearSession } from "./utils/financialYear";
 // });
 // //
 
-const link = process.env.REACT_APP_API_BASE_URL;
+const link = "http://192.168.1.11:3001/";
 const socketLink = process.env.REACT_APP_SOCKET_BASE_URL;
 
 const imsAxios = axios.create({
   baseURL: link,
   headers: {
-    "x-csrf-token": JSON.parse(localStorage.getItem("loggedInUserVendor"))
+    "Authorization": JSON.parse(localStorage.getItem("loggedInUserVendor"))
       ?.token,
   },
 });
