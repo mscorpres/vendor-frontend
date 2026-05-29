@@ -35,6 +35,11 @@ const imsAxios = axios.create({
   },
 });
 
+imsAxios.interceptors.request.use((config) => {
+  config.headers["x-trigger-uid"] = generateTriggerUidHeader();
+  return config;
+});
+
 imsAxios.interceptors.response.use(
   (response) => {
     if (response.data?.success !== undefined) {
@@ -62,10 +67,8 @@ let branch =
 let session =
   JSON.parse(localStorage.getItem("otherData"))?.session ??
   getCurrentFinancialYearSession();
-  const triggerUid = generateTriggerUidHeader();
 
 imsAxios.defaults.headers["Company-Branch"] = branch;
 imsAxios.defaults.headers["Session"] = session;
-imsAxios.defaults.headers["x-trigger-uid"] = triggerUid;
 
 export { imsAxios, socketLink };
