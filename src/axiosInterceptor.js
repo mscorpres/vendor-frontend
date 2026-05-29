@@ -1,25 +1,28 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import { getCurrentFinancialYearSession } from "./utils/financialYear";
-// const link = "https://ims.mscapi.live/";
-// // const link = "https://dev.mscorpres.net/";
-// const socketLink = "https://socket.mscapi.live:3005";
+import { v4 as uuidv4 } from 'uuid';
 
-// comment the above two links and decomment below two links for production
+const generateUniqueId = () => {
+  return uuidv4();
+};
+const generateTriggerUidHeader = () => {
+  const uid = generateUniqueId().replaceAll("-", "");
+  const timestamp = formatTimestamp();
+  return `${uid}:${timestamp}`;
+};
 
-// const link = "https://api.mscorpres.net:3001/";
-// let socketLink = "https://socket.mscorpres.net:3005";
-// export { socketLink, link };
-// axios.defaults.baseURL = link;
-// export default axios.interceptors.request.use((config) => {
-//   const user = JSON.parse(localStorage.getItem("loggedInUserVendor"));
-//   if (user) {
-//     config.headers["x-csrf-token"] = user?.token;
-//     config.headers["Company-Branch"] = "BRMSC012";
-//   }
-//   return config;
-// });
-// //
+const formatTimestamp = () => {
+  const now = new Date();
+  const day = String(now.getDate()).padStart(2, "0");
+  const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+  const year = String(now.getFullYear()).slice(-4); // Last 2 digits of the year
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  const seconds = String(now.getSeconds()).padStart(2, "0");
+
+  return `${day}${month}${year}${hours}${minutes}${seconds}`;
+};
 
 const link = process.env.REACT_APP_API_BASE_URL;
 const socketLink = process.env.REACT_APP_SOCKET_BASE_URL;
@@ -59,8 +62,10 @@ let branch =
 let session =
   JSON.parse(localStorage.getItem("otherData"))?.session ??
   getCurrentFinancialYearSession();
+  const triggerUid = generateTriggerUidHeader();
 
 imsAxios.defaults.headers["Company-Branch"] = branch;
 imsAxios.defaults.headers["Session"] = session;
+imsAxios.defaults.headers["x-trigger-uid"] = triggerUid;
 
 export { imsAxios, socketLink };
