@@ -44,6 +44,11 @@
     "start": "react-scripts start",
     "build": "react-scripts build"
   },
+  "overrides": {
+    "ws": "^8.21.1",
+    "tar": "^6.2.1",
+    "brace-expansion": "^1.1.17"
+  },
   "eslintConfig": {
     "extends": [
       "react-app",
