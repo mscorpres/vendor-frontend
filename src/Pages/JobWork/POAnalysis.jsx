@@ -71,7 +71,7 @@ const vendor = localStorage.getItem("vendor");
           project_name: row.project_name,
         }));
       } else {
-        toast.error(data.message.msg ?? data.message);
+        toast.error(response.message.msg ?? response.message);
       }
    
     setRows(arr);
