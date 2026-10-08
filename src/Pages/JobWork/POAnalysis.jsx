@@ -55,7 +55,7 @@ const vendor = localStorage.getItem("vendor");
   
       if (response.success) {
         const { data } = response;
-        arr = data.data.map((row, index) => ({
+        arr = data.map((row, index) => ({
           id: index + 1,
           date: row.date,
           jwId: row.po_sku_transaction,
