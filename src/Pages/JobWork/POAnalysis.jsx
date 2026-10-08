@@ -50,10 +50,11 @@ const vendor = localStorage.getItem("vendor");
     setLoading("fetch");
     const response = await imsAxios.post("/jobwork/jw_analysis", payload);
     setLoading(false);
-    const { data } = response;
+    
     let arr = [];
-    if (data) {
-      if (data.code === 200) {
+  
+      if (response.success) {
+        const { data } = response;
         arr = data.data.map((row, index) => ({
           id: index + 1,
           date: row.date,
@@ -70,10 +71,9 @@ const vendor = localStorage.getItem("vendor");
           project_name: row.project_name,
         }));
       } else {
-        toast.error(data.message.msg);
+        toast.error(data.message.msg ?? data.message);
       }
-    } else {
-    }
+   
     setRows(arr);
   };
 
@@ -100,7 +100,7 @@ const vendor = localStorage.getItem("vendor");
         downloadFunction(data.data.buffer.data, jwId);
       }
     } else {
-      toast.error(data.message.msg);
+      toast.error(data.message.msg ?? data.message);
     }
   };
   const askPassword = () => {
@@ -123,7 +123,7 @@ const vendor = localStorage.getItem("vendor");
       setOpen(false);
       passwordForm.resetFields();
     } else {
-      toast.error(response.data);
+      toast.error(response.data.message.msg ?? response.data.message);
       setConfirmLoading(false);
     }
     // navigate("");
