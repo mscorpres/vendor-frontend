@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import { getCurrentFinancialYearSession } from "./utils/financialYear";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 const generateUniqueId = () => {
   return uuidv4();
@@ -30,7 +30,7 @@ const socketLink = process.env.REACT_APP_SOCKET_BASE_URL;
 const imsAxios = axios.create({
   baseURL: link,
   headers: {
-    "Authorization": JSON.parse(localStorage.getItem("loggedInUserVendor"))
+    Authorization: JSON.parse(localStorage.getItem("loggedInUserVendor"))
       ?.token,
   },
 });
@@ -49,17 +49,18 @@ imsAxios.interceptors.response.use(
     return response;
   },
   (error) => {
-    console.log("this is the error response", error.response);
-    // if (error.response.status === 404) {
-    //   toast.error("Some Internal error occured");
-    // } else {
+    if (error.response.data?.data?.logout) {
+      localStorage.clear();
+      window.location.reload();
+      return error;
+    }
     toast.error(error.response.data);
     if (error.response.data.message) {
       toast.error(error.response.data.message.msg);
     }
     // }
     return error.response;
-  }
+  },
 );
 
 let branch =
